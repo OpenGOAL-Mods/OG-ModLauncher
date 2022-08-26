@@ -1,0 +1,24 @@
+dist/*
+build/*
+.env
+twitchcommands.spec
+resources/data/decompiler_out/*
+resources/data/iso_data/*
+resources/data/log/game.txt
+resources/data/extractor.log
+resources/data/out/*
+appicon.png
+data/log/compiler.txt
+twitchcommands.exe
+RENAMEANDPUTNEAROPENGOAL.exe
+*.exe
+!resources/gk.exe
+!resources/goalc.exe
+!resources/extractor.exe
+resources/data/log/compiler.txt
+my.env
+Opengoal-Twitch-CrowdControl.rar
+resources/IconStorage/appicon.ico
+OpenGoal with Microtransactionas.e.md
+resources/newlauncher.py
+resources/red_plus.ico
