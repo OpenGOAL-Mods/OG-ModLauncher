@@ -17,38 +17,8 @@ import io
 import base64
 import sys
 import cloudscraper
+import launcherFunctions
 
-def link_type(link_path): #image_path: "C:User/Image/img.jpg"
-    if tree in link_path:
-        branch = 1
-        return
-    else:
-        if releases in link_path:
-            release = 1
-            return
-        else:
-             mainpage = 1
-             return
-
-def resize_image(image_path, resize=None): #image_path: "C:User/Image/img.jpg"
-    if isinstance(image_path, str):
-        img = PIL.Image.open(image_path)
-    else:
-        try:
-            img = PIL.Image.open(io.BytesIO(base64.b64decode(image_path)))
-        except Exception as e:
-            data_bytes_io = io.BytesIO(image_path)
-            img = PIL.Image.open(data_bytes_io)
-
-    cur_width, cur_height = img.size
-    if resize:
-        new_width, new_height = resize
-        scale = min(new_height/cur_height, new_width/cur_width)
-        img = img.resize((int(cur_width*scale), int(cur_height*scale)), PIL.Image.Resampling.LANCZOS)
-    bio = io.BytesIO()
-    img.save(bio, format="PNG")
-    del img
-    return bio.getvalue()
 
 
 # Folder where script is placed, It looks in this for the Exectuable
@@ -71,7 +41,6 @@ moddersAndModsJSON = json.load(f)
 f.close()
 
 j_file = json.dumps(moddersAndModsJSON)
-print(str(moddersAndModsJSON["Modding Community"]).replace(r"""{'URL': '""","").replace(r"""'}""", ""))
 print(moddersAndModsJSON["Modding Community"][0]["name"])
 print(moddersAndModsJSON["Modding Community"][0]["URL"])
 
@@ -152,7 +121,7 @@ while True:
         except:
             pass
     elif event =='pick_modder':
-        window['-IMAGE-'].update(resize_image(installpath + "QezJKtyZ_400x400.png" ,resize=(250,250)))
+        window['-IMAGE-'].update(launcherFunctions.resize_image(installpath + "QezJKtyZ_400x400.png" ,resize=(250,250)))
         item = values[event]
         title_list = [i["name"] for i in moddersAndModsJSON[item]]
         window['pick_mod'].update(value=title_list[0], values=title_list)
@@ -172,7 +141,7 @@ while True:
         pil_image.save(png_bio, format="PNG")
         png_data = png_bio.getvalue()
         print("image changed")
-        window['-IMAGE-'].update(resize_image(png_data ,resize=(250,250)))
+        window['-IMAGE-'].update(launcherFunctions.resize_image(png_data ,resize=(250,250)))
     
 
 window.close()
