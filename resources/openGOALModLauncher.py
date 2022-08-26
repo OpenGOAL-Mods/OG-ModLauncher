@@ -43,18 +43,27 @@ if getattr(sys, 'frozen', False):
 elif __file__:
     LauncherDir = os.path.dirname(__file__)
 
-print(LauncherDir)
 installpath = str(LauncherDir + "\\")
 
-file = {"Modding Community": [{"name": "Randomizer"}, {"name": "Twitch plays"}], "HimHam": [{"name": "Orbs as Coins"}, {"name": "MicroTransactions"}], "Barg": [{"name": "Total counters"}, {"name": "Multiplayer"}], "MikeGamePro": [{"name": "Random Cell Locations"}, {"name": "Twitch Chat Plays"}], "ZedB0T": [{"name": "Randomizer"}, {"name": "Ice Everywhere"}]}
-j_file = json.dumps(file)
+
+
+  
+# Opening JSON file
+f = open(installpath + 'data.json')
+  
+# returns JSON object as 
+# a dictionary
+moddersAndModsJSON = json.load(f)
+
+
+j_file = json.dumps(moddersAndModsJSON)
 
 
 # First the window layout in 2 columns
 
 file_list_column = [
 	[sg.Text("Mod Creator")],
-	[sg.Combo(list(file.keys()), enable_events=True, key='pick_modder', size=(30, 0),default_value="Modding Community")],
+	[sg.Combo(list(moddersAndModsJSON.keys()), enable_events=True, key='pick_modder', size=(30, 0),default_value="Modding Community")],
     [sg.Text("Their Mods")],
 	[
         sg.Combo([], key='other_key', size=(30, 0),default_value="Randomizer")  # there must be values of selected item
@@ -127,7 +136,7 @@ while True:
             pass
     elif event =='pick_modder':
         item = values[event]
-        title_list = [i["name"] for i in file[item]]
+        title_list = [i["name"] for i in moddersAndModsJSON[item]]
         window['other_key'].update(value=title_list[0], values=title_list)
 
 window.close()
