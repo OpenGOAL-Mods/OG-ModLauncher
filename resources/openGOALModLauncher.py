@@ -11,10 +11,24 @@ import PySimpleGUI as sg
 import os.path
 import json
 import time
+from PIL import Image
 import PIL.Image
 import io
 import base64
 import sys
+import cloudscraper
+
+def link_type(link_path): #image_path: "C:User/Image/img.jpg"
+    if tree in link_path:
+        branch = 1
+        return
+    else:
+        if releases in link_path:
+            release = 1
+            return
+        else:
+             mainpage = 1
+             return
 
 def resize_image(image_path, resize=None): #image_path: "C:User/Image/img.jpg"
     if isinstance(image_path, str):
@@ -30,7 +44,7 @@ def resize_image(image_path, resize=None): #image_path: "C:User/Image/img.jpg"
     if resize:
         new_width, new_height = resize
         scale = min(new_height/cur_height, new_width/cur_width)
-        img = img.resize((int(cur_width*scale), int(cur_height*scale)), PIL.Image.ANTIALIAS)
+        img = img.resize((int(cur_width*scale), int(cur_height*scale)), PIL.Image.Resampling.LANCZOS)
     bio = io.BytesIO()
     img.save(bio, format="PNG")
     del img
@@ -54,9 +68,12 @@ f = open(installpath + 'data.json')
 # returns JSON object as 
 # a dictionary
 moddersAndModsJSON = json.load(f)
-
+f.close()
 
 j_file = json.dumps(moddersAndModsJSON)
+print(str(moddersAndModsJSON["Modding Community"]).replace(r"""{'URL': '""","").replace(r"""'}""", ""))
+print(moddersAndModsJSON["Modding Community"][0]["name"])
+print(moddersAndModsJSON["Modding Community"][0]["URL"])
 
 
 # First the window layout in 2 columns
@@ -66,26 +83,26 @@ file_list_column = [
 	[sg.Combo(list(moddersAndModsJSON.keys()), enable_events=True, key='pick_modder', size=(30, 0),default_value="Modding Community")],
     [sg.Text("Their Mods")],
 	[
-        sg.Combo([], key='other_key', size=(30, 0),default_value="Randomizer")  # there must be values of selected item
+        sg.Combo([], key='pick_mod', size=(30, 0),default_value="Randomizer",enable_events=True)  # there must be values of selected item
         
     ],
 ]
+
 
 
 # For now will only show the name of the file that was chosen
 image_viewer_column = [
     [sg.Text("Choose an mod from list on left:")],
     [sg.Text(size=(40, 1), key="-TOUT-")],
-	[sg.Image(resize_image(installpath + 'QezJKtyZ_400x400.png' ,resize=(350,350)) , key="_RUBIN_")],
     [sg.Image(key="-IMAGE-")],
 
 ]
 
-amage_viewer_column = [
+installed_mods_column = [
     [sg.Text("Installed mods")],
 	[sg.Listbox(values=["Randomizer", "MicroTransactions"],size=(60,5))],
     [sg.Text(size=(40, 1), key="-TOUT-")],
-    [sg.Image(key="-IMAGE-")],
+    [sg.Image(key="-IMvAGE-")],
 
 ]
 
@@ -95,7 +112,7 @@ layout = [
         sg.Column(file_list_column),
         sg.VSeperator(),
         sg.Column(image_viewer_column),
-		[sg.Column(amage_viewer_column)],
+		[sg.Column(installed_mods_column)],
 		[sg.Btn(button_text="Launch!")],
 		[sg.Btn(button_text="Uninstall")]
     ]
@@ -135,8 +152,27 @@ while True:
         except:
             pass
     elif event =='pick_modder':
+        window['-IMAGE-'].update(resize_image(installpath + "QezJKtyZ_400x400.png" ,resize=(250,250)))
         item = values[event]
         title_list = [i["name"] for i in moddersAndModsJSON[item]]
-        window['other_key'].update(value=title_list[0], values=title_list)
+        window['pick_mod'].update(value=title_list[0], values=title_list)
+    elif event =='pick_mod':
+        #TODO generate this URL automatically
+        url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/main/ModImage.png"
+        jpg_data = (
+            cloudscraper.create_scraper(
+                browser={"browser": "firefox", "platform": "windows", "mobile": False}
+            )
+            .get(url)
+            .content
+        )
+
+        pil_image = Image.open(io.BytesIO(jpg_data))
+        png_bio = io.BytesIO()
+        pil_image.save(png_bio, format="PNG")
+        png_data = png_bio.getvalue()
+        print("image changed")
+        window['-IMAGE-'].update(resize_image(png_data ,resize=(250,250)))
+    
 
 window.close()

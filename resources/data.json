@@ -1,8 +1,11 @@
 {
   "Modding Community": [
-    {
-      "name": "Randomizer"
-    },
+    
+      {
+        "name": "Randomizer",
+        "URL": "https://github.com/Zedb0T/OpenGoal-CheckpointRandomizer"
+      },
+    
     {
       "name": "Twitch plays"
     }
