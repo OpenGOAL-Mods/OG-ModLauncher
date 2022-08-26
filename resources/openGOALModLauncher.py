@@ -76,7 +76,7 @@ file_list_column = [
 image_viewer_column = [
     [sg.Text("Choose an mod from list on left:")],
     [sg.Text(size=(40, 1), key="-TOUT-")],
-	[sg.Image(resize_image(installpath + 'QezJKtyZ_400x400.png' ,resize=(700,700)) , key="_RUBIN_")],
+	[sg.Image(resize_image(installpath + 'QezJKtyZ_400x400.png' ,resize=(350,350)) , key="_RUBIN_")],
     [sg.Image(key="-IMAGE-")],
 
 ]
