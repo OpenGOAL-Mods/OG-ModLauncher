@@ -18,18 +18,42 @@ import launcherFunctions
 
 
 def link_type(link_path): #image_path: "C:User/Image/img.jpg"
-    if tree in link_path:
+    if '/tree/' in link_path:
+        print("branch detected")
         branch = 1
-        return
+        return 1
     else:
-        if releases in link_path:
+        if '/releases' in link_path:
+            print("release detected")
             release = 1
-            return
+            return 2
         else:
-             mainpage = 1
-             return
-         
+            print("nothing detected, assuming its main github page")
+            link_path = link_path + "tree/main"
+            print("changing it to branch main and recalling")
+            link_type(link_path)
+
             
+            mainpage = 1
+            return 3
+        
+def homepageToMainBranchURL(URL):
+    if link_type(URL) == 3:
+        URL = URL + "tree/main"
+        print(URL)
+        return URL
+    
+    
+def returnModImageURL (URL):
+    if link_type(URL) == 1:
+        print("image url branch detected method starting")
+        URL = str(URL).replace('https://github.com/','https://raw.githubusercontent.com/').replace('tree/','') + '/ModImage.png'
+        return URL
+    
+    
+    
+    
+    
 def resize_image(image_path, resize=None): #image_path: "C:User/Image/img.jpg"
     if isinstance(image_path, str):
         img = PIL.Image.open(image_path)
