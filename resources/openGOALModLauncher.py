@@ -32,9 +32,14 @@ elif __file__:
 
 installpath = str(LauncherDir + "\\")
 
+#intialize default variables so they are never null
+currentModderSelected = "not selected"
+currentModSelected = "not selected"
+currentModURL = "not selected"
+currentModImage = "not selected"
 
 
-  
+launcherFunctions.installedlist(installpath)
 # Opening JSON file
 f = open(installpath + 'data.json')
   
@@ -96,6 +101,7 @@ window = sg.Window('OpenGOAL Mod Launcher v0.01', layout, icon= installpath + 'a
 # Run the Event Loop
 while True:
     event, values = window.read()
+
     if event == "Exit" or event == sg.WIN_CLOSED:
         break
     # Folder name was filled in, make a list of files in the folder
@@ -173,10 +179,25 @@ while True:
                 # prints the int of the status code. Find more at httpstatusrappers.com :)    
             if r != 200:
                 window['-SELECTEDMODIMAGE-'].update(launcherFunctions.resize_image(installpath + "noRepoImageERROR.png" ,resize=(250,250)))
-            
+
         except requests.exceptions.MissingSchema:
             window['-SELECTEDMODIMAGE-'].update(launcherFunctions.resize_image(installpath + "noRepoImageERROR.png" ,resize=(250,250)))
-       
+    elif event == "Launch!":
+        print(" ")
+        window['Launch!'].update(disabled=True)
+        print("Launch button hit!")
+        print("Printing avalible information below for debug purposes, remove these later")
+        print(currentModderSelected)
+        print(currentModSelected)
+        print(currentModURL)
+        print(currentModImage)
+        
+        #turn the button back on
+        window['Launch!'].update(disabled=False)
+    elif event == "Uninstall":
+        print("")
+        print("uninstallButton hit!")
+        print("Do things here")
 
             
     

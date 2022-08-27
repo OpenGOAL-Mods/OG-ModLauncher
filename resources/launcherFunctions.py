@@ -37,6 +37,16 @@ def link_type(link_path): #image_path: "C:User/Image/img.jpg"
             mainpage = 1
             return 3
         
+def installedlist(PATH):
+    print(PATH)
+    scanDir = PATH
+    directories = [d for d in os.listdir(scanDir) if os.path.isdir(os.path.join(os.path.abspath(scanDir), d))]
+    print(directories)
+    for i in directories:
+        print(i)
+    print(os.path.dirname(os.path.dirname(PATH)))
+    
+        
 def homepageToMainBranchURL(URL):
     if link_type(URL) == 3:
         URL = URL + "tree/main"
