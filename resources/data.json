@@ -1,42 +1,54 @@
 {
   "Modding Community": [
+
     {
-      "name": "Randomizer"
+      "name": "Randomizer",
+      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
     },
+
     {
-      "name": "Twitch plays"
+      "name": "Twitch plays",
+      "URL": "https://github.com/Zedb0T/prooftest/"
     }
   ],
   "HimHam": [
     {
-      "name": "Orbs as Coins"
+      "name": "Orbs as Coins",
+      "URL": "https://github.com/open-goal/jak-project/tree/d/lang-pt"
     },
     {
-      "name": "MicroTransactions"
+      "name": "MicroTransactions",
+      "URL": "https://github.com/Zedb0T/prooftest/"
     }
   ],
   "Barg": [
     {
-      "name": "Total counters"
+      "name": "Total counters",
+      "URL": "https://github.com/Zedb0T/prooftest/"
     },
     {
-      "name": "Multiplayer"
+      "name": "Multiplayer",
+      "URL": "https://github.com/Zedb0T/prooftest/"
     }
   ],
   "MikeGamePro": [
     {
-      "name": "Random Cell Locations"
+      "name": "Random Cell Locations",
+      "URL": "https://github.com/Zedb0T/prooftest/"
     },
     {
-      "name": "Twitch Chat Plays"
+      "name": "Twitch Chat Plays",
+      "URL": "https://github.com/Zedb0T/prooftest/"
     }
   ],
   "ZedB0T": [
     {
-      "name": "Randomizer"
+      "name": "Randomizer",
+      "URL": "https://github.com/Zedb0T/prooftest/"
     },
     {
-      "name": "Ice Everywhere"
+      "name": "Ice Everywhere",
+      "URL": "https://github.com/Zedb0T/prooftest/"
     }
   ]
 }
