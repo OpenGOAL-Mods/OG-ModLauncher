@@ -7,11 +7,6 @@
     },
 
     {
-      "name": "Randomizer-mainpage",
-      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack"
-    },
-
-    {
       "name": "Twitch plays",
       "URL": "https://github.com/Zedb0T/prooftest/"
     }
@@ -53,7 +48,7 @@
     },
     {
       "name": "Ice Everywhere",
-      "URL": "https://github.com/open-goal/jak-project/tree/d/lang-pt"
+      "URL": "https://github.com/Zedb0T/iceverywhere/releases"
     }
   ]
 }

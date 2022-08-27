@@ -51,7 +51,11 @@ def returnModImageURL (URL):
         print("TBD - fetching image for releases")
     
     
-    
+def branchToApiURL(URL):
+    return str(URL).replace('https://github.com/','https://api.github.com/repos/').replace('/tree/','/branches/')
+
+def branchToArchiveURL(URL):
+    return str(URL).replace('/tree/','/archive/') + ".zip"
     
     
 def resize_image(image_path, resize=None): #image_path: "C:User/Image/img.jpg"

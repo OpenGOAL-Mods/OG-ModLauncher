@@ -190,8 +190,7 @@ while True:
         print(currentModImage)
 
         [linkType, currentModURL] = githubUtils.identifyLinkType(currentModURL)
-        if linkType == githubUtils.LinkTypes.RELEASE:
-            launcherUtils.launch(currentModURL, currentModderSelected, currentModSelected)
+        launcherUtils.launch(currentModURL, currentModderSelected, currentModSelected, linkType)
         
         #turn the button back on
         window['Launch!'].update(disabled=False)

@@ -19,6 +19,7 @@ import urllib.request
 import zipfile
 import shutil
 import progressbar
+import githubUtils
 
 EXTRACT_ON_UPDATE="true"            
 FILE_DATE_TO_CHECK="gk.exe"
@@ -48,17 +49,18 @@ def installedlist(PATH):
     print(os.path.dirname(os.path.dirname(PATH)))
 
 def show_progress(block_num, block_size, total_size):
-    global pbar
-    if pbar is None:
-        pbar = progressbar.ProgressBar(maxval=total_size)
-        pbar.start()
+	if total_size > 0:
+		global pbar
+		if pbar is None:
+			pbar = progressbar.ProgressBar(maxval=total_size)
+			pbar.start()
 
-    downloaded = block_num * block_size
-    if downloaded < total_size:
-        pbar.update(downloaded)
-    else:
-        pbar.finish()
-        pbar = None
+		downloaded = block_num * block_size
+		if downloaded < total_size:
+			pbar.update(downloaded)
+		else:
+			pbar.finish()
+			pbar = None
 
 def process_exists(process_name):
     call = 'TASKLIST', '/FI', 'imagename eq %s' % process_name
@@ -84,26 +86,30 @@ def try_remove_dir(dir):
 	if exists(dir):
 		shutil.rmtree(dir)
 
-def launch(URL, MODDER_NAME, MOD_NAME):
+def launch(URL, MODDER_NAME, MOD_NAME, LINK_TYPE):
 	#start of update check method
 	#Github API Call
-	print("launching from " + URL)
+	if LINK_TYPE == githubUtils.LinkTypes.BRANCH:
+		launchUrl = githubUtils.branchToApiURL(URL)
+
+	print("launching from " + launchUrl)
 	PARAMS = {'address':"yolo"} 
-	r = requests.get(url = URL, params = PARAMS)
+	r = json.loads(json.dumps(requests.get(url = launchUrl, params = PARAMS).json()))
 
 	#paths  
 	InstallDir = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + MODDER_NAME + "\\" + MOD_NAME
 	AppdataPATH = os.getenv('APPDATA')
-	extraGKCommand = "-proj-path " + InstallDir + "\\data "
-	PATHTOGK = InstallDir +"\gk.exe "+extraGKCommand+"-boot -fakeiso -v"
 	UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data"
-	GKCOMMANDLINElist = PATHTOGK.split()
-
+	GKCOMMANDLINElist = [InstallDir +"\gk.exe", "-proj-path", InstallDir + "\\data", "-boot", "-fakeiso", "-v"]
 
 	#store Latest Release and check our local date too.
-	#print("got r: " + r.text)
-	LatestRel = datetime.strptime(json.loads(json.dumps(r.json()))[0].get("published_at").replace("T"," ").replace("Z",""),'%Y-%m-%d %H:%M:%S')
-	LatestRelAssetsURL = (json.loads(json.dumps(requests.get(url = json.loads(json.dumps(r.json()))[0].get("assets_url"), params = PARAMS).json())))[0].get("browser_download_url")
+	if LINK_TYPE == githubUtils.LinkTypes.BRANCH:
+		LatestRel = datetime.strptime(r.get("commit").get("commit").get("author").get("date").replace("T"," ").replace("Z",""),'%Y-%m-%d %H:%M:%S')
+		LatestRelAssetsURL = githubUtils.branchToArchiveURL(URL)
+	elif LINK_TYPE == githubUtils.LinkTypes.RELEASE:
+		LatestRel = datetime.strptime(r[0].get("published_at").replace("T"," ").replace("Z",""),'%Y-%m-%d %H:%M:%S')
+		LatestRelAssetsURL = (json.loads(json.dumps(requests.get(url = r[0].get("assets_url"), params = PARAMS).json())))[0].get("browser_download_url")
+	
 	LastWrite = datetime(2020, 5, 17)
 	if (exists(InstallDir + "/" + ExecutableName)):
 		LastWrite = datetime.utcfromtimestamp( pathlib.Path(InstallDir + "/" + ExecutableName).stat().st_mtime)
@@ -125,14 +131,14 @@ def launch(URL, MODDER_NAME, MOD_NAME):
 		try_kill_process("goalc.exe")
 
 		#download update from github
-		# Create a new directory because it does not exist 
-		print("Downloading update")
-		if not os.path.exists(InstallDir):
+		# Create a new directory because it does not exist
+		try_remove_dir(InstallDir + "/temp")
+		if not os.path.exists(InstallDir + "/temp"):
 			print("Creating install dir: " + InstallDir)
-			os.makedirs(InstallDir)
+			os.makedirs(InstallDir + "/temp")
 
-		
-		urllib.request.urlretrieve(LatestRelAssetsURL, InstallDir + "/updateDATA.zip", show_progress)
+		print("Downloading update from " + LatestRelAssetsURL)
+		urllib.request.urlretrieve(LatestRelAssetsURL, InstallDir + "/temp/updateDATA.zip", show_progress)
 		print("Done downloading")
 		
 		
@@ -159,22 +165,30 @@ def launch(URL, MODDER_NAME, MOD_NAME):
 					1/0
 		#extract update
 		print("Extracting update")
-		with zipfile.ZipFile(InstallDir + "/updateDATA.zip","r") as zip_ref:
-			zip_ref.extractall(InstallDir)
+		with zipfile.ZipFile(InstallDir + "/temp/updateDATA.zip","r") as zip_ref:
+			zip_ref.extractall(InstallDir + "/temp")
 
 		#delete the update archive
-		try_remove_file(InstallDir + "/updateDATA.zip")
+		try_remove_file(InstallDir + "/temp/updateDATA.zip")
+
+		if LINK_TYPE == githubUtils.LinkTypes.BRANCH:
+			# for branches, the downloaded zip puts all files one directory down
+			SubDir = InstallDir + "/temp/" + os.listdir(InstallDir + "/temp")[0]
+			print("Moving files from " + SubDir + " up to " + InstallDir)
+			allfiles = os.listdir(SubDir)
+			for f in allfiles:
+				shutil.move(SubDir + "/" + f, InstallDir + "/" + f)
+			try_remove_dir(SubDir)
 
 		#if extractOnUpdate is True, check their ISO_DATA folder
 
-
-
-		print("Running extractor.exe with ISO: " + iso_path)
-		subprocess.Popen("\""+InstallDir +"\extractor.exe""\""""" -f """ + "\""""+ iso_path+"\"""")
+		extractor_command = "\""+InstallDir +"\extractor.exe\" -f " + "\""+ iso_path+"\""
+		print("Running: " + extractor_command)
+		subprocess.Popen(extractor_command)
 		
 		
 		#move the extrated contents to the universal launchers directory for next time.
-		if (not (exists(( UniversalIsoPath + r"\jak1\Z6TAIL.DUP")))):
+		if not (exists(( UniversalIsoPath + r"\jak1\Z6TAIL.DUP"))):
 			while (process_exists("extractor.exe")):
 				time.sleep(1)
 		if not (exists(( UniversalIsoPath + r"\jak1\Z6TAIL.DUP"))):
@@ -193,4 +207,4 @@ def launch(URL, MODDER_NAME, MOD_NAME):
 
 		time.sleep(1)
 		print(GKCOMMANDLINElist)
-		subprocess.Popen(GKCOMMANDLINElist)
+		subprocess.Popen(GKCOMMANDLINElist, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
