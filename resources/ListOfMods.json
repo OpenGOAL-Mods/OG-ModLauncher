@@ -11,13 +11,17 @@
       "URL": "https://github.com/himham-jak/Jak1-but-Microtransactions/releases"
     }
   ],
-  "ZedB0T stupid": [
+  "ZedB0T": [
     {
       "name": "Randomizer",
       "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
     },
     {
-      "name": "Ice Everyawhere",
+      "name": "Ice Everywhere",
+      "URL": "https://github.com/Zedb0T/iceverywhere/releases"
+    },
+    {
+      "name": "New Modd added",
       "URL": "https://github.com/Zedb0T/iceverywhere/releases"
     }
   ],
