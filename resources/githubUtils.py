@@ -44,11 +44,10 @@ def returnModImageURL (URL):
     [linkType, URL] = identifyLinkType(URL)
     if linkType == LinkTypes.BRANCH:
         print("image url branch detected method starting")
-        URL = str(URL).replace('https://github.com/','https://raw.githubusercontent.com/').replace('/tree/','') + '/ModImage.png'
-        return URL
+        return str(URL).replace('https://github.com/','https://raw.githubusercontent.com/').replace('/tree/','') + '/ModImage.png'
     elif linkType == LinkTypes.RELEASE:
-        print("TBD - fetching image for releases")
-    
+        return str(URL).replace('https://github.com/','https://raw.githubusercontent.com/').replace('https://api.github.com/repos/','https://raw.githubusercontent.com/').replace('/releases','/main') + '/ModImage.png'
+
 def releaseToApiURL(URL):
     return str(URL).replace('https://github.com/','https://api.github.com/repos/')
 
