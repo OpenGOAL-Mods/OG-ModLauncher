@@ -19,7 +19,7 @@ import urllib.request
 import zipfile
 import shutil
 import progressbar
-import githubUtils
+from utils import githubUtils
 
 EXTRACT_ON_UPDATE="true"            
 FILE_DATE_TO_CHECK="gk.exe"
@@ -86,7 +86,7 @@ def try_remove_dir(dir):
 	if exists(dir):
 		shutil.rmtree(dir)
 
-def launch(URL, MODDER_NAME, MOD_NAME, LINK_TYPE):
+def launch(URL, MOD_NAME, LINK_TYPE):
 	#start of update check method
 	#Github API Call
 	launchUrl = URL
@@ -98,7 +98,7 @@ def launch(URL, MODDER_NAME, MOD_NAME, LINK_TYPE):
 	r = json.loads(json.dumps(requests.get(url = launchUrl, params = PARAMS).json()))
 
 	#paths  
-	InstallDir = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + MODDER_NAME + "\\" + MOD_NAME
+	InstallDir = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + MOD_NAME
 	AppdataPATH = os.getenv('APPDATA')
 	UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data"
 	GKCOMMANDLINElist = [InstallDir +"\gk.exe", "-proj-path", InstallDir + "\\data", "-boot", "-fakeiso", "-v"]

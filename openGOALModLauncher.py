@@ -19,8 +19,7 @@ import io
 import base64
 import sys
 import cloudscraper
-import launcherUtils
-import githubUtils
+from utils import launcherUtils, githubUtils
 import requests
 
 
@@ -31,7 +30,7 @@ if getattr(sys, 'frozen', False):
 elif __file__:
     LauncherDir = os.path.dirname(__file__)
 
-installpath = str(LauncherDir + "\\")
+installpath = str(LauncherDir + "\\resources\\")
 
 #intialize default variables so they are never null
 currentModderSelected = "not selected"
@@ -190,7 +189,7 @@ while True:
         print(currentModImage)
 
         [linkType, currentModURL] = githubUtils.identifyLinkType(currentModURL)
-        launcherUtils.launch(currentModURL, currentModderSelected, currentModSelected, linkType)
+        launcherUtils.launch(currentModURL, currentModSelected, linkType)
         
         #turn the button back on
         window['Launch!'].update(disabled=False)
