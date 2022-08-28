@@ -89,6 +89,7 @@ def try_remove_dir(dir):
 def launch(URL, MODDER_NAME, MOD_NAME, LINK_TYPE):
 	#start of update check method
 	#Github API Call
+	launchUrl = URL
 	if LINK_TYPE == githubUtils.LinkTypes.BRANCH:
 		launchUrl = githubUtils.branchToApiURL(URL)
 
@@ -165,31 +166,39 @@ def launch(URL, MODDER_NAME, MOD_NAME, LINK_TYPE):
 					1/0
 		#extract update
 		print("Extracting update")
-		with zipfile.ZipFile(InstallDir + "/temp/updateDATA.zip","r") as zip_ref:
-			zip_ref.extractall(InstallDir + "/temp")
+		TempDir = InstallDir + "/temp"
+		with zipfile.ZipFile(TempDir + "/updateDATA.zip","r") as zip_ref:
+			zip_ref.extractall(TempDir)
 
 		#delete the update archive
-		try_remove_file(InstallDir + "/temp/updateDATA.zip")
+		try_remove_file(TempDir + "/updateDATA.zip")
 
+		SubDir = TempDir
 		if LINK_TYPE == githubUtils.LinkTypes.BRANCH:
 			# for branches, the downloaded zip puts all files one directory down
-			SubDir = InstallDir + "/temp/" + os.listdir(InstallDir + "/temp")[0]
-			print("Moving files from " + SubDir + " up to " + InstallDir)
-			allfiles = os.listdir(SubDir)
-			for f in allfiles:
-				shutil.move(SubDir + "/" + f, InstallDir + "/" + f)
-			try_remove_dir(SubDir)
+			SubDir = SubDir + "/" + os.listdir(SubDir)[0]
+
+		print("Moving files from " + SubDir + " up to " + InstallDir)
+		allfiles = os.listdir(SubDir)
+		for f in allfiles:
+			shutil.move(SubDir + "/" + f, InstallDir + "/" + f)
+		try_remove_dir(TempDir)
 
 		#if extractOnUpdate is True, check their ISO_DATA folder
 
-		extractor_command = "\""+InstallDir +"\extractor.exe\" -f " + "\""+ iso_path+"\""
-		print("Running: " + extractor_command)
-		subprocess.Popen(extractor_command)
+		extractor_command_list = [InstallDir +"\extractor.exe", "-f", iso_path]
+		print(extractor_command_list)
 		
+		# this works running via python directly
+		subprocess.Popen(extractor_command_list)
+		
+		# I *thought* this should get it working via the .exe (worked for calling gk.exe), but it doesnt work via python nor .exe
+		# subprocess.Popen(extractor_command_list, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
 		
 		#move the extrated contents to the universal launchers directory for next time.
 		if not (exists(( UniversalIsoPath + r"\jak1\Z6TAIL.DUP"))):
 			while (process_exists("extractor.exe")):
+				print("extractor.exe still running, sleeping for 1s")
 				time.sleep(1)
 		if not (exists(( UniversalIsoPath + r"\jak1\Z6TAIL.DUP"))):
 			#os.makedirs(AppdataPATH + "\OpenGOAL-Launcher\data\iso_data")
@@ -207,4 +216,4 @@ def launch(URL, MODDER_NAME, MOD_NAME, LINK_TYPE):
 
 		time.sleep(1)
 		print(GKCOMMANDLINElist)
-		subprocess.Popen(GKCOMMANDLINElist, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
+		subprocess.Popen(GKCOMMANDLINElist, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
