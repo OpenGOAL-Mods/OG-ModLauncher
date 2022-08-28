@@ -93,7 +93,7 @@ layout = [
         sg.Column(mod_details_column),
 		[sg.Column(installed_mods_column)],
 		[sg.Btn(button_text="Launch!")],
-		[sg.Btn(button_text="Uninstall")]
+		[sg.Btn(button_text="Uninstall", disabled=True)]
     ]
 ]
 
