@@ -174,7 +174,7 @@ def launch(URL, MODDER_NAME, MOD_NAME, LINK_TYPE):
 		try_remove_file(TempDir + "/updateDATA.zip")
 
 		SubDir = TempDir
-		if LINK_TYPE == githubUtils.LinkTypes.BRANCH:
+		if LINK_TYPE == githubUtils.LinkTypes.BRANCH or len(os.listdir(SubDir)) == 1:
 			# for branches, the downloaded zip puts all files one directory down
 			SubDir = SubDir + "/" + os.listdir(SubDir)[0]
 

@@ -26,12 +26,11 @@ def identifyLinkType(link_path): #image_path: "C:User/Image/img.jpg"
         return [LinkTypes.BRANCH, link_path]
     elif '/releases' in link_path:
         print("release detected")
-        return [LinkTypes.RELEASE, link_path]
+        return [LinkTypes.RELEASE, releaseToApiURL(link_path)]
     #else:
     print("nothing detected, assuming its main github page")
     print("changing it to branch main and recalling")
-    link_path = homepageToMainBranchURL(link_path) 
-    return [LinkTypes.BRANCH, link_path]
+    return [LinkTypes.BRANCH, homepageToMainBranchURL(link_path) ]
     
         
 def homepageToMainBranchURL(URL):
@@ -50,7 +49,9 @@ def returnModImageURL (URL):
     elif linkType == LinkTypes.RELEASE:
         print("TBD - fetching image for releases")
     
-    
+def releaseToApiURL(URL):
+    return str(URL).replace('https://github.com/','https://api.github.com/repos/')
+
 def branchToApiURL(URL):
     return str(URL).replace('https://github.com/','https://api.github.com/repos/').replace('/tree/','/branches/')
 
