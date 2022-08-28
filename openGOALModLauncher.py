@@ -19,7 +19,7 @@ import io
 import base64
 import sys
 import cloudscraper
-import launcherFunctions
+from utils import launcherUtils, githubUtils
 import requests
 
 
@@ -30,7 +30,7 @@ if getattr(sys, 'frozen', False):
 elif __file__:
     LauncherDir = os.path.dirname(__file__)
 
-installpath = str(LauncherDir + "\\")
+installpath = str(LauncherDir + "\\resources\\")
 
 #intialize default variables so they are never null
 currentModderSelected = "not selected"
@@ -39,7 +39,7 @@ currentModURL = "not selected"
 currentModImage = "not selected"
 
 
-launcherFunctions.installedlist(installpath)
+launcherUtils.installedlist(installpath)
 # Opening JSON file
 f = open(installpath + 'data.json')
   
@@ -92,7 +92,7 @@ layout = [
         sg.Column(mod_details_column),
 		[sg.Column(installed_mods_column)],
 		[sg.Btn(button_text="Launch!")],
-		[sg.Btn(button_text="Uninstall")]
+		[sg.Btn(button_text="Uninstall", disabled=True)]
     ]
 ]
 
@@ -131,7 +131,7 @@ while True:
         except:
             pass
     elif event =='pick_modder':
-        window['-SELECTEDMODIMAGE-'].update(launcherFunctions.resize_image(installpath + "noRepoImageERROR.png" ,resize=(1,1)))
+        window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(installpath + "noRepoImageERROR.png" ,resize=(1,1)))
         item = values[event]
         title_list = [i["name"] for i in moddersAndModsJSON[item]]
         window['pick_mod'].update(value=title_list[0], values=title_list)
@@ -147,17 +147,13 @@ while True:
         for i in range(len(moddersAndModsJSON[currentModderSelected])):
             if moddersAndModsJSON[currentModderSelected][i]["name"] == currentModSelected:
                 currentModURL = moddersAndModsJSON[currentModderSelected][i]["URL"]
-                
-        if launcherFunctions.link_type(currentModURL) == 3:
-            currentModURL= launcherFunctions.homepageToMainBranchURL(currentModURL)
-            
-        currentModImage = launcherFunctions.returnModImageURL(currentModURL)
+        
+        currentModImage = githubUtils.returnModImageURL(currentModURL)
         print("Current modder is " + currentModderSelected)
         print("Current mod is " + currentModSelected)
         print("Current mod URL is " + currentModURL)
         print("Current mod image is " + str(currentModImage))
         
-
         url = currentModImage
         try:
             r = requests.head(currentModImage).status_code
@@ -175,13 +171,13 @@ while True:
                 png_bio = io.BytesIO()
                 pil_image.save(png_bio, format="PNG")
                 png_data = png_bio.getvalue()
-                window['-SELECTEDMODIMAGE-'].update(launcherFunctions.resize_image(png_data ,resize=(250,250)))
+                window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(png_data ,resize=(250,250)))
                 # prints the int of the status code. Find more at httpstatusrappers.com :)    
             if r != 200:
-                window['-SELECTEDMODIMAGE-'].update(launcherFunctions.resize_image(installpath + "noRepoImageERROR.png" ,resize=(250,250)))
+                window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(installpath + "noRepoImageERROR.png" ,resize=(250,250)))
 
         except requests.exceptions.MissingSchema:
-            window['-SELECTEDMODIMAGE-'].update(launcherFunctions.resize_image(installpath + "noRepoImageERROR.png" ,resize=(250,250)))
+            window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(installpath + "noRepoImageERROR.png" ,resize=(250,250)))
     elif event == "Launch!":
         print(" ")
         window['Launch!'].update(disabled=True)
@@ -191,6 +187,9 @@ while True:
         print(currentModSelected)
         print(currentModURL)
         print(currentModImage)
+
+        [linkType, currentModURL] = githubUtils.identifyLinkType(currentModURL)
+        launcherUtils.launch(currentModURL, currentModSelected, linkType)
         
         #turn the button back on
         window['Launch!'].update(disabled=False)

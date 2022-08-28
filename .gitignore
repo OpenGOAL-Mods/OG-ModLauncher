@@ -18,7 +18,9 @@ RENAMEANDPUTNEAROPENGOAL.exe
 resources/data/log/compiler.txt
 my.env
 Opengoal-Twitch-CrowdControl.rar
-resources/IconStorage/appicon.ico
+resources/IconStorage/*
 OpenGoal with Microtransactionas.e.md
 resources/newlauncher.py
 resources/red_plus.ico
+resources/__pycache__/*
+resources/utils/__pycache__/*
