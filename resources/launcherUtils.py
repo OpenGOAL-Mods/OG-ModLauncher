@@ -192,9 +192,6 @@ def launch(URL, MODDER_NAME, MOD_NAME, LINK_TYPE):
 		# this works running via python directly
 		subprocess.Popen(extractor_command_list)
 		
-		# I *thought* this should get it working via the .exe (worked for calling gk.exe), but it doesnt work via python nor .exe
-		# subprocess.Popen(extractor_command_list, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-		
 		#move the extrated contents to the universal launchers directory for next time.
 		if not (exists(( UniversalIsoPath + r"\jak1\Z6TAIL.DUP"))):
 			while (process_exists("extractor.exe")):
