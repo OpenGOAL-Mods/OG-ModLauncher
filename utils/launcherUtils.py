@@ -110,9 +110,9 @@ def launch(URL, MOD_NAME, LINK_TYPE):
 	elif LINK_TYPE == githubUtils.LinkTypes.RELEASE:
 		LatestRel = datetime.strptime(r[0].get("published_at").replace("T"," ").replace("Z",""),'%Y-%m-%d %H:%M:%S')
 		LatestRelAssetsURL = (json.loads(json.dumps(requests.get(url = r[0].get("assets_url"), params = PARAMS).json())))[0].get("browser_download_url")
-        response = requests.get(url = LatestRelAssetsURL, params = PARAMS)
-        content_type = response.headers['content-type']
-        extension = mimetypes.guess_extension(content_type)
+		response = requests.get(url = LatestRelAssetsURL, params = PARAMS)
+		content_type = response.headers['content-type']
+		extension = mimetypes.guess_extension(content_type)
 	
 	LastWrite = datetime(2020, 5, 17)
 	if (exists(InstallDir + "/" + ExecutableName)):

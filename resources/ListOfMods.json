@@ -16,26 +16,17 @@
       "name": "Randomizer",
       "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
     },
+
     {
-      "name": "Randodasdasmizer",
-      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
+      "name": "Ice Everywhere",
+      "URL": "https://github.com/Zedb0T/iceverywhere/releases"
     },
-    {
-      "name": "Randomizer",
-      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main",
-      {
-        "name": "Randomizer",
-        "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
-      },
-      {
-        "name": "Randomizer",
-        "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
-      }
-    },
+
     {
       "name": "Ice Everywhere",
       "URL": "https://github.com/Zedb0T/iceverywhere/releases"
     }
+
   ],
   "Barg": [
     {
