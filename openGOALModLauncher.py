@@ -41,12 +41,15 @@ currentModImage = "not selected"
 
 launcherUtils.installedlist(installpath)
 # Opening JSON file
-f = open(installpath + 'data.json')
+f = open(installpath + 'ListOfMods.json')
   
 # returns JSON object as 
 # a dictionary
 moddersAndModsJSON = json.load(f)
 f.close()
+
+#comment this out if you want to test with a local file
+moddersAndModsJSON = requests.get("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/ListOfMods.json").json()
 
 j_file = json.dumps(moddersAndModsJSON)
 #print(moddersAndModsJSON["Modding Community"][0]["name"])
