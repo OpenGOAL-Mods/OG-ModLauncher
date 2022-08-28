@@ -82,7 +82,7 @@ mod_details_column = [
 
 installed_mods_column = [
     [sg.Text("Installed mods")],
-	[sg.Listbox(values=["Randomizer", "MicroTransactions"],size=(60,5))],
+	[sg.Listbox(values=["This List is not", "Implemented yet"],size=(60,5))],
     [sg.Text(size=(40, 1), key="-TOUT-")],
 
 ]
@@ -99,7 +99,7 @@ layout = [
     ]
 ]
 
-window = sg.Window('OpenGOAL Mod Launcher v0.01', layout, icon= installpath + 'appicon.ico')
+window = sg.Window('OpenGOAL Mod Launcher v0.01 TEST DO NO DISTRIBUTE', layout, icon= installpath + 'appicon.ico')
 
 # Run the Event Loop
 while True:

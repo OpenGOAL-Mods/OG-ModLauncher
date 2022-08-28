@@ -25,3 +25,5 @@ resources/red_plus.ico
 resources/__pycache__/*
 resources/utils/__pycache__/*
 *.pyc
+*.pyo
+resources.rar
