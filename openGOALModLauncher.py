@@ -13,8 +13,7 @@ import PySimpleGUI as sg
 import os.path
 import json
 import time
-from PIL import Image
-import PIL.Image
+from PIL import Image 
 import io
 import base64
 import sys
@@ -39,14 +38,14 @@ currentModURL = "not selected"
 currentModImage = "not selected"
 
 
-launcherUtils.installedlist(installpath)
+#launcherUtils.installedlist(installpath)
 # Opening JSON file
-f = open(installpath + 'ListOfMods.json')
+#f = open(installpath + 'ListOfMods.json')
   
 # returns JSON object as 
 # a dictionary
-moddersAndModsJSON = json.load(f)
-f.close()
+#moddersAndModsJSON = json.load(f)
+#f.close()
 
 #comment this out if you want to test with a local file
 moddersAndModsJSON = requests.get("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/ListOfMods.json").json()
@@ -82,7 +81,7 @@ mod_details_column = [
 
 installed_mods_column = [
     [sg.Text("Installed mods")],
-	[sg.Listbox(values=["This List is not", "Implemented yet"],size=(60,5))],
+	[sg.Listbox(values=["This List is not", "Implemented yet"],size=(60,5),key="InstalledModListBox")],
     [sg.Text(size=(40, 1), key="-TOUT-")],
 
 ]
@@ -99,7 +98,35 @@ layout = [
     ]
 ]
 
-window = sg.Window('OpenGOAL Mod Launcher v0.01 TEST DO NO DISTRIBUTE', layout, icon= installpath + 'appicon.ico')
+url= "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/appicon.ico"
+jpg_data = (
+                cloudscraper.create_scraper(
+                    browser={"browser": "firefox", "platform": "windows", "mobile": False}
+                )
+                .get(url)
+                .content
+            )
+            
+pil_image = Image.open(io.BytesIO(jpg_data))
+png_bio = io.BytesIO()
+pil_image.save(png_bio, format="PNG")
+iconfile = png_bio.getvalue()
+
+url= "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/noRepoImageERROR.png"
+jpg_data = (
+                cloudscraper.create_scraper(
+                    browser={"browser": "firefox", "platform": "windows", "mobile": False}
+                )
+                .get(url)
+                .content
+            )
+            
+pil_image = Image.open(io.BytesIO(jpg_data))
+png_bio = io.BytesIO()
+pil_image.save(png_bio, format="PNG")
+noimagefile = png_bio.getvalue()
+
+window = sg.Window('OpenGOAL Mod Launcher v0.01 TEST DO NO DISTRIBUTE', layout, icon= iconfile)
 
 # Run the Event Loop
 while True:
@@ -108,8 +135,8 @@ while True:
     if event == "Exit" or event == sg.WIN_CLOSED:
         break
     # Folder name was filled in, make a list of files in the folder
-    if event == "-FOLDER-":
-        folder = values["-FOLDER-"]
+    if event == "-InstalledModListBox-":
+        folder = values["-InstalledModListBox-"]
         try:
             # Get list of files in folder
             file_list = os.listdir(folder)
@@ -120,9 +147,9 @@ while True:
             f
             for f in file_list
             if os.path.isfile(os.path.join(folder, f))
-            and f.lower().endswith((".png", ".gif"))
+           
         ]
-        window["-FILE LIST-"].update(fnames)
+        window["InstalledModListBox"].update(fnames)
     elif event == "-FILE LIST-":  # A file was chosen from the listbox
         try:
             filename = os.path.join(
@@ -134,7 +161,7 @@ while True:
         except:
             pass
     elif event =='pick_modder':
-        window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(installpath + "noRepoImageERROR.png" ,resize=(1,1)))
+        window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(1,1)))
         item = values[event]
         title_list = [i["name"] for i in moddersAndModsJSON[item]]
         window['pick_mod'].update(value=title_list[0], values=title_list)
@@ -177,10 +204,10 @@ while True:
                 window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(png_data ,resize=(250,250)))
                 # prints the int of the status code. Find more at httpstatusrappers.com :)    
             if r != 200:
-                window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(installpath + "noRepoImageERROR.png" ,resize=(250,250)))
+                window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(250,250)))
 
         except requests.exceptions.MissingSchema:
-            window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(installpath + "noRepoImageERROR.png" ,resize=(250,250)))
+            window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(250,250)))
     elif event == "Launch!":
         print(" ")
         window['Launch!'].update(disabled=True)
