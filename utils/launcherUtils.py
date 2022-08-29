@@ -216,4 +216,4 @@ def launch(URL, MOD_NAME, LINK_TYPE):
 
 		time.sleep(1)
 		print(GKCOMMANDLINElist)
-		subprocess.Popen(GKCOMMANDLINElist, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+		subprocess.Popen(GKCOMMANDLINElist, shell=True)
