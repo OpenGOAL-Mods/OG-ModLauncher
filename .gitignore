@@ -27,3 +27,4 @@ resources/utils/__pycache__/*
 *.pyc
 *.pyo
 resources.rar
+Launcher with autoupdater.spec
