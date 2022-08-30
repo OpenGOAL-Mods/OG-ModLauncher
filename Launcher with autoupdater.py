@@ -103,9 +103,8 @@ if os.path.exists(AppdataPATH) == False:
 	print("Creating Directory " + AppdataPATH)
 	os.mkdir(AppdataPATH)
 
-if os.path.exists(AppdataPATH + "\\OpengoalModLauncher.exe") == True:
-	print("No Mod Launcher detected")
-	downloadNewestmod()
+
+downloadNewestmod()
 
 subprocess.call([AppdataPATH + "OpengoalModLauncher.exe"])
 	
