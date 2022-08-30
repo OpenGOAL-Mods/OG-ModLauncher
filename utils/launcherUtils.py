@@ -87,6 +87,9 @@ def try_remove_dir(dir):
 		shutil.rmtree(dir)
 
 def launch(URL, MOD_NAME, LINK_TYPE):
+	if URL is None:
+		return
+
 	#start of update check method
 	#Github API Call
 	launchUrl = URL

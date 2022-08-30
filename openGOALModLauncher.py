@@ -22,7 +22,6 @@ from utils import launcherUtils, githubUtils
 import requests
 
 
-
 # Folder where script is placed, It looks in this for the Exectuable
 if getattr(sys, 'frozen', False):
     LauncherDir = os.path.dirname(os.path.realpath(sys.executable))
@@ -32,11 +31,10 @@ elif __file__:
 installpath = str(LauncherDir + "\\resources\\")
 
 #intialize default variables so they are never null
-currentModderSelected = "not selected"
-currentModSelected = "not selected"
-currentModURL = "not selected"
-currentModImage = "not selected"
-
+currentModderSelected = None
+currentModSelected = None
+currentModURL = None
+currentModImage = None
 
 #launcherUtils.installedlist(installpath)
 # Opening JSON file
@@ -128,6 +126,45 @@ noimagefile = png_bio.getvalue()
 
 window = sg.Window('OpenGOAL Mod Launcher v0.01 TEST DO NO DISTRIBUTE', layout, icon= iconfile)
 
+def handleModSelected():
+    tmpModderSelected = window['pick_modder'].get()
+    tmpModSelected = window['pick_mod'].get()
+    tmpModURL = None
+    tmpModImage = None
+    
+    for i in range(len(moddersAndModsJSON[tmpModderSelected])):
+        if moddersAndModsJSON[tmpModderSelected][i]["name"] == tmpModSelected:
+            tmpModURL = moddersAndModsJSON[tmpModderSelected][i]["URL"]
+    
+    tpmModImage = githubUtils.returnModImageURL(tmpModURL)
+    
+    url = tpmModImage
+    try:
+        r = requests.head(tpmModImage).status_code
+        print(str(r))
+        if r == 200:
+            jpg_data = (
+                cloudscraper.create_scraper(
+                    browser={"browser": "firefox", "platform": "windows", "mobile": False}
+                )
+                .get(url)
+                .content
+            )
+            
+            pil_image = Image.open(io.BytesIO(jpg_data))
+            png_bio = io.BytesIO()
+            pil_image.save(png_bio, format="PNG")
+            png_data = png_bio.getvalue()
+            window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(png_data ,resize=(250,250)))
+            # prints the int of the status code. Find more at httpstatusrappers.com :)    
+        if r != 200:
+            window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(250,250)))
+
+    except requests.exceptions.MissingSchema:
+        window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(250,250)))
+
+    return [tmpModderSelected, tmpModSelected, tmpModURL, tmpModImage]
+
 # Run the Event Loop
 while True:
     event, values = window.read()
@@ -165,70 +202,31 @@ while True:
         item = values[event]
         title_list = [i["name"] for i in moddersAndModsJSON[item]]
         window['pick_mod'].update(value=title_list[0], values=title_list)
+        [currentModderSelected, currentModSelected, currentModURL, currentModImage] = handleModSelected()
     elif event =='pick_mod':
-        #TODO generate this URL automatically
-        #https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/blob/main/ModImage.png?raw=true
-
-        currentModderSelected = window['pick_modder'].get()
-        currentModSelected = window['pick_mod'].get()
-        
-        
-        #print(moddersAndModsJSON[currentModderSelected][0]["URL"])
-        for i in range(len(moddersAndModsJSON[currentModderSelected])):
-            if moddersAndModsJSON[currentModderSelected][i]["name"] == currentModSelected:
-                currentModURL = moddersAndModsJSON[currentModderSelected][i]["URL"]
-        
-        currentModImage = githubUtils.returnModImageURL(currentModURL)
-        print("Current modder is " + currentModderSelected)
-        print("Current mod is " + currentModSelected)
-        print("Current mod URL is " + currentModURL)
-        print("Current mod image is " + str(currentModImage))
-        
-        url = currentModImage
-        try:
-            r = requests.head(currentModImage).status_code
-            print(str(r))
-            if r == 200:
-                jpg_data = (
-                    cloudscraper.create_scraper(
-                        browser={"browser": "firefox", "platform": "windows", "mobile": False}
-                    )
-                    .get(url)
-                    .content
-                )
-               
-                pil_image = Image.open(io.BytesIO(jpg_data))
-                png_bio = io.BytesIO()
-                pil_image.save(png_bio, format="PNG")
-                png_data = png_bio.getvalue()
-                window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(png_data ,resize=(250,250)))
-                # prints the int of the status code. Find more at httpstatusrappers.com :)    
-            if r != 200:
-                window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(250,250)))
-
-        except requests.exceptions.MissingSchema:
-            window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(250,250)))
+        [currentModderSelected, currentModSelected, currentModURL, currentModImage] = handleModSelected()
     elif event == "Launch!":
         print(" ")
-        window['Launch!'].update(disabled=True)
-        print("Launch button hit!")
         print("Printing avalible information below for debug purposes, remove these later")
         print(currentModderSelected)
         print(currentModSelected)
         print(currentModURL)
         print(currentModImage)
 
-        [linkType, currentModURL] = githubUtils.identifyLinkType(currentModURL)
-        launcherUtils.launch(currentModURL, currentModSelected, linkType)
-        
-        #turn the button back on
-        window['Launch!'].update(disabled=False)
+        if currentModURL is None:
+            sg.Popup('No mod selected', keep_on_top=True)
+        else:
+            window['Launch!'].update(disabled=True)
+            print("Launch button hit!")
+
+            [linkType, currentModURL] = githubUtils.identifyLinkType(currentModURL)
+            launcherUtils.launch(currentModURL, currentModSelected, linkType)
+            
+            #turn the button back on
+            window['Launch!'].update(disabled=False)
     elif event == "Uninstall":
         print("")
         print("uninstallButton hit!")
         print("Do things here")
-
-            
-    
 
 window.close()
