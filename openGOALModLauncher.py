@@ -12,14 +12,13 @@ Created on Thu Aug 25 18:33:45 2022
 from PIL import Image 
 from utils import launcherUtils, githubUtils
 import PySimpleGUI as sg
-import base64
 import cloudscraper
 import io
 import json
 import os.path
 import requests
 import sys
-import time
+
 
 
 # Folder where script is placed, It looks in this for the Exectuable
@@ -36,14 +35,6 @@ currentModSelected = None
 currentModURL = None
 currentModImage = None
 
-#launcherUtils.installedlist(installpath)
-# Opening JSON file
-#f = open(installpath + 'ListOfMods.json')
-  
-# returns JSON object as 
-# a dictionary
-#moddersAndModsJSON = json.load(f)
-#f.close()
 
 #comment this out if you want to test with a local file
 moddersAndModsJSON = requests.get("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/ListOfMods.json").json()
