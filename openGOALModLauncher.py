@@ -9,17 +9,17 @@ Created on Thu Aug 25 18:33:45 2022
 
 # we will clean these up later but for now even leave unused imports
 #we are not in cleanup phase yet
-import PySimpleGUI as sg
-import os.path
-import json
-import time
 from PIL import Image 
-import io
-import base64
-import sys
-import cloudscraper
 from utils import launcherUtils, githubUtils
+import PySimpleGUI as sg
+import base64
+import cloudscraper
+import io
+import json
+import os.path
 import requests
+import sys
+import time
 
 
 # Folder where script is placed, It looks in this for the Exectuable

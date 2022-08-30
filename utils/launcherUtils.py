@@ -4,22 +4,22 @@ Created on Fri Aug 12 06:51:37 2022
 
 @author: Zed
 """
-import tkinter as tk
+from datetime import datetime
+from os.path import exists
 from tkinter import filedialog
+from utils import githubUtils
+import json
 import os
+import pathlib
+import progressbar
+import requests
+import shutil
 import subprocess
 import sys
 import time
-from os.path import exists
-import requests
-import json
-import pathlib
-from datetime import datetime
+import tkinter as tk
 import urllib.request
 import zipfile
-import shutil
-import progressbar
-from utils import githubUtils
 
 EXTRACT_ON_UPDATE="true"            
 FILE_DATE_TO_CHECK="gk.exe"
@@ -103,7 +103,7 @@ def launch(URL, MOD_NAME, LINK_TYPE):
 	#paths  
 	InstallDir = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + MOD_NAME
 	AppdataPATH = os.getenv('APPDATA')
-	UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data"
+	UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data\iso_data"
 	GKCOMMANDLINElist = [InstallDir +"\gk.exe", "-proj-path", InstallDir + "\\data", "-boot", "-fakeiso", "-v"]
 
 	#store Latest Release and check our local date too.
@@ -195,7 +195,6 @@ def launch(URL, MOD_NAME, LINK_TYPE):
 		extractor_command_list = [InstallDir +"\extractor.exe", "-f", iso_path]
 		print(extractor_command_list)
 		
-		# this works running via python directly
 		subprocess.Popen(extractor_command_list)
 		
 		#move the extrated contents to the universal launchers directory for next time.

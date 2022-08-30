@@ -5,38 +5,28 @@ Created on Mon Aug 29 20:46:07 2022
 @author: Zed
 """
 
-import PySimpleGUI as sg
-import os.path
-import json
-import time
-from PIL import Image 
-import io
-import base64
-import sys
-import cloudscraper
-from utils import launcherUtils, githubUtils
-import requests
-from datetime import datetime
 
+from PIL import Image 
+from datetime import datetime
 from os.path import exists
-import urllib
-import shutil
-import tkinter as tk
 from tkinter import filedialog
+from utils import launcherUtils, githubUtils
+import PySimpleGUI as sg
+import base64
+import cloudscraper
+import io
+import json
 import os
+import pathlib
+import progressbar
+import requests
+import shutil
 import subprocess
 import sys
 import time
-from os.path import exists
-import requests
-import json
-import pathlib
-from datetime import datetime
+import tkinter as tk
 import urllib.request
 import zipfile
-import shutil
-import progressbar
-from utils import githubUtils
 
 pbar = None
 
@@ -123,7 +113,7 @@ def downloadNewestmod():
 			os.makedirs(AppdataPATH + "/temp")
 
 		print("Downloading update from " + LatestRelAssetsURL)
-		urllib.request.urlretrieve(LatestRelAssetsURL, AppdataPATH + "/temp/OpengoalModLauncher.exe", show_progress)
+		request.urlretrieve(LatestRelAssetsURL, AppdataPATH + "/temp/OpengoalModLauncher.exe", show_progress)
 		print("Done downloading")
 		
 		
