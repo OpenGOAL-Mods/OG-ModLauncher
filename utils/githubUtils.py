@@ -4,16 +4,10 @@ Created on Fri Aug 26 18:13:55 2022
 
 @author: Zed
 """
-import PySimpleGUI as sg
-import os.path
-import json
-import time
-from PIL import Image
+
 import PIL.Image
 import io
 import base64
-import sys
-import cloudscraper
 from enum import Enum
 
 class LinkTypes(Enum):

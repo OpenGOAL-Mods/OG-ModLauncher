@@ -4,17 +4,8 @@ Created on Mon Aug 29 20:46:07 2022
 
 @author: Zed
 """
-
-
-from PIL import Image 
 from datetime import datetime
 from os.path import exists
-from tkinter import filedialog
-from utils import launcherUtils, githubUtils
-import PySimpleGUI as sg
-import base64
-import cloudscraper
-import io
 import json
 import os
 import pathlib
@@ -22,23 +13,9 @@ import progressbar
 import requests
 import shutil
 import subprocess
-import sys
-import time
-import tkinter as tk
-import urllib.request
-import zipfile
+import urllib
 
 pbar = None
-
-def installedlist(PATH):
-    print(PATH)
-    scanDir = PATH
-    directories = [d for d in os.listdir(scanDir) if os.path.isdir(os.path.join(os.path.abspath(scanDir), d))]
-    print(directories)
-    for i in directories:
-        print(i)
-    print(os.path.dirname(os.path.dirname(PATH)))
-
 def show_progress(block_num, block_size, total_size):
 	if total_size > 0:
 		global pbar
@@ -53,22 +30,6 @@ def show_progress(block_num, block_size, total_size):
 			pbar.finish()
 			pbar = None
 
-def process_exists(process_name):
-    call = 'TASKLIST', '/FI', 'imagename eq %s' % process_name
-    try:
-        # use buildin check_output right away
-        output = subprocess.check_output(call).decode()
-        # check in last line for process name
-        last_line = output.strip().split('\r\n')[-1]
-        # because Fail message could be translated
-        return last_line.lower().startswith(process_name.lower())
-    except:
-        return False
-
-def try_kill_process(process_name):
-	if process_exists(process_name):
-		os.system("taskkill /f /im " + process_name)
-
 def try_remove_file(file):
 	if exists(file):
 		os.remove(file)
@@ -78,21 +39,18 @@ def try_remove_dir(dir):
 		shutil.rmtree(dir)
 		
 def downloadNewestmod():
-	print("test")
+	
 	InstallDir = AppdataPATH
 	
-	launchUrl ="https://api.github.com/repos/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases"
-	PARAMS = {'address':"yolo"} 
-	r = json.loads(json.dumps(requests.get(url = launchUrl, params = PARAMS).json()))
+	launchUrl ="https://api.github.com/repos/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases"  
+	r = json.loads(json.dumps(requests.get(url = launchUrl, params = {'address':"yolo"}).json()))
 	LatestRel = datetime.strptime(r[0].get("published_at").replace("T"," ").replace("Z",""),'%Y-%m-%d %H:%M:%S')
-	LatestRelAssetsURL = (json.loads(json.dumps(requests.get(url = r[0].get("assets_url"), params = PARAMS).json())))[0].get("browser_download_url")
-	response = requests.get(url = LatestRelAssetsURL, params = PARAMS)
-	content_type = response.headers['content-type']
+	LatestRelAssetsURL = (json.loads(json.dumps(requests.get(url = r[0].get("assets_url"), params = {'address':"yolo"}).json())))[0].get("browser_download_url")
 
 	LastWrite = datetime(2020, 5, 17)
 	if (os.path.exists(AppdataPATH + "\\OpengoalModLauncher.exe")):
-		LastWrite = datetime.utcfromtimestamp( pathlib.Path(InstallDir + "/" + ExecutableName).stat().st_mtime)
-	print(LastWrite)
+		LastWrite = datetime.utcfromtimestamp( pathlib.Path(AppdataPATH + "\\OpengoalModLauncher.exe").stat().st_mtime)
+
 	
 	#update checks
 
@@ -113,7 +71,7 @@ def downloadNewestmod():
 			os.makedirs(AppdataPATH + "/temp")
 
 		print("Downloading update from " + LatestRelAssetsURL)
-		request.urlretrieve(LatestRelAssetsURL, AppdataPATH + "/temp/OpengoalModLauncher.exe", show_progress)
+		urllib.request.urlretrieve(LatestRelAssetsURL, AppdataPATH + "/temp/OpengoalModLauncher.exe", show_progress)
 		print("Done downloading")
 		
 		
@@ -138,15 +96,6 @@ def downloadNewestmod():
 		try_remove_dir(TempDir)
 		
 
-	
-	
-	
-if getattr(sys, 'frozen', False):
-    LauncherDir = os.path.dirname(os.path.realpath(sys.executable))
-elif __file__:
-    LauncherDir = os.path.dirname(__file__)
-
-installpath = str(LauncherDir + "\\resources\\")
 AppdataPATH = os.getenv('APPDATA') + "\\OpenGOAL-UnofficalModLauncher\\"
 print(AppdataPATH)
 
@@ -154,10 +103,9 @@ if os.path.exists(AppdataPATH) == False:
 	print("Creating Directory " + AppdataPATH)
 	os.mkdir(AppdataPATH)
 
-	if os.path.exists(AppdataPATH + "\\OpengoalModLauncher.exe") == False:
-		print("No Mod Launcher detected")
-		downloadNewestmod()
-print("test")
+
+downloadNewestmod()
+
 subprocess.call([AppdataPATH + "OpengoalModLauncher.exe"])
 	
 	
