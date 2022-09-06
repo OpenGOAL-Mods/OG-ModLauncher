@@ -3,6 +3,10 @@
     {
       "name": "Randomizer",
       "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
+    },
+    {
+      "name": "Local Multiplayer (beta) + Randomizer",
+      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-multiplayer-random-mod-pack/tree/main"
     }
   ],
   "HimHam": [
