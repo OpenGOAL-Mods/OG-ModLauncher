@@ -37,12 +37,22 @@
     {
       "name": "Randomizer",
       "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
+    },
+    {
+      "name": "Local Multiplayer (beta) + Randomizer",
+      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-multiplayer-rando-mod-pack/tree/main"
     }
   ],
   "Inirdin": [
     {
       "name": "Texture Showcase",
       "URL": "https://github.com/Inirdin/opengoal-inirdin-texture-showcase/tree/main"
+    }
+  ],
+  "InnocentMiau": [
+    {
+      "name": "Snowy Legacy",
+      "URL": "https://github.com/kekdeveloper/opengoal-mod-snowy-legacy/tree/main"
     }
   ],
   "Ruh": [
