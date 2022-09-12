@@ -49,18 +49,19 @@ def installedlist(PATH):
     print(os.path.dirname(os.path.dirname(PATH)))
 
 def show_progress(block_num, block_size, total_size):
-	if total_size > 0:
-		global pbar
-		if pbar is None:
-			pbar = progressbar.ProgressBar(maxval=total_size)
-			pbar.start()
+    if total_size > 0:
+        global pbar
+        if pbar is None:
+            pbar = progressbar.ProgressBar(maxval=total_size)
+            pbar.start()
 
-		downloaded = block_num * block_size
-		if downloaded < total_size:
-			pbar.update(downloaded)
-		else:
-			pbar.finish()
-			pbar = None
+        downloaded = block_num * block_size
+        
+        if downloaded < total_size:
+            pbar.update(downloaded)
+        else:
+            pbar.finish()
+            pbar = None
 
 def process_exists(process_name):
     call = 'TASKLIST', '/FI', 'imagename eq %s' % process_name
@@ -75,147 +76,151 @@ def process_exists(process_name):
         return False
 
 def try_kill_process(process_name):
-	if process_exists(process_name):
-		os.system("taskkill /f /im " + process_name)
+    if process_exists(process_name):
+        os.system("taskkill /f /im " + process_name)
 
 def try_remove_file(file):
-	if exists(file):
-		os.remove(file)
+    if exists(file):
+        os.remove(file)
 
 def try_remove_dir(dir):
-	if exists(dir):
-		shutil.rmtree(dir)
+    if exists(dir):
+        shutil.rmtree(dir)
 
 def launch(URL, MOD_NAME, LINK_TYPE):
-	if URL is None:
-		return
+    if URL is None:
+        return
 
-	#start of update check method
-	#Github API Call
-	launchUrl = URL
-	if LINK_TYPE == githubUtils.LinkTypes.BRANCH:
-		launchUrl = githubUtils.branchToApiURL(URL)
+    #start of update check method
+    #Github API Call
+    launchUrl = URL
+    if LINK_TYPE == githubUtils.LinkTypes.BRANCH:
+        launchUrl = githubUtils.branchToApiURL(URL)
 
-	print("launching from " + launchUrl)
-	PARAMS = {'address':"yolo"} 
-	r = json.loads(json.dumps(requests.get(url = launchUrl, params = PARAMS).json()))
+    print("launching from " + launchUrl)
+    PARAMS = {'address':"yolo"} 
+    r = json.loads(json.dumps(requests.get(url = launchUrl, params = PARAMS).json()))
 
-	#paths  
-	InstallDir = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + MOD_NAME
-	AppdataPATH = os.getenv('APPDATA')
-	UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data\iso_data"
-	GKCOMMANDLINElist = [InstallDir +"\gk.exe", "-proj-path", InstallDir + "\\data", "-boot", "-fakeiso", "-v"]
+    #paths  
+    InstallDir = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + MOD_NAME
+    AppdataPATH = os.getenv('APPDATA')
+    UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data\iso_data"
+    GKCOMMANDLINElist = [InstallDir +"\gk.exe", "-proj-path", InstallDir + "\\data", "-boot", "-fakeiso", "-v"]
 
-	#store Latest Release and check our local date too.
-	if LINK_TYPE == githubUtils.LinkTypes.BRANCH:
-		LatestRel = datetime.strptime(r.get("commit").get("commit").get("author").get("date").replace("T"," ").replace("Z",""),'%Y-%m-%d %H:%M:%S')
-		LatestRelAssetsURL = githubUtils.branchToArchiveURL(URL)
-	elif LINK_TYPE == githubUtils.LinkTypes.RELEASE:
-		LatestRel = datetime.strptime(r[0].get("published_at").replace("T"," ").replace("Z",""),'%Y-%m-%d %H:%M:%S')
-		LatestRelAssetsURL = (json.loads(json.dumps(requests.get(url = r[0].get("assets_url"), params = PARAMS).json())))[0].get("browser_download_url")
-		response = requests.get(url = LatestRelAssetsURL, params = PARAMS)
-		content_type = response.headers['content-type']
+    #store Latest Release and check our local date too.
+    if LINK_TYPE == githubUtils.LinkTypes.BRANCH:
+        LatestRel = datetime.strptime(r.get("commit").get("commit").get("author").get("date").replace("T"," ").replace("Z",""),'%Y-%m-%d %H:%M:%S')
+        LatestRelAssetsURL = githubUtils.branchToArchiveURL(URL)
+    elif LINK_TYPE == githubUtils.LinkTypes.RELEASE:
+        LatestRel = datetime.strptime(r[0].get("published_at").replace("T"," ").replace("Z",""),'%Y-%m-%d %H:%M:%S')
+        LatestRelAssetsURL = (json.loads(json.dumps(requests.get(url = r[0].get("assets_url"), params = PARAMS).json())))[0].get("browser_download_url")
+        response = requests.get(url = LatestRelAssetsURL, params = PARAMS)
+        content_type = response.headers['content-type']
 
-	
-	LastWrite = datetime(2020, 5, 17)
-	if (exists(InstallDir + "/" + ExecutableName)):
-		LastWrite = datetime.utcfromtimestamp( pathlib.Path(InstallDir + "/" + ExecutableName).stat().st_mtime)
+    
+    LastWrite = datetime(2020, 5, 17)
+    if (exists(InstallDir + "/" + ExecutableName)):
+        LastWrite = datetime.utcfromtimestamp( pathlib.Path(InstallDir + "/" + ExecutableName).stat().st_mtime)
 
-	#update checks
-	NotExtracted = bool(not (exists(UniversalIsoPath +r"\jak1\Z6TAIL.DUP")))
-	NotCompiled = bool(not (exists (InstallDir + r"\data\out\jak1\fr3\GAME.fr3")))
-	needUpdate = bool((LastWrite < LatestRel) or (NotExtracted) or NotCompiled)
+    #update checks
+    NotExtracted = bool(not (exists(UniversalIsoPath +r"\jak1\Z6TAIL.DUP")))
+    NotCompiled = bool(not (exists (InstallDir + r"\data\out\jak1\fr3\GAME.fr3")))
+    needUpdate = bool((LastWrite < LatestRel) or (NotExtracted) or NotCompiled)
 
-	print("Currently installed version created on: " + LastWrite.strftime('%Y-%m-%d %H:%M:%S'))
-	print("Newest version created on: " + LatestRel.strftime('%Y-%m-%d %H:%M:%S'))
+    print("Currently installed version created on: " + LastWrite.strftime('%Y-%m-%d %H:%M:%S'))
+    print("Newest version created on: " + LatestRel.strftime('%Y-%m-%d %H:%M:%S'))
 
-	if (needUpdate):
-		
-		#start the actual update method if needUpdate is true
-		print("Starting Update...")
-		#Close Gk and goalc if they were open.
-		try_kill_process("gk.exe")
-		try_kill_process("goalc.exe")
+    if (needUpdate):
+        
+        #start the actual update method if needUpdate is true
+        print("Starting Update...")
+        #Close Gk and goalc if they were open.
+        try_kill_process("gk.exe")
+        try_kill_process("goalc.exe")
 
-		#download update from github
-		# Create a new directory because it does not exist
-		try_remove_dir(InstallDir + "/temp")
-		if not os.path.exists(InstallDir + "/temp"):
-			print("Creating install dir: " + InstallDir)
-			os.makedirs(InstallDir + "/temp")
+        #download update from github
+        # Create a new directory because it does not exist
+        try_remove_dir(InstallDir + "/temp")
+        if not os.path.exists(InstallDir + "/temp"):
+            print("Creating install dir: " + InstallDir)
+            os.makedirs(InstallDir + "/temp")
 
-		print("Downloading update from " + LatestRelAssetsURL)
-		urllib.request.urlretrieve(LatestRelAssetsURL, InstallDir + "/temp/updateDATA.zip", show_progress)
-		print("Done downloading")
-		
-		
-		#delete any previous installation
-		print("Removing previous installation " + InstallDir)
-		try_remove_dir(InstallDir + "/data")
-		try_remove_file(InstallDir + "/gk.exe")
-		try_remove_file(InstallDir + "/goalc.exe")
-		try_remove_file(InstallDir + "/extractor.exe")
+        print("Downloading update from " + LatestRelAssetsURL)
+        file = urllib.request.urlopen(LatestRelAssetsURL)
+        
+        print(file.length)
+        urllib.request.urlretrieve(LatestRelAssetsURL, InstallDir + "/temp/updateDATA.zip", show_progress)
+        print("Done downloading")
+        r = requests.head(LatestRelAssetsURL, allow_redirects=True)
+    
+        
+        #delete any previous installation
+        print("Removing previous installation " + InstallDir)
+        try_remove_dir(InstallDir + "/data")
+        try_remove_file(InstallDir + "/gk.exe")
+        try_remove_file(InstallDir + "/goalc.exe")
+        try_remove_file(InstallDir + "/extractor.exe")
 
-		#if ISO_DATA has content, store this path to pass to the extractor
-		if (exists(UniversalIsoPath +r"\jak1\Z6TAIL.DUP")):
-			iso_path = UniversalIsoPath + "\jak1"
-		else:
-			#if ISO_DATA is empty, prompt for their ISO and store its path.
-			root = tk.Tk()
-			print("Please select your iso.")
-			root.title("Select ISO")
-			root.geometry('230x1')
-			iso_path = filedialog.askopenfilename()
-			root.destroy()
-			if (pathlib.Path(iso_path).is_file):
-				if ((not (pathlib.Path(iso_path).suffix).lower() == '.iso')):
-					1/0
-		#extract update
-		print("Extracting update")
-		TempDir = InstallDir + "/temp"
-		with zipfile.ZipFile(TempDir + "/updateDATA.zip","r") as zip_ref:
-			zip_ref.extractall(TempDir)
+        #if ISO_DATA has content, store this path to pass to the extractor
+        if (exists(UniversalIsoPath +r"\jak1\Z6TAIL.DUP")):
+            iso_path = UniversalIsoPath + "\jak1"
+        else:
+            #if ISO_DATA is empty, prompt for their ISO and store its path.
+            root = tk.Tk()
+            print("Please select your iso.")
+            root.title("Select ISO")
+            root.geometry('230x1')
+            iso_path = filedialog.askopenfilename()
+            root.destroy()
+            if (pathlib.Path(iso_path).is_file):
+                if ((not (pathlib.Path(iso_path).suffix).lower() == '.iso')):
+                    1/0
+        #extract update
+        print("Extracting update")
+        TempDir = InstallDir + "/temp"
+        with zipfile.ZipFile(TempDir + "/updateDATA.zip","r") as zip_ref:
+            zip_ref.extractall(TempDir)
 
-		#delete the update archive
-		try_remove_file(TempDir + "/updateDATA.zip")
+        #delete the update archive
+        try_remove_file(TempDir + "/updateDATA.zip")
 
-		SubDir = TempDir
-		if LINK_TYPE == githubUtils.LinkTypes.BRANCH or len(os.listdir(SubDir)) == 1:
-			# for branches, the downloaded zip puts all files one directory down
-			SubDir = SubDir + "/" + os.listdir(SubDir)[0]
+        SubDir = TempDir
+        if LINK_TYPE == githubUtils.LinkTypes.BRANCH or len(os.listdir(SubDir)) == 1:
+            # for branches, the downloaded zip puts all files one directory down
+            SubDir = SubDir + "/" + os.listdir(SubDir)[0]
 
-		print("Moving files from " + SubDir + " up to " + InstallDir)
-		allfiles = os.listdir(SubDir)
-		for f in allfiles:
-			shutil.move(SubDir + "/" + f, InstallDir + "/" + f)
-		try_remove_dir(TempDir)
+        print("Moving files from " + SubDir + " up to " + InstallDir)
+        allfiles = os.listdir(SubDir)
+        for f in allfiles:
+            shutil.move(SubDir + "/" + f, InstallDir + "/" + f)
+        try_remove_dir(TempDir)
 
-		#if extractOnUpdate is True, check their ISO_DATA folder
+        #if extractOnUpdate is True, check their ISO_DATA folder
 
-		extractor_command_list = [InstallDir +"\extractor.exe", "-f", iso_path]
-		print(extractor_command_list)
-		
-		subprocess.Popen(extractor_command_list)
-		
-		#move the extrated contents to the universal launchers directory for next time.
-		if not (exists(( UniversalIsoPath + r"\jak1\Z6TAIL.DUP"))):
-			while (process_exists("extractor.exe")):
-				print("extractor.exe still running, sleeping for 1s")
-				time.sleep(1)
-		if not (exists(( UniversalIsoPath + r"\jak1\Z6TAIL.DUP"))):
-			#os.makedirs(AppdataPATH + "\OpenGOAL-Launcher\data\iso_data")
-			print("The new directory is created!")
-			shutil.move(InstallDir + "/data/iso_data", "" + UniversalIsoPath +"")
-			#try_remove_dir(InstallDir + "/data/iso_data")
-			#os.symlink("" + UniversalIsoPath +"", InstallDir + "/data/iso_data")
+        extractor_command_list = [InstallDir +"\extractor.exe", "-f", iso_path]
+        print(extractor_command_list)
+        
+        subprocess.Popen(extractor_command_list)
+        
+        #move the extrated contents to the universal launchers directory for next time.
+        if not (exists(( UniversalIsoPath + r"\jak1\Z6TAIL.DUP"))):
+            while (process_exists("extractor.exe")):
+                print("extractor.exe still running, sleeping for 1s")
+                time.sleep(1)
+        if not (exists(( UniversalIsoPath + r"\jak1\Z6TAIL.DUP"))):
+            #os.makedirs(AppdataPATH + "\OpenGOAL-Launcher\data\iso_data")
+            print("The new directory is created!")
+            shutil.move(InstallDir + "/data/iso_data", "" + UniversalIsoPath +"")
+            #try_remove_dir(InstallDir + "/data/iso_data")
+            #os.symlink("" + UniversalIsoPath +"", InstallDir + "/data/iso_data")
 
-	else:
-		#if we dont need to update, then close any open instances of the game and just launch it
+    else:
+        #if we dont need to update, then close any open instances of the game and just launch it
 
-		#Close Gk and goalc if they were open.
-		try_kill_process("gk.exe")
-		try_kill_process("goalc.exe")
+        #Close Gk and goalc if they were open.
+        try_kill_process("gk.exe")
+        try_kill_process("goalc.exe")
 
-		time.sleep(1)
-		print(GKCOMMANDLINElist)
-		subprocess.Popen(GKCOMMANDLINElist, shell=True)
+        time.sleep(1)
+        print(GKCOMMANDLINElist)
+        subprocess.Popen(GKCOMMANDLINElist, shell=True)

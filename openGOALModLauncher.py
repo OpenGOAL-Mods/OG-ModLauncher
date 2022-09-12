@@ -70,7 +70,7 @@ mod_details_column = [
 
 installed_mods_column = [
     [sg.Text("Installed mods")],
-	[sg.Listbox(values=["This List is not", "Implemented yet"],size=(60,5),key="InstalledModListBox")],
+	[sg.Listbox(values=["This List is not", "Classic+"],size=(60,5),key="InstalledModListBox",enable_events=True)],
     [sg.Text(size=(40, 1), key="-TOUT-")],
 
 ]
@@ -83,7 +83,7 @@ layout = [
         sg.Column(mod_details_column),
 		[sg.Column(installed_mods_column)],
 		[sg.Btn(button_text="Launch!")],
-		[sg.Btn(button_text="Uninstall", disabled=True)]
+		[sg.Btn(button_text="Uninstall")]
     ]
 ]
 
@@ -115,8 +115,40 @@ png_bio = io.BytesIO()
 pil_image.save(png_bio, format="PNG")
 noimagefile = png_bio.getvalue()
 
-window = sg.Window('OpenGOAL Mod Launcher v0.01 TEST DO NO DISTRIBUTE', layout, icon= iconfile)
+window = sg.Window('OpenGOAL Mod Launcher v0.02', layout, icon= iconfile, finalize=True)
+def bootup():
+    print("BOOT")
+    
+    #installed mods
+    subfolders = [ f.name for f in os.scandir(r"C:\Users\Zed\AppData\Roaming\OpenGOAL-Mods") if f.is_dir() ]
+    if subfolders == []:
+        subfolders = ["No Mods Installed"]
+    print(subfolders)
+    window["InstalledModListBox"].update(subfolders)
+    
+    #default mod selection on boot
+    window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(1,1)))
+    item = "Modding Community"
+    window['pick_modder'].update(item)
+    
+    title_list = [i["name"] for i in moddersAndModsJSON[item]]
+    window['pick_mod'].update(value=title_list[0], values=title_list)
 
+
+
+    currentModderSelected = "Modding Community"
+    currentModSelected = "Randomizer"
+    currentModURL = "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
+    currentModImage = None
+
+    [currentModderSelected, currentModSelected, currentModURL, currentModImage] = handleModSelected()
+    
+    
+    #print(window['InstalledModListBox'].get()[0])
+    #folder = values["InstalledModListBox"]
+    #[currentModderSelected, currentModSelected, currentModURL, currentModImage] = handleInstalledModSelected()
+    
+	
 def handleModSelected():
     tmpModderSelected = window['pick_modder'].get()
     tmpModSelected = window['pick_mod'].get()
@@ -126,6 +158,52 @@ def handleModSelected():
     for i in range(len(moddersAndModsJSON[tmpModderSelected])):
         if moddersAndModsJSON[tmpModderSelected][i]["name"] == tmpModSelected:
             tmpModURL = moddersAndModsJSON[tmpModderSelected][i]["URL"]
+    
+    tpmModImage = githubUtils.returnModImageURL(tmpModURL)
+
+    
+    url = tpmModImage
+    try:
+        r = requests.head(tpmModImage).status_code
+        print(str(r))
+        if r == 200:
+            jpg_data = (
+                cloudscraper.create_scraper(
+                    browser={"browser": "firefox", "platform": "windows", "mobile": False}
+                )
+                .get(url)
+                .content
+            )
+            
+            pil_image = Image.open(io.BytesIO(jpg_data))
+            png_bio = io.BytesIO()
+            pil_image.save(png_bio, format="PNG")
+            png_data = png_bio.getvalue()
+            window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(png_data ,resize=(250,250)))
+            # prints the int of the status code. Find more at httpstatusrappers.com :)    
+        if r != 200:
+            window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(250,250)))
+
+    except requests.exceptions.MissingSchema:
+        window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(250,250)))
+
+    return [tmpModderSelected, tmpModSelected, tmpModURL, tmpModImage]
+
+def handleInstalledModSelected():
+    tmpModderSelected = window['pick_modder'].get()
+    tmpModSelected = window['InstalledModListBox'].get()[0]
+    
+    print(tmpModSelected)
+    tmpModURL = None
+    tmpModImage = None
+    tmpModderlist = list(moddersAndModsJSON.keys()) 
+    for i in range(len(tmpModderlist)):
+        print(moddersAndModsJSON)
+        print(moddersAndModsJSON[1])
+    #TODO This is where we need to update the dropdowns (currentmodselected and currentmodder) But going through this list/dict/json thing is a nightmare
+
+       # if moddersAndModsJSON[tmpModderSelected][i]["name"] == tmpModSelected:
+            # tmpModURL = moddersAndModsJSON[tmpModderSelected][i]["URL"]
     
     tpmModImage = githubUtils.returnModImageURL(tmpModURL)
     
@@ -155,29 +233,39 @@ def handleModSelected():
         window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(250,250)))
 
     return [tmpModderSelected, tmpModSelected, tmpModURL, tmpModImage]
-
+bootupcount = 0
 # Run the Event Loop
+if bootupcount == 0:
+    bootup()
 while True:
     event, values = window.read()
 
+
+    
     if event == "Exit" or event == sg.WIN_CLOSED:
         break
+    
     # Folder name was filled in, make a list of files in the folder
-    if event == "-InstalledModListBox-":
-        folder = values["-InstalledModListBox-"]
+    if event == "InstalledModListBox" and not  window["InstalledModListBox"].get() == ['No Mods Installed']:
+        subfolders = [ f.name for f in os.scandir(r"C:\Users\Zed\AppData\Roaming\OpenGOAL-Mods") if f.is_dir() ]
+        print(window['InstalledModListBox'].get()[0])
+        folder = values["InstalledModListBox"]
+        print(folder)
+        [currentModderSelected, currentModSelected, currentModURL, currentModImage] = handleInstalledModSelected()
+        print("Printing avalible information below for debug purposes, remove these later")
+        print(currentModderSelected)
+        print(currentModSelected)
+        print(currentModURL)
+        print(currentModImage)
         try:
             # Get list of files in folder
-            file_list = os.listdir(folder)
+            file_list = os.listdir(r"C:\Users\Zed\AppData\Roaming\OpenGOAL-Mods")
         except:
             file_list = []
 
-        fnames = [
-            f
-            for f in file_list
-            if os.path.isfile(os.path.join(folder, f))
-           
-        ]
-        window["InstalledModListBox"].update(fnames)
+
+     
+        window["InstalledModListBox"].update(subfolders)
     elif event == "-FILE LIST-":  # A file was chosen from the listbox
         try:
             filename = os.path.join(
@@ -191,12 +279,16 @@ while True:
     elif event =='pick_modder':
         window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(1,1)))
         item = values[event]
+        print(item)
         title_list = [i["name"] for i in moddersAndModsJSON[item]]
         window['pick_mod'].update(value=title_list[0], values=title_list)
         [currentModderSelected, currentModSelected, currentModURL, currentModImage] = handleModSelected()
+        
     elif event =='pick_mod':
         [currentModderSelected, currentModSelected, currentModURL, currentModImage] = handleModSelected()
+        
     elif event == "Launch!":
+        [currentModderSelected, currentModSelected, currentModURL, currentModImage] = handleModSelected()
         print(" ")
         print("Printing avalible information below for debug purposes, remove these later")
         print(currentModderSelected)
@@ -215,7 +307,12 @@ while True:
             
             #turn the button back on
             window['Launch!'].update(disabled=False)
+            
     elif event == "Uninstall":
+        [currentModderSelected, currentModSelected, currentModURL, currentModImage] = handleModSelected()
+        print(currentModSelected)
+        if currentModSelected in installedMods:
+            print("Installed")
         print("")
         print("uninstallButton hit!")
         print("Do things here")
