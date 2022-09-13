@@ -45,6 +45,25 @@ def returnModImageURL (URL):
         return str(URL).replace('https://github.com/','https://raw.githubusercontent.com/').replace('/tree/','/') + '/ModImage.png'
     elif linkType == LinkTypes.RELEASE:
         print("Printing URL")
+
+        apiURL = str(URL).replace('https://github.com/','https://raw.githubusercontent.com/').replace('/releases','')
+        launchUrl = apiURL
+        r = json.loads(json.dumps(requests.get(url = launchUrl, params = {'address':"yolo"}).json()))
+        defaultBranch = r.get("default_branch")
+        
+
+        imageURL = apiURL.replace('https://api.github.com/', 'https://raw.githubusercontent.com/').replace("repos/", "") + "/" + defaultBranch + "/" + "ModImage.png"
+        
+       
+       # LatestRelAssetsURL = (json.loads(json.dumps(requests.get(url = r[0].get("assets_url"), params = {'address':"yolo"}).json())))[0].get("browser_download_url")
+        
+        
+        return imageURL
+    
+def returnDefaultBranch (URL):
+    [linkType, URL] = identifyLinkType(URL)
+    if linkType == LinkTypes.RELEASE:
+        print("Printing URL")
         print(str(URL))
         apiURL = str(URL).replace('https://github.com/','https://raw.githubusercontent.com/').replace('/releases','')
         print(str(apiURL))
