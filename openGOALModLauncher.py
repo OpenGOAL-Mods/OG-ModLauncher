@@ -106,7 +106,7 @@ png_bio = io.BytesIO()
 pil_image.save(png_bio, format="PNG")
 noimagefile = png_bio.getvalue()
 
-window = sg.Window('OpenGOAL Mod Launcher v0.02', layout, icon= iconfile, finalize=True)
+window = sg.Window('OpenGOAL Mod Launcher v0.02', layout, icon = iconfile, finalize=True)
 def bootup():
     #print("BOOT")
     
@@ -215,7 +215,7 @@ while True:
         [tmpModderSelected, tmpModSelected] = handleInstalledModSelected()
 
         if not tmpModderSelected:
-            sg.Popup('Installed mod not found in available mods!', keep_on_top=True)
+            sg.Popup('Installed mod not found in available mods!', keep_on_top=True, icon = iconfile)
             window['-SELECTEDMOD-'].update(tmpModSelected)
             window['-SELECTEDMODURL-'].update("")
             local_img = launcherUtils.local_mod_image(tmpModSelected)
@@ -260,31 +260,31 @@ while True:
             window['Launch!'].update(disabled=True)
             err = launcherUtils.launch_local(tmpModSelected)
             if err:
-                sg.popup("Error: " + err)
+                sg.popup("Error: " + err, icon = iconfile)
             #turn the button back on
             window['Launch!'].update(disabled=False)
         else:
             bootup()
-            sg.Popup('No mod selected', keep_on_top=True)
+            sg.Popup('No mod selected', keep_on_top=True, icon = iconfile)
     elif event == "Uninstall":
         [tmpModderSelected, tmpModSelected] = handleInstalledModSelected()
         if tmpModSelected and not tmpModSelected == "No Mods Installed":
             print(tmpModSelected)
             dir = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + tmpModSelected
-            ans = sg.popup_ok_cancel('Confirm: uninstalling ' + dir)
+            ans = sg.popup_ok_cancel('Confirm: uninstalling ' + dir ,icon = iconfile)
             if ans == 'OK':
                 launcherUtils.try_remove_dir(dir)
                 refreshInstalledList()
                 window['-SELECTEDMOD-'].update("")
                 window['-SELECTEDMODURL-'].update("")
                 window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(1,1)))
-                sg.popup('Uninstalled ' + tmpModSelected)
+                sg.popup('Uninstalled ' + tmpModSelected,icon = iconfile)
                 if (len(window['InstalledModListBox'].get())) == 0:
                     bootup()
         else:
             if (len(window['InstalledModListBox'].get())) == 0:
                 bootup()
-            sg.Popup('No installed mod selected', keep_on_top=True)
+            sg.Popup('No installed mod selected', keep_on_top=True,icon = iconfile)
             
 
 window.close()
