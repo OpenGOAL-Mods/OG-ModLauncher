@@ -47,44 +47,35 @@ j_file = json.dumps(moddersAndModsJSON)
 # First the window layout in 2 columns
 
 mod_list_column = [
-	[sg.Text("Mod Creator")],
-    #would be nice to add default_value="Modding Community", below, but if we do that it doesnt trigger the update event currently
-	[sg.Combo(list(moddersAndModsJSON.keys()), enable_events=True, key='pick_modder', size=(30, 0))],
-    [sg.Text("Their Mods")],
-    #would be nice to add default_value="Randomizer", below, but if we do that it doesnt trigger the update event currently
-	[
-        sg.Combo([], key='pick_mod', size=(30, 0),enable_events=True )  # there must be values of selected item
-        
-    ],
-]
-
-
-
-# For now will only show the name of the file that was chosen
-mod_details_column = [
-    [sg.Text("Choose an mod from list on left:")],
-    [sg.Text(size=(40, 1), key="-TOUT-")],
-    [sg.Image(key="-SELECTEDMODIMAGE-")],
-
+	[sg.Text("Available Mods", font=("Helvetica", 14))],
+	[sg.Text("Mod Creator")], 
+    [sg.Combo(list(moddersAndModsJSON.keys()), enable_events=True, key='pick_modder', size=(40, 0))],
+    [sg.Text("Their Mods")], 
+    [sg.Combo([], key='pick_mod', size=(40, 0),enable_events=True)]
 ]
 
 installed_mods_column = [
-    [sg.Text("Installed mods")],
-	[sg.Listbox(values=["This List is not", "Implemented yet"],size=(60,5),key="InstalledModListBox")],
-    [sg.Text(size=(40, 1), key="-TOUT-")],
+    [sg.Text("Installed Mods", font=("Helvetica", 14))],
+    [sg.Listbox(values=["This List is not", "Classic+"],size=(40,5),key="InstalledModListBox",enable_events=True)],
+    [sg.Btn(button_text="Refresh"), sg.Btn(button_text="Uninstall")],
+]
 
+mod_details_column = [
+    [sg.Text("Selected Mod", font=("Helvetica", 14))], 
+    [sg.Text("", key="-SELECTEDMOD-"), sg.Text("", key="-SELECTEDMODURL-", visible=False)],
+    [sg.Image(key="-SELECTEDMODIMAGE-")],
+    [sg.Btn(button_text="Launch!")]
 ]
 
 # ----- Full layout -----
 layout = [
-    [
-        sg.Column(mod_list_column),
-        sg.VSeperator(),
-        sg.Column(mod_details_column),
-		[sg.Column(installed_mods_column)],
-		[sg.Btn(button_text="Launch!")],
-		[sg.Btn(button_text="Uninstall", disabled=True)]
-    ]
+    [sg.Column([
+        [sg.Column(installed_mods_column)],
+        [sg.HSeparator()],
+        [sg.Column(mod_list_column)],
+        ]),
+    sg.VSeparator(),
+    sg.Column(mod_details_column)]
 ]
 
 url= "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/appicon.ico"
@@ -115,23 +106,50 @@ png_bio = io.BytesIO()
 pil_image.save(png_bio, format="PNG")
 noimagefile = png_bio.getvalue()
 
-window = sg.Window('OpenGOAL Mod Launcher v0.01 TEST DO NO DISTRIBUTE', layout, icon= iconfile)
+window = sg.Window('OpenGOAL Mod Launcher v0.02', layout, icon= iconfile, finalize=True)
+def bootup():
+    print("BOOT")
+    
+    #installed mods
+    subfolders = [ f.name for f in os.scandir(os.getenv('APPDATA') + "\\OpenGOAL-Mods") if f.is_dir() ]
+    if subfolders == []:
+        subfolders = ["No Mods Installed"]
+    print(subfolders)
+    window["InstalledModListBox"].update(subfolders)
+    
+    #default mod selection on boot
+    window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(1,1)))
+    item = "Modding Community"
+    window['pick_modder'].update(item)
+    
+    title_list = [i["name"] for i in moddersAndModsJSON[item]]
+    window['pick_mod'].update(value=title_list[0], values=title_list)
 
+
+
+    currentModderSelected = "Modding Community"
+    currentModSelected = "Randomizer"
+    currentModURL = "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
+    currentModImage = None
+
+    [currentModderSelected, currentModSelected, currentModURL, currentModImage] = handleModSelected()
+	
 def handleModSelected():
     tmpModderSelected = window['pick_modder'].get()
     tmpModSelected = window['pick_mod'].get()
     tmpModURL = None
     tmpModImage = None
     
-    for i in range(len(moddersAndModsJSON[tmpModderSelected])):
-        if moddersAndModsJSON[tmpModderSelected][i]["name"] == tmpModSelected:
-            tmpModURL = moddersAndModsJSON[tmpModderSelected][i]["URL"]
+    for mod in moddersAndModsJSON[tmpModderSelected]:
+        if mod["name"] == tmpModSelected:
+            tmpModURL = mod["URL"]
     
-    tpmModImage = githubUtils.returnModImageURL(tmpModURL)
+    tmpModImage = githubUtils.returnModImageURL(tmpModURL)
+
     
-    url = tpmModImage
+    url = tmpModImage
     try:
-        r = requests.head(tpmModImage).status_code
+        r = requests.head(tmpModImage).status_code
         print(str(r))
         if r == 200:
             jpg_data = (
@@ -148,76 +166,112 @@ def handleModSelected():
             png_data = png_bio.getvalue()
             window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(png_data ,resize=(250,250)))
             # prints the int of the status code. Find more at httpstatusrappers.com :)    
-        if r != 200:
+        else:
             window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(250,250)))
 
     except requests.exceptions.MissingSchema:
         window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(250,250)))
 
+    window['-SELECTEDMOD-'].update(tmpModSelected)
+    window['-SELECTEDMODURL-'].update(tmpModURL)
     return [tmpModderSelected, tmpModSelected, tmpModURL, tmpModImage]
 
+def handleInstalledModSelected():
+    if len(window['InstalledModListBox'].get()) == 0:
+        return [None, None]
+        
+    tmpModSelected = window['InstalledModListBox'].get()[0]
+    tmpModderSelected = None
+
+    for modder in moddersAndModsJSON.keys():
+        if not tmpModderSelected:
+            for mod in moddersAndModsJSON[modder]:
+                if mod["name"] == tmpModSelected:
+                    tmpModderSelected = modder
+                    break
+
+    return [tmpModderSelected, tmpModSelected]
+
+def refreshInstalledList():
+    subfolders = [ f.name for f in os.scandir(os.getenv('APPDATA') + "\\OpenGOAL-Mods") if f.is_dir() ]
+    window["InstalledModListBox"].update(subfolders)
+
+bootupcount = 0
 # Run the Event Loop
+if bootupcount == 0:
+    bootup()
 while True:
     event, values = window.read()
 
     if event == "Exit" or event == sg.WIN_CLOSED:
         break
+    
     # Folder name was filled in, make a list of files in the folder
-    if event == "-InstalledModListBox-":
-        folder = values["-InstalledModListBox-"]
-        try:
-            # Get list of files in folder
-            file_list = os.listdir(folder)
-        except:
-            file_list = []
+    if event == "InstalledModListBox" and not window["InstalledModListBox"].get() == ['No Mods Installed']:
+        [tmpModderSelected, tmpModSelected] = handleInstalledModSelected()
 
-        fnames = [
-            f
-            for f in file_list
-            if os.path.isfile(os.path.join(folder, f))
-           
-        ]
-        window["InstalledModListBox"].update(fnames)
-    elif event == "-FILE LIST-":  # A file was chosen from the listbox
-        try:
-            filename = os.path.join(
-                values["-FOLDER-"], values["-FILE LIST-"][0]
-            )
-            window["-TOUT-"].update(filename)
-            window["-SELECTEDMODIMAGE-"].update(filename=filename)
-
-        except:
-            pass
+        if not tmpModderSelected:
+            sg.Popup('Installed mod not found in available mods!', keep_on_top=True)
+            window['-SELECTEDMOD-'].update(tmpModSelected)
+            window['-SELECTEDMODURL-'].update("")
+            local_img = launcherUtils.local_mod_image(tmpModSelected)
+            if local_img:
+                window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(local_img ,resize=(250,250)))
+            else:
+                window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(250,250)))
+        else:
+            window['pick_modder'].update(tmpModderSelected)
+            title_list = [i["name"] for i in moddersAndModsJSON[tmpModderSelected]]
+            window['pick_mod'].update(value=tmpModSelected, values=title_list)
+            
+            handleModSelected()
+    elif event == "Refresh":
+        refreshInstalledList()
     elif event =='pick_modder':
         window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(1,1)))
         item = values[event]
+        print(item)
         title_list = [i["name"] for i in moddersAndModsJSON[item]]
         window['pick_mod'].update(value=title_list[0], values=title_list)
-        [currentModderSelected, currentModSelected, currentModURL, currentModImage] = handleModSelected()
+        handleModSelected()
     elif event =='pick_mod':
-        [currentModderSelected, currentModSelected, currentModURL, currentModImage] = handleModSelected()
+        handleModSelected()
     elif event == "Launch!":
-        print(" ")
-        print("Printing avalible information below for debug purposes, remove these later")
-        print(currentModderSelected)
-        print(currentModSelected)
-        print(currentModURL)
-        print(currentModImage)
+        tmpModSelected = window['-SELECTEDMOD-'].get()
+        tmpModURL = window['-SELECTEDMODURL-'].get()
 
-        if currentModURL is None:
-            sg.Popup('No mod selected', keep_on_top=True)
-        else:
+        if tmpModURL:
+            # online launch
             window['Launch!'].update(disabled=True)
-            print("Launch button hit!")
-
-            [linkType, currentModURL] = githubUtils.identifyLinkType(currentModURL)
-            launcherUtils.launch(currentModURL, currentModSelected, linkType)
-            
+            [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
+            launcherUtils.launch(tmpModURL, tmpModSelected, linkType)
             #turn the button back on
             window['Launch!'].update(disabled=False)
+            #may have installed new mod, update list
+            refreshInstalledList()
+        elif tmpModSelected:
+            # local launch
+            window['Launch!'].update(disabled=True)
+            err = launcherUtils.launch_local(tmpModSelected)
+            if err:
+                sg.popup("Error: " + err)
+            #turn the button back on
+            window['Launch!'].update(disabled=False)
+        else:
+            sg.Popup('No mod selected', keep_on_top=True)
     elif event == "Uninstall":
-        print("")
-        print("uninstallButton hit!")
-        print("Do things here")
+        [tmpModderSelected, tmpModSelected] = handleInstalledModSelected()
+        if tmpModSelected:
+            dir = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + tmpModSelected
+            ans = sg.popup_ok_cancel('Confirm: uninstalling ' + dir)
+            if ans == 'OK':
+                launcherUtils.try_remove_dir(dir)
+                refreshInstalledList()
+                window['-SELECTEDMOD-'].update("")
+                window['-SELECTEDMODURL-'].update("")
+                window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(1,1)))
+                sg.popup('Uninstalled ' + tmpModSelected)
+        else:
+            sg.popup('No mod selected')
 
 window.close()
