@@ -87,6 +87,28 @@ def try_remove_dir(dir):
     if exists(dir):
         shutil.rmtree(dir)
 
+def local_mod_image(MOD_NAME):
+    path = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + MOD_NAME + "\\ModImage.png"
+    if exists(path):
+        return path
+    return None
+
+def launch_local(MOD_NAME):
+    try:
+        #Close Gk and goalc if they were open.
+        try_kill_process("gk.exe")
+        try_kill_process("goalc.exe")
+
+        time.sleep(1)
+        InstallDir = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + MOD_NAME
+        AppdataPATH = os.getenv('APPDATA')
+        UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data\iso_data"
+        GKCOMMANDLINElist = [InstallDir +"\gk.exe", "-proj-path", InstallDir + "\\data", "-boot", "-fakeiso", "-v"]
+        print(GKCOMMANDLINElist)
+        subprocess.Popen(GKCOMMANDLINElist, shell=True)
+    except e:
+        return str(e)
+
 def launch(URL, MOD_NAME, LINK_TYPE):
     if URL is None:
         return
@@ -197,6 +219,10 @@ def launch(URL, MOD_NAME, LINK_TYPE):
 
         #if extractOnUpdate is True, check their ISO_DATA folder
 
+        #Close Gk and goalc if they were open.
+        try_kill_process("gk.exe")
+        try_kill_process("goalc.exe")
+
         extractor_command_list = [InstallDir +"\extractor.exe", "-f", iso_path]
         print(extractor_command_list)
         
@@ -216,11 +242,4 @@ def launch(URL, MOD_NAME, LINK_TYPE):
 
     else:
         #if we dont need to update, then close any open instances of the game and just launch it
-
-        #Close Gk and goalc if they were open.
-        try_kill_process("gk.exe")
-        try_kill_process("goalc.exe")
-
-        time.sleep(1)
-        print(GKCOMMANDLINElist)
-        subprocess.Popen(GKCOMMANDLINElist, shell=True)
+        launch_local(MOD_NAME)
