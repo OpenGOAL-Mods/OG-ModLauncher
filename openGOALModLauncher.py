@@ -192,6 +192,10 @@ def handleInstalledModSelected():
 
     return [tmpModderSelected, tmpModSelected]
 
+def refreshInstalledList():
+    subfolders = [ f.name for f in os.scandir(os.getenv('APPDATA') + "\\OpenGOAL-Mods") if f.is_dir() ]
+    window["InstalledModListBox"].update(subfolders)
+
 bootupcount = 0
 # Run the Event Loop
 if bootupcount == 0:
@@ -222,8 +226,7 @@ while True:
             
             handleModSelected()
     elif event == "Refresh":
-        subfolders = [ f.name for f in os.scandir(os.getenv('APPDATA') + "\\OpenGOAL-Mods") if f.is_dir() ]
-        window["InstalledModListBox"].update(subfolders)
+        refreshInstalledList()
     elif event =='pick_modder':
         window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(1,1)))
         item = values[event]
@@ -244,6 +247,8 @@ while True:
             launcherUtils.launch(tmpModURL, tmpModSelected, linkType)
             #turn the button back on
             window['Launch!'].update(disabled=False)
+            #may have installed new mod, update list
+            refreshInstalledList()
         elif tmpModSelected:
             # local launch
             window['Launch!'].update(disabled=True)
@@ -261,9 +266,7 @@ while True:
             ans = sg.popup_ok_cancel('Confirm: uninstalling ' + dir)
             if ans == 'OK':
                 launcherUtils.try_remove_dir(dir)
-                # refresh list
-                subfolders = [ f.name for f in os.scandir(os.getenv('APPDATA') + "\\OpenGOAL-Mods") if f.is_dir() ]
-                window["InstalledModListBox"].update(subfolders)
+                refreshInstalledList()
                 window['-SELECTEDMOD-'].update("")
                 window['-SELECTEDMODURL-'].update("")
                 window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(1,1)))
