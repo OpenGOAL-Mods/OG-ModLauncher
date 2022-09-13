@@ -37,7 +37,7 @@ def homepageToMainBranchURL(URL):
 def returnModImageURL (URL):
     [linkType, URL] = identifyLinkType(URL)
     if linkType == LinkTypes.BRANCH:
-        print("image url branch detected method starting")
+        #print("image url branch detected method starting")
         return str(URL).replace('https://github.com/','https://raw.githubusercontent.com/').replace('/tree/','/') + '/ModImage.png'
     elif linkType == LinkTypes.RELEASE:
         return str(URL).replace('https://github.com/','https://raw.githubusercontent.com/').replace('https://api.github.com/repos/','https://raw.githubusercontent.com/').replace('/releases','/main') + '/ModImage.png'

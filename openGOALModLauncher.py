@@ -108,13 +108,13 @@ noimagefile = png_bio.getvalue()
 
 window = sg.Window('OpenGOAL Mod Launcher v0.02', layout, icon= iconfile, finalize=True)
 def bootup():
-    print("BOOT")
+    #print("BOOT")
     
     #installed mods
     subfolders = [ f.name for f in os.scandir(os.getenv('APPDATA') + "\\OpenGOAL-Mods") if f.is_dir() ]
     if subfolders == []:
         subfolders = ["No Mods Installed"]
-    print(subfolders)
+    #print(subfolders)
     window["InstalledModListBox"].update(subfolders)
     
     #default mod selection on boot
@@ -139,7 +139,7 @@ def handleModSelected():
     tmpModSelected = window['pick_mod'].get()
     tmpModURL = None
     tmpModImage = None
-    
+    print("\nLoading new mod selection one moment...")
     for mod in moddersAndModsJSON[tmpModderSelected]:
         if mod["name"] == tmpModSelected:
             tmpModURL = mod["URL"]
@@ -150,7 +150,8 @@ def handleModSelected():
     url = tmpModImage
     try:
         r = requests.head(tmpModImage).status_code
-        print(str(r))
+        if r != 200:
+            print(str(r))
         if r == 200:
             jpg_data = (
                 cloudscraper.create_scraper(
@@ -168,6 +169,7 @@ def handleModSelected():
             # prints the int of the status code. Find more at httpstatusrappers.com :)    
         else:
             window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(250,250)))
+        print("Done Loading new mod selection")
 
     except requests.exceptions.MissingSchema:
         window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(250,250)))
@@ -195,6 +197,8 @@ def handleInstalledModSelected():
 def refreshInstalledList():
     subfolders = [ f.name for f in os.scandir(os.getenv('APPDATA') + "\\OpenGOAL-Mods") if f.is_dir() ]
     window["InstalledModListBox"].update(subfolders)
+    if (len(window['InstalledModListBox'].get())) == 0:
+        bootup()
 
 bootupcount = 0
 # Run the Event Loop
@@ -230,7 +234,9 @@ while True:
     elif event =='pick_modder':
         window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(1,1)))
         item = values[event]
+        print("\nChaning to this modder")
         print(item)
+        print("Done!")
         title_list = [i["name"] for i in moddersAndModsJSON[item]]
         window['pick_mod'].update(value=title_list[0], values=title_list)
         handleModSelected()
@@ -258,10 +264,12 @@ while True:
             #turn the button back on
             window['Launch!'].update(disabled=False)
         else:
+            bootup()
             sg.Popup('No mod selected', keep_on_top=True)
     elif event == "Uninstall":
         [tmpModderSelected, tmpModSelected] = handleInstalledModSelected()
-        if tmpModSelected:
+        if tmpModSelected and not tmpModSelected == "No Mods Installed":
+            print(tmpModSelected)
             dir = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + tmpModSelected
             ans = sg.popup_ok_cancel('Confirm: uninstalling ' + dir)
             if ans == 'OK':
@@ -271,7 +279,12 @@ while True:
                 window['-SELECTEDMODURL-'].update("")
                 window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(1,1)))
                 sg.popup('Uninstalled ' + tmpModSelected)
+                if (len(window['InstalledModListBox'].get())) == 0:
+                    bootup()
         else:
-            sg.popup('No mod selected')
+            if (len(window['InstalledModListBox'].get())) == 0:
+                bootup()
+            sg.Popup('No installed mod selected', keep_on_top=True)
+            
 
 window.close()

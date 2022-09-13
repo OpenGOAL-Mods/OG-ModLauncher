@@ -119,7 +119,7 @@ def launch(URL, MOD_NAME, LINK_TYPE):
     if LINK_TYPE == githubUtils.LinkTypes.BRANCH:
         launchUrl = githubUtils.branchToApiURL(URL)
 
-    print("launching from " + launchUrl)
+    print("\nlaunching from " + launchUrl)
     PARAMS = {'address':"yolo"} 
     r = json.loads(json.dumps(requests.get(url = launchUrl, params = PARAMS).json()))
 
@@ -155,6 +155,7 @@ def launch(URL, MOD_NAME, LINK_TYPE):
     if (needUpdate):
         
         #start the actual update method if needUpdate is true
+        print("\nNeed to update")
         print("Starting Update...")
         #Close Gk and goalc if they were open.
         try_kill_process("gk.exe")
@@ -167,10 +168,13 @@ def launch(URL, MOD_NAME, LINK_TYPE):
             print("Creating install dir: " + InstallDir)
             os.makedirs(InstallDir + "/temp")
 
+
+
+        print(requests.head(LatestRelAssetsURL).headers.get('content-length', None))
         print("Downloading update from " + LatestRelAssetsURL)
         file = urllib.request.urlopen(LatestRelAssetsURL)
         
-        print(file.length)
+        print(str("File size is ") + str(file.length))
         urllib.request.urlretrieve(LatestRelAssetsURL, InstallDir + "/temp/updateDATA.zip", show_progress)
         print("Done downloading")
         r = requests.head(LatestRelAssetsURL, allow_redirects=True)
@@ -222,7 +226,7 @@ def launch(URL, MOD_NAME, LINK_TYPE):
         #Close Gk and goalc if they were open.
         try_kill_process("gk.exe")
         try_kill_process("goalc.exe")
-
+        print("Done update starting extractor\n")
         extractor_command_list = [InstallDir +"\extractor.exe", "-f", iso_path]
         print(extractor_command_list)
         
@@ -242,4 +246,6 @@ def launch(URL, MOD_NAME, LINK_TYPE):
 
     else:
         #if we dont need to update, then close any open instances of the game and just launch it
+        print("Game is up to date!")
+        print("Launching now!")
         launch_local(MOD_NAME)
