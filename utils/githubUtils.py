@@ -9,6 +9,9 @@ import PIL.Image
 import io
 import base64
 from enum import Enum
+import json
+import requests
+import datetime
 
 class LinkTypes(Enum):
     BRANCH = 1
@@ -38,9 +41,28 @@ def returnModImageURL (URL):
     [linkType, URL] = identifyLinkType(URL)
     if linkType == LinkTypes.BRANCH:
         #print("image url branch detected method starting")
+        print(str(URL).replace('https://github.com/','https://raw.githubusercontent.com/').replace('/tree/','/') + '/ModImage.png')
         return str(URL).replace('https://github.com/','https://raw.githubusercontent.com/').replace('/tree/','/') + '/ModImage.png'
     elif linkType == LinkTypes.RELEASE:
-        return str(URL).replace('https://github.com/','https://raw.githubusercontent.com/').replace('https://api.github.com/repos/','https://raw.githubusercontent.com/').replace('/releases','/main') + '/ModImage.png'
+        print("Printing URL")
+        print(str(URL))
+        apiURL = str(URL).replace('https://github.com/','https://raw.githubusercontent.com/').replace('/releases','')
+        print(str(apiURL))
+        
+        
+        launchUrl = apiURL
+        r = json.loads(json.dumps(requests.get(url = launchUrl, params = {'address':"yolo"}).json()))
+        defaultBranch = r.get("default_branch")
+        
+        print("test")
+        print(apiURL)
+        imageURL = apiURL.replace('https://api.github.com/', 'https://raw.githubusercontent.com/').replace("repos/", "") + "/" + defaultBranch + "/" + "ModImage.png"
+        print(imageURL)
+       
+       # LatestRelAssetsURL = (json.loads(json.dumps(requests.get(url = r[0].get("assets_url"), params = {'address':"yolo"}).json())))[0].get("browser_download_url")
+        
+        
+        return imageURL
 
 def releaseToApiURL(URL):
     return str(URL).replace('https://github.com/','https://api.github.com/repos/')

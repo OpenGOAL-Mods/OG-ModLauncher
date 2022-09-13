@@ -167,13 +167,29 @@ def launch(URL, MOD_NAME, LINK_TYPE):
         if not os.path.exists(InstallDir + "/temp"):
             print("Creating install dir: " + InstallDir)
             os.makedirs(InstallDir + "/temp")
+        
+        
+        r = requests.get(LatestRelAssetsURL, allow_redirects=True)
+        r.status_code  # 302
+        print(r.url)  # http://github.com, not https.
+        print(r.headers)  # https://github.com/ -- the redirect destination
 
+        response = requests.get(LatestRelAssetsURL)
+        if response.history:
+            print("Request was redirected")
+            for resp in response.history:
+                print(resp.status_code, resp.url)
+                print("Final destination:")
+                print(response.status_code, response.url)
+                LatestRelAssetsURL = response.url
+                
+        else:
+            print("Request was not redirected")
+    
 
-
-        print(requests.head(LatestRelAssetsURL).headers.get('content-length', None))
         print("Downloading update from " + LatestRelAssetsURL)
         file = urllib.request.urlopen(LatestRelAssetsURL)
-        
+        print()
         print(str("File size is ") + str(file.length))
         urllib.request.urlretrieve(LatestRelAssetsURL, InstallDir + "/temp/updateDATA.zip", show_progress)
         print("Done downloading")
