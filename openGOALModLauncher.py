@@ -211,7 +211,7 @@ while True:
         [tmpModderSelected, tmpModSelected] = handleInstalledModSelected()
 
         if not tmpModderSelected:
-            sg.Popup('Installed mod not recognized!', keep_on_top=True)
+            sg.Popup('Installed mod not found in available mods!', keep_on_top=True)
             window['-SELECTEDMOD-'].update(tmpModSelected)
             window['-SELECTEDMODURL-'].update("")
             local_img = launcherUtils.local_mod_image(tmpModSelected)
