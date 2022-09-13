@@ -199,8 +199,6 @@ if bootupcount == 0:
 while True:
     event, values = window.read()
 
-    print(values)
-    
     if event == "Exit" or event == sg.WIN_CLOSED:
         break
     
