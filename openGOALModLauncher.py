@@ -34,6 +34,7 @@ currentModderSelected = None
 currentModSelected = None
 currentModURL = None
 currentModImage = None
+AppdataPATH = os.getenv('APPDATA')
 
 
 #comment this out if you want to test with a local file
@@ -111,6 +112,9 @@ def bootup():
     #print("BOOT")
     
     #installed mods
+    if not os.path.exists(AppdataPATH + "/OpenGOAL-mods"):
+        print("Creating Mod dir: " + AppdataPATH)
+        os.makedirs(AppdataPATH + "/OpenGOAL-mods")
     subfolders = [ f.name for f in os.scandir(os.getenv('APPDATA') + "\\OpenGOAL-Mods") if f.is_dir() ]
     if subfolders == []:
         subfolders = ["No Mods Installed"]
