@@ -106,7 +106,7 @@ png_bio = io.BytesIO()
 pil_image.save(png_bio, format="PNG")
 noimagefile = png_bio.getvalue()
 
-window = sg.Window('OpenGOAL Mod Launcher v0.02', layout, icon = iconfile, finalize=True)
+window = sg.Window('OpenGOAL Mod Launcher v0.03', layout, icon = iconfile, finalize=True)
 def bootup():
     #print("BOOT")
     
@@ -199,6 +199,7 @@ def refreshInstalledList():
     window["InstalledModListBox"].update(subfolders)
     if (len(window['InstalledModListBox'].get())) == 0:
         bootup()
+
 
 bootupcount = 0
 # Run the Event Loop
