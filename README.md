@@ -13,3 +13,5 @@ Dm me if you want help hosting your mods in a way the launcher can see them.
 **All code is ran at your own risk**
 You can audit it, build your own, and view the json here:
 <https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev>
+
+https://cdn.discordapp.com/attachments/759976382121377845/1019405780342030356/Launcher_with_autoupdater.exe
