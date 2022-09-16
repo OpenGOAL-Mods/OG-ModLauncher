@@ -18,6 +18,7 @@ import json
 import os.path
 import requests
 import sys
+import webbrowser
 
 
 
@@ -62,7 +63,8 @@ installed_mods_column = [
 
 mod_details_column = [
     [sg.Text("Selected Mod", font=("Helvetica", 14))], 
-    [sg.Text("", key="-SELECTEDMOD-"), sg.Text("", key="-SELECTEDMODURL-", visible=False)],
+    [sg.Text("", key="-SELECTEDMOD-")],
+    [sg.Text("Github", key="-GITHUB-", enable_events=True, font=("Helvetica", 10, "underline")), sg.Text("", key="-SELECTEDMODURL-", visible=False)],
     [sg.Image(key="-SELECTEDMODIMAGE-")],
     [sg.Btn(button_text="Launch!")]
 ]
@@ -145,7 +147,6 @@ def handleModSelected():
             tmpModURL = mod["URL"]
     
     tmpModImage = githubUtils.returnModImageURL(tmpModURL)
-
     
     url = tmpModImage
     try:
@@ -176,6 +177,8 @@ def handleModSelected():
 
     window['-SELECTEDMOD-'].update(tmpModSelected)
     window['-SELECTEDMODURL-'].update(tmpModURL)
+    window['-GITHUB-'].update(visible=True)
+
     return [tmpModderSelected, tmpModSelected, tmpModURL, tmpModImage]
 
 def handleInstalledModSelected():
@@ -219,6 +222,7 @@ while True:
             sg.Popup('Installed mod not found in available mods!', keep_on_top=True, icon = iconfile)
             window['-SELECTEDMOD-'].update(tmpModSelected)
             window['-SELECTEDMODURL-'].update("")
+            window['-GITHUB-'].update(visible=False)
             local_img = launcherUtils.local_mod_image(tmpModSelected)
             if local_img:
                 window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(local_img ,resize=(250,250)))
@@ -286,6 +290,10 @@ while True:
             if (len(window['InstalledModListBox'].get())) == 0:
                 bootup()
             sg.Popup('No installed mod selected', keep_on_top=True,icon = iconfile)
+    elif event == "-GITHUB-":
+        url = window['-SELECTEDMODURL-'].get()
+        if url:
+            webbrowser.open(url)
             
 
 window.close()
