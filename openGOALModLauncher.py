@@ -114,9 +114,9 @@ def bootup():
     #print("BOOT")
     
     #installed mods
-    if not os.path.exists(AppdataPATH + "/OpenGOAL-mods"):
+    if not os.path.exists(AppdataPATH + "/OpenGOAL-Mods"):
         print("Creating Mod dir: " + AppdataPATH)
-        os.makedirs(AppdataPATH + "/OpenGOAL-mods")
+        os.makedirs(AppdataPATH + "/OpenGOAL-Mods")
     subfolders = [ f.name for f in os.scandir(os.getenv('APPDATA') + "\\OpenGOAL-Mods") if f.is_dir() ]
     if subfolders == []:
         subfolders = ["No Mods Installed"]
