@@ -67,7 +67,7 @@ mod_details_column = [
     [sg.Text("", key="-SELECTEDMOD-")],
     [sg.Text("Github", key="-GITHUB-", enable_events=True, font=("Helvetica", 10, "underline")), sg.Text("", key="-SELECTEDMODURL-", visible=False)],
     [sg.Image(key="-SELECTEDMODIMAGE-")],
-    [sg.Btn(button_text="Launch!")]
+    [sg.Btn(button_text="Launch!"),sg.Btn(button_text="Uninstall",key="Uninstall_1"),sg.Btn(button_text="View mod on github!",key="-GITHUB-_1")]
 ]
 
 # ----- Full layout -----
@@ -294,7 +294,7 @@ while True:
         else:
             bootup()
             sg.Popup('No mod selected', keep_on_top=True, icon = iconfile)
-    elif event == "Uninstall":
+    elif event == "Uninstall" or event =="Uninstall_1":
         tmpModSelected = window['-SELECTEDMOD-'].get()
         tmpModURL = window['-SELECTEDMODURL-'].get()
         subfolders = [ f.name for f in os.scandir(os.getenv('APPDATA') + "\\OpenGOAL-Mods") if f.is_dir() ]
@@ -320,7 +320,7 @@ while True:
             if (len(window['InstalledModListBox'].get())) == 0:
                 bootup()
             sg.Popup('No installed mod selected', keep_on_top=True,icon = iconfile)
-    elif event == "-GITHUB-":
+    elif event == "-GITHUB-" or event == "-GITHUB-_1":
         url = window['-SELECTEDMODURL-'].get()
         if url:
             webbrowser.open(url)

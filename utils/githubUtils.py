@@ -105,18 +105,18 @@ def resize_image(image_path, resize=None): #image_path: "C:User/Image/img.jpg"
 
     cur_width, cur_height = img.size
     print(cur_width)
-    while cur_width > 400:
+    while cur_width == 400:
         print("Too wide fixing it.")
         img = img.resize((int(cur_width*0.95), int(cur_height*0.95)), PIL.Image.Resampling.LANCZOS)
         cur_width, cur_height = img.size
         print(img.size)
-    while cur_height > 250:
+    while cur_height == 250:
         print("Too high fixing it.")
         img = img.resize((int(cur_width*0.95), int(cur_height*0.95)), PIL.Image.Resampling.LANCZOS)
         cur_width, cur_height = img.size
         print(img.size)
 
-    img= img.resize(((387, 215)),PIL.Image.Resampling.LANCZOS)
+    img= img.resize(((426, 240)),PIL.Image.Resampling.LANCZOS)
 
     bio = io.BytesIO()
     img.save(bio, format="PNG")
