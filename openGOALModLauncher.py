@@ -53,7 +53,8 @@ mod_list_column = [
 	[sg.Text("Mod Creator")], 
     [sg.Combo(list(moddersAndModsJSON.keys()), enable_events=True, key='pick_modder', size=(40, 0))],
     [sg.Text("Their Mods")], 
-    [sg.Combo([], key='pick_mod', size=(40, 0),enable_events=True)]
+    [sg.Combo([], key='pick_mod', size=(40, 0),enable_events=True)],
+    [sg.Btn(button_text="Search Avaiable mods",key='mod_search')]
 ]
 
 installed_mods_column = [
@@ -80,7 +81,7 @@ layout = [
     sg.VSeparator(),
     sg.Column(mod_details_column)]
 ]
-
+sg.theme('Python')
 url= "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/appicon.ico"
 jpg_data = (
                 cloudscraper.create_scraper(
@@ -122,9 +123,9 @@ def bootup():
         subfolders = ["No Mods Installed"]
     #print(subfolders)
     window["InstalledModListBox"].update(subfolders)
-    print(subfolders[0])
+    print()
   
-    if subfolders == []:
+    if subfolders == [] or subfolders[0] == "No Mods Installed":
     #default mod selection on boot
         window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(1,1)))
         item = "Modding Community"
@@ -137,7 +138,7 @@ def bootup():
         currentModImage = None
         [currentModderSelected, currentModSelected, currentModURL, currentModImage] = handleModSelected()
     
-    if subfolders != []:
+    if subfolders != [] and subfolders[0] != "No Mods Installed":
     #if there is a mod installed, use the first one in the list.
     
         for modder in moddersAndModsJSON.keys():
@@ -159,6 +160,9 @@ def bootup():
 def handleModSelected():
     tmpModderSelected = window['pick_modder'].get()
     tmpModSelected = window['pick_mod'].get()
+    print("TEST")
+    print(tmpModderSelected)
+    print(tmpModSelected)
     tmpModURL = None
     tmpModImage = None
     print("\nLoading new mod selection one moment...")
@@ -191,6 +195,7 @@ def handleModSelected():
         else:
             window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(250,250)))
         print("Done Loading new mod selection")
+        changePlayInstallButtonText()
 
     except requests.exceptions.MissingSchema:
         window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(250,250)))
@@ -217,10 +222,131 @@ def handleInstalledModSelected():
 
     return [tmpModderSelected, tmpModSelected]
 
+def changePlayInstallButtonText():
+    print(currentModSelected)
+
+    print(window['pick_mod'].get())
+    subfolders = [ f.name for f in os.scandir(os.getenv('APPDATA') + "\\OpenGOAL-Mods") if f.is_dir() ]
+    if not window['pick_mod'].get() in subfolders:
+            window['Launch!'].update('Install')
+            window['Uninstall'].update(disabled=True)
+            window['Uninstall_1'].update(disabled=True)
+    else:
+        window['Launch!'].update('Launch!')
+        window['Uninstall'].update(disabled=False)
+        window['Uninstall_1'].update(disabled=False)
+        
+
 def refreshInstalledList():
     subfolders = [ f.name for f in os.scandir(os.getenv('APPDATA') + "\\OpenGOAL-Mods") if f.is_dir() ]
     window["InstalledModListBox"].update(subfolders)
 
+def open_search():
+    names = []
+    for modder in moddersAndModsJSON.keys():
+        for mod in moddersAndModsJSON[modder]:
+            if not mod["name"] in names:
+                names.append(mod["name"])    
+                print(window.size)
+
+
+    layout = [[sg.Text('Search for offered mods')],
+          [sg.Input(size=window.size, enable_events=True, key='-INPUT-')],
+          [sg.Listbox(names, size=window.size, enable_events=True, key='-LIST-')],
+          [sg.Button('Chrome'), sg.Button('Exit')]]
+
+    window2 = sg.Window('Search for offered mods', layout, keep_on_top=True,icon = iconfile, size=window.size,location = window.CurrentLocation())
+# Event Loop
+    while True:
+        event, values = window2.read()
+        if event in (sg.WIN_CLOSED, 'Exit'):                # always check for closed window
+            break
+        if values['-INPUT-'] != '':                         # if a keystroke entered in search field
+            search = values['-INPUT-'].lower()
+            new_values = [x for x in names if search.lower() in x.lower()]  # do the filtering
+            window2['-LIST-'].update(new_values)     # display in the listbox
+            
+            
+            print(len(values['-LIST-']))
+            if event == '-LIST-':
+                print(values['-LIST-'][0])
+                print("was CLICKED!")
+                currentMOD = "unkown"
+                p=0
+                for modder in moddersAndModsJSON.keys():
+                      
+                        for mod in moddersAndModsJSON[modder]:
+                           
+                            print(mod["name"])
+                            print(values['-LIST-'][0])
+                            if mod["name"].lower() == values['-LIST-'][0].lower():
+                                print("MATCH")
+                                indexOfMod = p
+                                currentMOD = modder
+                            
+                print(currentMOD)
+                item = currentMOD
+                window['pick_modder'].update(item)
+                
+                title_list = [i["name"] for i in moddersAndModsJSON[item]]
+                p=-1
+                for title in title_list:
+                    p=p+1
+          
+                    if title == values['-LIST-'][0]:
+                        print("MATCH")
+                        indexOfMod = p
+     
+                window['pick_mod'].update(value=title_list[indexOfMod], values=title_list)
+                currentModderSelected = modder
+                currentModSelected = values['-LIST-'][0]
+                
+                currentModImage = None
+                handleModSelected()
+                window2.close()
+                #sg.popup('Selected ', values['-LIST-'], keep_on_top=True,icon = iconfile)
+
+
+            
+        else:
+            # display original unfiltered list
+            window2['-LIST-'].update(names)
+            # if a list item is chosen
+            print(len(values['-LIST-']))
+            if event == '-LIST-':
+                print(values['-LIST-'][0])
+                print("was CLICKED!")
+                currentMOD = "unkown"
+                for modder in moddersAndModsJSON.keys():
+                        for mod in moddersAndModsJSON[modder]:
+                            print(mod["name"])
+                            print(values['-LIST-'][0])
+                            if mod["name"].lower() == values['-LIST-'][0].lower():
+                                print("MATCH")
+                                currentMOD = modder
+                print(currentMOD)
+                item = currentMOD
+                window['pick_modder'].update(item)
+                
+                title_list = [i["name"] for i in moddersAndModsJSON[item]]
+                p=-1
+                for title in title_list:
+                    p=p+1
+          
+                    if title == values['-LIST-'][0]:
+                        print("MATCH")
+                        indexOfMod = p
+     
+                window['pick_mod'].update(value=title_list[indexOfMod], values=title_list)
+                currentModderSelected = modder
+                currentModSelected = values['-LIST-'][0]
+                
+                currentModImage = None
+                handleModSelected()
+                window2.close()
+                #sg.popup('Selected ', values['-LIST-'], keep_on_top=True,icon = iconfile)
+
+    window2.close()
 
 
 bootupcount = 0
@@ -268,6 +394,9 @@ while True:
         handleModSelected()
     elif event =='pick_mod':
         handleModSelected()
+    elif event == 'mod_search':
+        open_search()
+        
     elif event == "Launch!":
         tmpModSelected = window['-SELECTEDMOD-'].get()
         tmpModURL = window['-SELECTEDMODURL-'].get()
