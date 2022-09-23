@@ -204,8 +204,7 @@ def handleInstalledModSelected():
 def refreshInstalledList():
     subfolders = [ f.name for f in os.scandir(os.getenv('APPDATA') + "\\OpenGOAL-Mods") if f.is_dir() ]
     window["InstalledModListBox"].update(subfolders)
-    if (len(window['InstalledModListBox'].get())) == 0:
-        bootup()
+
 
 
 bootupcount = 0
@@ -240,6 +239,8 @@ while True:
             handleModSelected()
     elif event == "Refresh":
         refreshInstalledList()
+        if (len(window['InstalledModListBox'].get())) == 0:
+            bootup()
     elif event =='pick_modder':
         window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(1,1)))
         item = values[event]
@@ -284,6 +285,8 @@ while True:
             if ans == 'OK':
                 launcherUtils.try_remove_dir(dir)
                 refreshInstalledList()
+                if (len(window['InstalledModListBox'].get())) == 0:
+                    bootup()
                 window['-SELECTEDMOD-'].update("")
                 window['-SELECTEDMODURL-'].update("")
                 window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(1,1)))

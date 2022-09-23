@@ -24,6 +24,10 @@ IF /I "%AREYOUSURE%" NEQ "Y" GOTO progressbar
 pip install Pillow
 :progressbar
 SET /P AREYOUSURE=Install progressbar (Y/[N])?
-IF /I "%AREYOUSURE%" NEQ "Y" GOTO install
+IF /I "%AREYOUSURE%" NEQ "Y" GOTO cloudscraper
 pip install progressbar
+:cloudscraper
+SET /P AREYOUSURE=Install cloudscraper (Y/[N])?
+IF /I "%AREYOUSURE%" NEQ "Y" GOTO install
+pip install cloudscraper
 :install
