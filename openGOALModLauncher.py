@@ -277,7 +277,8 @@ while True:
             bootup()
             sg.Popup('No mod selected', keep_on_top=True, icon = iconfile)
     elif event == "Uninstall":
-        [tmpModderSelected, tmpModSelected] = handleInstalledModSelected()
+        tmpModSelected = window['-SELECTEDMOD-'].get()
+        tmpModURL = window['-SELECTEDMODURL-'].get()
         if tmpModSelected and not tmpModSelected == "No Mods Installed":
             print(tmpModSelected)
             dir = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + tmpModSelected
