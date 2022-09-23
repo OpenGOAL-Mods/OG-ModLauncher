@@ -122,23 +122,39 @@ def bootup():
         subfolders = ["No Mods Installed"]
     #print(subfolders)
     window["InstalledModListBox"].update(subfolders)
-    
+    print(subfolders[0])
+  
+    if subfolders == []:
     #default mod selection on boot
-    window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(1,1)))
-    item = "Modding Community"
-    window['pick_modder'].update(item)
+        window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(1,1)))
+        item = "Modding Community"
+        window['pick_modder'].update(item)
+        title_list = [i["name"] for i in moddersAndModsJSON[item]]
+        window['pick_mod'].update(value=title_list[0], values=title_list)
+        currentModderSelected = "Modding Community"
+        currentModSelected = "Randomizer"
+        currentModURL = "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
+        currentModImage = None
+        [currentModderSelected, currentModSelected, currentModURL, currentModImage] = handleModSelected()
     
-    title_list = [i["name"] for i in moddersAndModsJSON[item]]
-    window['pick_mod'].update(value=title_list[0], values=title_list)
-
-
-
-    currentModderSelected = "Modding Community"
-    currentModSelected = "Randomizer"
-    currentModURL = "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
-    currentModImage = None
-
-    [currentModderSelected, currentModSelected, currentModURL, currentModImage] = handleModSelected()
+    if subfolders != []:
+    #if there is a mod installed, use the first one in the list.
+    
+        for modder in moddersAndModsJSON.keys():
+                for mod in moddersAndModsJSON[modder]:
+                    if mod["name"] == subfolders[0]:
+                        currentMOD = modder
+        print(currentMOD)
+        window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(1,1)))
+        item = currentMOD
+        window['pick_modder'].update(item)
+        title_list = [i["name"] for i in moddersAndModsJSON[item]]
+        window['pick_mod'].update(value=title_list[0], values=title_list)
+        currentModderSelected = modder
+        currentModSelected = subfolders[0]
+        currentModURL = "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
+        currentModImage = None
+        [currentModderSelected, currentModSelected, currentModURL, currentModImage] = handleModSelected()
 	
 def handleModSelected():
     tmpModderSelected = window['pick_modder'].get()
@@ -259,9 +275,11 @@ while True:
         if tmpModURL:
             # online launch
             window['Launch!'].update(disabled=True)
+            window['Launch!'].update('Updating...')
             [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
             launcherUtils.launch(tmpModURL, tmpModSelected, linkType)
             #turn the button back on
+            window['Launch!'].update('Launch!')
             window['Launch!'].update(disabled=False)
             #may have installed new mod, update list
             refreshInstalledList()
@@ -279,7 +297,11 @@ while True:
     elif event == "Uninstall":
         tmpModSelected = window['-SELECTEDMOD-'].get()
         tmpModURL = window['-SELECTEDMODURL-'].get()
-        if tmpModSelected and not tmpModSelected == "No Mods Installed":
+        subfolders = [ f.name for f in os.scandir(os.getenv('APPDATA') + "\\OpenGOAL-Mods") if f.is_dir() ]
+        if subfolders == []:
+            subfolders = ["No Mods Installed"]
+            
+        if tmpModSelected and not tmpModSelected == "No Mods Installed" and tmpModSelected in subfolders:
             print(tmpModSelected)
             dir = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + tmpModSelected
             ans = sg.popup_ok_cancel('Confirm: uninstalling ' + dir ,icon = iconfile)
