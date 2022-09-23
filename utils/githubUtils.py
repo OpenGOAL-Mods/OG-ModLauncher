@@ -41,7 +41,7 @@ def returnModImageURL (URL):
     [linkType, URL] = identifyLinkType(URL)
     if linkType == LinkTypes.BRANCH:
         #print("image url branch detected method starting")
-        print(str(URL).replace('https://github.com/','https://raw.githubusercontent.com/').replace('/tree/','/') + '/ModImage.png')
+        #print(str(URL).replace('https://github.com/','https://raw.githubusercontent.com/').replace('/tree/','/') + '/ModImage.png')
         return str(URL).replace('https://github.com/','https://raw.githubusercontent.com/').replace('/tree/','/') + '/ModImage.png'
     elif linkType == LinkTypes.RELEASE:
         print("Printing URL")
@@ -73,10 +73,9 @@ def returnDefaultBranch (URL):
         r = json.loads(json.dumps(requests.get(url = launchUrl, params = {'address':"yolo"}).json()))
         defaultBranch = r.get("default_branch")
         
-        print("test")
-        print(apiURL)
+
         imageURL = apiURL.replace('https://api.github.com/', 'https://raw.githubusercontent.com/').replace("repos/", "") + "/" + defaultBranch + "/" + "ModImage.png"
-        print(imageURL)
+    
        
        # LatestRelAssetsURL = (json.loads(json.dumps(requests.get(url = r[0].get("assets_url"), params = {'address':"yolo"}).json())))[0].get("browser_download_url")
         
@@ -104,7 +103,7 @@ def resize_image(image_path, resize=None): #image_path: "C:User/Image/img.jpg"
             img = PIL.Image.open(data_bytes_io)
 
     cur_width, cur_height = img.size
-    print(cur_width)
+  
     while cur_width == 400:
         print("Too wide fixing it.")
         img = img.resize((int(cur_width*0.95), int(cur_height*0.95)), PIL.Image.Resampling.LANCZOS)
@@ -120,6 +119,5 @@ def resize_image(image_path, resize=None): #image_path: "C:User/Image/img.jpg"
 
     bio = io.BytesIO()
     img.save(bio, format="PNG")
-    print(img.size)
     del img
     return bio.getvalue()

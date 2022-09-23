@@ -160,9 +160,6 @@ def bootup():
 def handleModSelected():
     tmpModderSelected = window['pick_modder'].get()
     tmpModSelected = window['pick_mod'].get()
-    print("TEST")
-    print(tmpModderSelected)
-    print(tmpModSelected)
     tmpModURL = None
     tmpModImage = None
     print("\nLoading new mod selection one moment...")
@@ -223,9 +220,7 @@ def handleInstalledModSelected():
     return [tmpModderSelected, tmpModSelected]
 
 def changePlayInstallButtonText():
-    print(currentModSelected)
 
-    print(window['pick_mod'].get())
     subfolders = [ f.name for f in os.scandir(os.getenv('APPDATA') + "\\OpenGOAL-Mods") if f.is_dir() ]
     if not window['pick_mod'].get() in subfolders:
             window['Launch!'].update('Install')
@@ -247,7 +242,7 @@ def open_search():
         for mod in moddersAndModsJSON[modder]:
             if not mod["name"] in names:
                 names.append(mod["name"])    
-                print(window.size)
+
 
 
     layout = [[sg.Text('Search for offered mods')],
@@ -298,10 +293,6 @@ def open_search():
                         indexOfMod = p
      
                 window['pick_mod'].update(value=title_list[indexOfMod], values=title_list)
-                currentModderSelected = modder
-                currentModSelected = values['-LIST-'][0]
-                
-                currentModImage = None
                 handleModSelected()
                 window2.close()
                 #sg.popup('Selected ', values['-LIST-'], keep_on_top=True,icon = iconfile)
@@ -338,10 +329,6 @@ def open_search():
                         indexOfMod = p
      
                 window['pick_mod'].update(value=title_list[indexOfMod], values=title_list)
-                currentModderSelected = modder
-                currentModSelected = values['-LIST-'][0]
-                
-                currentModImage = None
                 handleModSelected()
                 window2.close()
                 #sg.popup('Selected ', values['-LIST-'], keep_on_top=True,icon = iconfile)
