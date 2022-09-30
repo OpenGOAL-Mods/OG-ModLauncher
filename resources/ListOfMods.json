@@ -21,6 +21,10 @@
   ],
   "ZedB0T": [
     {
+      "name": "First Person Mode",
+      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/First-person-jak"
+    },
+    {
       "name": "Classic+",
       "URL": "https://github.com/Zedb0T/Zed-Mods/tree/Classic+-Release"
     },
