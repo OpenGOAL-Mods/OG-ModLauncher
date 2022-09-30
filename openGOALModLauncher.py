@@ -20,7 +20,10 @@ import requests
 import sys
 import webbrowser
 
-
+import os
+from os.path import exists
+import urllib.request
+import shutil
 
 # Folder where script is placed, It looks in this for the Exectuable
 if getattr(sys, 'frozen', False):
@@ -35,6 +38,7 @@ currentModderSelected = None
 currentModSelected = None
 currentModURL = None
 currentModImage = None
+steamDIR = None
 AppdataPATH = os.getenv('APPDATA')
 
 
@@ -62,6 +66,8 @@ installed_mods_column = [
     [sg.Listbox(values=["This List is not", "Classic+"],size=(40,5),key="InstalledModListBox",enable_events=True)],
     [sg.Btn(button_text="Refresh"), sg.Btn(button_text="Uninstall")],
 ]
+installed_mods_column[2].append(sg.Btn(button_text="Add to Steam",key='AddToSteam',enable_events=True))
+
 
 mod_details_column = [
     [sg.Text("Selected Mod", font=("Helvetica", 14))], 
@@ -111,6 +117,7 @@ pil_image.save(png_bio, format="PNG")
 noimagefile = png_bio.getvalue()
 
 window = sg.Window('OpenGOAL Mod Launcher v0.03', layout, icon = iconfile, finalize=True)
+window.Element('AddToSteam').Update(visible = False)
 def bootup():
     #print("BOOT")
     
@@ -139,7 +146,7 @@ def bootup():
         [currentModderSelected, currentModSelected, currentModURL, currentModImage] = handleModSelected()
     
     if subfolders != [] and subfolders[0] != "No Mods Installed":
-    #if there is a mod installed, use the first one in the list.
+    #if there is a mod installed, use the first one in the list on boot.
     
         for modder in moddersAndModsJSON.keys():
                 for mod in moddersAndModsJSON[modder]:
@@ -150,13 +157,19 @@ def bootup():
         item = currentMOD
         window['pick_modder'].update(item)
         title_list = [i["name"] for i in moddersAndModsJSON[item]]
-        window['pick_mod'].update(value=title_list[0], values=title_list)
+        #below is not correct but it does work.
+        window['pick_mod'].update(value=subfolders[0], values=title_list)
+        
         currentModderSelected = modder
         currentModSelected = subfolders[0]
         currentModURL = "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
         currentModImage = None
         [currentModderSelected, currentModSelected, currentModURL, currentModImage] = handleModSelected()
-	
+    if window['-SELECTEDMOD-'].get().lower() == "local multiplayer (beta) + randomizer":
+            window.Element('AddToSteam').Update(visible = True)
+    else:
+            window.Element('AddToSteam').Update(visible = False)
+
 def handleModSelected():
     tmpModderSelected = window['pick_modder'].get()
     tmpModSelected = window['pick_mod'].get()
@@ -236,8 +249,37 @@ def refreshInstalledList():
     subfolders = [ f.name for f in os.scandir(os.getenv('APPDATA') + "\\OpenGOAL-Mods") if f.is_dir() ]
     window["InstalledModListBox"].update(subfolders)
 
+def open_steamPrompt():
+    filelayout = [ [sg.FolderBrowse("Select Steam Directory",enable_events=True,key="PICKSTEAMDIR")]]
+    filewindow = sg.Window('Search for offered mods', filelayout, keep_on_top=True,icon = iconfile, size=window.size,location = window.CurrentLocation())
+    
+    # Event Loop
+    while True:
+            event, values = filewindow.read()
+            print(event)
+            print(values[event])
+            if event in (sg.WIN_CLOSED, 'Exit'):                # always check for closed window
+                break
+            if exists(values[event]+"/steam.exe"):
+                print("FOUND STEAM DIR")
+                print(values[event])
+                steamDIR = values[event]
+                print(steamDIR)
+                filewindow.close()
+                return steamDIR
+            else:
+                sg.popup("Did not find Steam install Directory try again",keep_on_top=True)
+            
+            
+            
+    else:
+        filewindow.close()
+
+
+
 def open_search():
     names = []
+
     for modder in moddersAndModsJSON.keys():
         for mod in moddersAndModsJSON[modder]:
             if not mod["name"] in names:
@@ -380,7 +422,14 @@ while True:
         window['pick_mod'].update(value=title_list[0], values=title_list)
         handleModSelected()
     elif event =='pick_mod':
+
+            
         handleModSelected()
+        if window['-SELECTEDMOD-'].get().lower() == "local multiplayer (beta) + randomizer":
+            window.Element('AddToSteam').Update(visible = True)
+        else:
+            window.Element('AddToSteam').Update(visible = False)
+
     elif event == 'mod_search':
         open_search()
         
@@ -437,9 +486,52 @@ while True:
                 bootup()
             sg.Popup('No installed mod selected', keep_on_top=True,icon = iconfile)
     elif event == "-GITHUB-" or event == "-GITHUB-_1":
+        window = window.refresh()
         url = window['-SELECTEDMODURL-'].get()
         if url:
             webbrowser.open(url)
+    elif event == "AddToSteam":
+        print("STEAM BUTTON HIT")
+        if exists(r"C:\Program Files (x86)\Steam"):
+            steamDIR = r"C:\Program Files (x86)\Steam"
+            print("FOUND STEAM DIR")
+        else:
+            print("trying to find it")
+            steamDIR = open_steamPrompt()
             
+
+                     
+
+
+            
+            
+            
+        if exists(steamDIR + "\steamapps\common\Play With Gilbert"):
+            print("FOUND GILBERT")
+            if sg.PopupYesNo('Do you want to replace Play With Gilbert with the unoffical Mod Launcher?') == "Yes":
+                print("Preparing to replace Gilbert")
+                launcherUtils.try_remove_file(steamDIR + "\steamapps\common\Play With Gilbert\PlayWithGilbert.exe")
+                autoUpdaterURL = "https://github.com/OpenGOAL-Unofficial-Mods/OpenGOAL-Unofficial-Mods.github.io/raw/main/Launcher%20with%20autoupdater.exe"
+                print("Downloading update from " + autoUpdaterURL)
+                file = urllib.request.urlopen(autoUpdaterURL)
+                print()
+                print(str("File size is ") + str(file.length))
+                urllib.request.urlretrieve(autoUpdaterURL, "PlaywithGilbert.exe", launcherUtils.show_progress)
+                print("Done downloading")
+                print("moving to steam")
+                shutil.move("PlaywithGilbert.exe", steamDIR + "\steamapps\common\Play With Gilbert\\")
+                if sg.PopupYesNo('Do you ever want to play the real Play with Gilbert') == "Yes":
+                    sg.Popup("Ok we will leave the Play with Gilbert files")
+                else:
+                    sg.Popup("Ok removing the play with gilbert game files to save space. ( :( )")
+                    launcherUtils.try_remove_dir(steamDIR + "\steamapps\common\Play With Gilbert\Engine")
+                    launcherUtils.try_remove_dir(steamDIR + "\steamapps\common\Play With Gilbert\PWG_2020")
+                sg.Popup("Mod Launcher added to steam, launch by playing \"Play with Gilbert\" in Steam.")
+            else:
+                sg.Popup("Understandable")
+            
+        else:
+            sg.Popup("Did not find play with gilbert please download from " + "https://store.steampowered.com/app/1359630/Play_With_Gilbert__A_Small_Tail" , keep_on_top=True,icon = iconfile)
+       
 
 window.close()
