@@ -64,10 +64,19 @@ installed_mods_column = [
 
 mod_details_column = [
     [sg.Text("Selected Mod", font=("Helvetica", 14))], 
-    [sg.Text("", key="-SELECTEDMOD-")],
-    [sg.Text("Github", key="-GITHUB-", enable_events=True, font=("Helvetica", 10, "underline")), sg.Text("", key="-SELECTEDMODURL-", visible=False)],
+    [
+        sg.Text("", key="-SELECTEDMOD-"),
+        sg.Text("", key="-SELECTEDMODURL-", visible=False)
+    ],
+    [sg.Text("", key="-SELECTEDMODDESC-")],
     [sg.Image(key="-SELECTEDMODIMAGE-")],
-    [sg.Btn(button_text="Launch!"),sg.Btn(button_text="Uninstall",key="Uninstall_1"),sg.Btn(button_text="View mod on github!",key="-GITHUB-_1")]
+    [
+        sg.Btn(button_text="Launch!"),
+        sg.Btn(button_text="View Folder",key="ViewFolder_1"),
+        sg.Btn(button_text="Reinstall",key="Reinstall_1"),
+        sg.Btn(button_text="Uninstall",key="Uninstall_1"),
+        sg.Btn(button_text="View mod on github!",key="-GITHUB-_1")
+    ]
 ]
 
 # ----- Full layout -----
@@ -160,11 +169,14 @@ def handleModSelected():
     tmpModderSelected = window['pick_modder'].get()
     tmpModSelected = window['pick_mod'].get()
     tmpModURL = None
+    tmpModDesc = "<No description available>"
     tmpModImage = None
     print("\nLoading new mod selection one moment...")
     for mod in moddersAndModsJSON[tmpModderSelected]:
         if mod["name"] == tmpModSelected:
             tmpModURL = mod["URL"]
+            if mod.get("desc"):
+                tmpModDesc = mod["desc"]
     
     tmpModImage = githubUtils.returnModImageURL(tmpModURL)
     
@@ -196,8 +208,8 @@ def handleModSelected():
         window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(250,250)))
 
     window['-SELECTEDMOD-'].update(tmpModSelected)
+    window['-SELECTEDMODDESC-'].update(tmpModDesc)
     window['-SELECTEDMODURL-'].update(tmpModURL)
-    window['-GITHUB-'].update(visible=True)
 
     return [tmpModderSelected, tmpModSelected, tmpModURL, tmpModImage]
 
@@ -240,8 +252,8 @@ while True:
         if not tmpModderSelected:
             sg.Popup('Installed mod not found in available mods!', keep_on_top=True, icon = iconfile)
             window['-SELECTEDMOD-'].update(tmpModSelected)
+            window['-SELECTEDMODDESC-'].update("<No description available>")
             window['-SELECTEDMODURL-'].update("")
-            window['-GITHUB-'].update(visible=False)
             local_img = launcherUtils.local_mod_image(tmpModSelected)
             if local_img:
                 window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(local_img ,resize=(250,250)))
@@ -294,6 +306,41 @@ while True:
         else:
             bootup()
             sg.Popup('No mod selected', keep_on_top=True, icon = iconfile)
+    elif event == "ViewFolder_1":
+        tmpModSelected = window['-SELECTEDMOD-'].get()
+        tmpModURL = window['-SELECTEDMODURL-'].get()
+        subfolders = [ f.name for f in os.scandir(os.getenv('APPDATA') + "\\OpenGOAL-Mods") if f.is_dir() ]
+        if subfolders == []:
+            subfolders = ["No Mods Installed"]
+            
+        if tmpModSelected and not tmpModSelected == "No Mods Installed" and tmpModSelected in subfolders:
+            print(tmpModSelected)
+            dir = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + tmpModSelected
+            launcherUtils.openFolder(dir)
+        else:
+            if (len(window['InstalledModListBox'].get())) == 0:
+                bootup()
+            sg.Popup('No installed mod selected', keep_on_top=True,icon = iconfile)
+    elif event == "Reinstall_1":
+        tmpModSelected = window['-SELECTEDMOD-'].get()
+        tmpModURL = window['-SELECTEDMODURL-'].get()
+        subfolders = [ f.name for f in os.scandir(os.getenv('APPDATA') + "\\OpenGOAL-Mods") if f.is_dir() ]
+        if subfolders == []:
+            subfolders = ["No Mods Installed"]
+            
+        if tmpModSelected and not tmpModSelected == "No Mods Installed" and tmpModSelected in subfolders:
+            print(tmpModSelected)
+            dir = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + tmpModSelected
+            ans = sg.popup_ok_cancel('Confirm: reinstalling ' + dir + " \n\nNote: this will re-extract texture_replacements too",icon = iconfile)
+            if ans == 'OK':
+                launcherUtils.reinstall(tmpModSelected)
+                refreshInstalledList()
+                if (len(window['InstalledModListBox'].get())) == 0:
+                    bootup()
+        else:
+            if (len(window['InstalledModListBox'].get())) == 0:
+                bootup()
+            sg.Popup('No installed mod selected', keep_on_top=True,icon = iconfile)
     elif event == "Uninstall" or event =="Uninstall_1":
         tmpModSelected = window['-SELECTEDMOD-'].get()
         tmpModURL = window['-SELECTEDMODURL-'].get()
@@ -311,6 +358,7 @@ while True:
                 if (len(window['InstalledModListBox'].get())) == 0:
                     bootup()
                 window['-SELECTEDMOD-'].update("")
+                window['-SELECTEDMODDESC-'].update("")
                 window['-SELECTEDMODURL-'].update("")
                 window['-SELECTEDMODIMAGE-'].update(githubUtils.resize_image(noimagefile ,resize=(1,1)))
                 sg.popup('Uninstalled ' + tmpModSelected,icon = iconfile)
@@ -320,7 +368,7 @@ while True:
             if (len(window['InstalledModListBox'].get())) == 0:
                 bootup()
             sg.Popup('No installed mod selected', keep_on_top=True,icon = iconfile)
-    elif event == "-GITHUB-" or event == "-GITHUB-_1":
+    elif event == "-GITHUB-_1":
         url = window['-SELECTEDMODURL-'].get()
         if url:
             webbrowser.open(url)
