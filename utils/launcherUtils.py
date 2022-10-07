@@ -109,6 +109,53 @@ def launch_local(MOD_NAME):
     except e:
         return str(e)
 
+def openFolder(path):
+    FILEBROWSER_PATH = os.path.join(os.getenv('WINDIR'), 'explorer.exe')
+    subprocess.run([FILEBROWSER_PATH, path])
+
+def reinstall(MOD_NAME):
+    InstallDir = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + MOD_NAME
+    AppdataPATH = os.getenv('APPDATA')
+    UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data\iso_data"
+    GKCOMMANDLINElist = [InstallDir +"\gk.exe", "-proj-path", InstallDir + "\\data", "-boot", "-fakeiso", "-v"]
+
+    #if ISO_DATA has content, store this path to pass to the extractor
+    if (exists(UniversalIsoPath +r"\jak1\Z6TAIL.DUP")):
+        iso_path = UniversalIsoPath + "\jak1"
+    else:
+        #if ISO_DATA is empty, prompt for their ISO and store its path.
+        root = tk.Tk()
+        print("Please select your iso.")
+        root.title("Select ISO")
+        root.geometry('230x1')
+        iso_path = filedialog.askopenfilename()
+        root.destroy()
+        if (pathlib.Path(iso_path).is_file):
+            if ((not (pathlib.Path(iso_path).suffix).lower() == '.iso')):
+                1/0
+
+    #Close Gk and goalc if they were open.
+    try_kill_process("gk.exe")
+    try_kill_process("goalc.exe")
+    print("Done update starting extractor\n")
+    extractor_command_list = [InstallDir +"\extractor.exe", "-f", iso_path]
+    print(extractor_command_list)
+    
+    subprocess.Popen(extractor_command_list)
+
+    #wait for extractor to finish
+    while (process_exists("extractor.exe")):
+            print("extractor.exe still running, sleeping for 1s")
+            time.sleep(1)
+    
+    #move the extrated contents to the universal launchers directory for next time.
+    if not (exists(( UniversalIsoPath + r"\jak1\Z6TAIL.DUP"))):
+        #os.makedirs(AppdataPATH + "\OpenGOAL-Launcher\data\iso_data")
+        print("The new directory is created!")
+        shutil.move(InstallDir + "/data/iso_data", "" + UniversalIsoPath +"")
+        #try_remove_dir(InstallDir + "/data/iso_data")
+        #os.symlink("" + UniversalIsoPath +"", InstallDir + "/data/iso_data")
+
 def launch(URL, MOD_NAME, LINK_TYPE):
     if URL is None:
         return

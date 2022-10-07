@@ -2,82 +2,99 @@
   "Modding Community": [
     {
       "name": "Randomizer",
+      "desc": "Warp to a random checkpoint on various triggers (cells, flies, orbs, eco, death).",
       "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
     },
     {
       "name": "Local Multiplayer (beta) + Randomizer",
+      "desc": "Shared-screen multiplayer, with Randomizer options available.",
       "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-multiplayer-rando-mod-pack/tree/main"
     }
   ],
   "HimHam": [
     {
       "name": "MicroTransactions",
+      "desc": "Unlock Jak's moveset with orbs!",
       "URL": "https://github.com/himham-jak/Jak1-but-Microtransactions/releases"
     },
     {
       "name": "Jak1 but every power cell he gets faster",
+      "desc": "^ seems pretty self-explanatory to me.",
       "URL": "https://github.com/himham-jak/Jak-1-Movement-Mod/releases"
     }
   ],
   "ZedB0T": [
     {
       "name": "First Person Mode",
+      "desc": "Play the whole game from Jak's POV.",
       "URL": "https://github.com/OpenGOAL-Unofficial-Mods/First-person-jak"
     },
     {
       "name": "Classic+",
+      "desc": "Mimicks PS2 speedrun behavior with some openGOAL QoL improvements.",
       "URL": "https://github.com/Zedb0T/Zed-Mods/tree/Classic+-Release"
     },
     {
       "name": "Randomizer",
+      "desc": "Warp to a random checkpoint on various triggers (cells, flies, orbs, eco, death).",
       "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
     },
     {
       "name": "The FlutFlut Legacy",
+      "desc": "Play the whole game on FlutFlut.",
       "URL": "https://github.com/Zedb0T/TheFlutFlutLegacy"
     },
     {
       "name": "The Zoomer Legacy",
+      "desc": "Play the whole game on the Zoomer.",
       "URL": "https://github.com/Zedb0T/The-Zoomer-Legacy"
     },
     {
       "name": "Ice Everywhere",
+      "desc": "Slippery ice physics on all surfaces.",
       "URL": "https://github.com/Zedb0T/iceverywhere/releases"
     }
   ],
   "Barg": [
     {
       "name": "Randomizer",
+      "desc": "Warp to a random checkpoint on various triggers (cells, flies, orbs, eco, death).",
       "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
     },
     {
       "name": "Local Multiplayer (beta) + Randomizer",
+      "desc": "Shared-screen multiplayer, with Randomizer options available.",
       "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-multiplayer-rando-mod-pack/tree/main"
     },
     {
       "name": "The FlutFlut Legacy + Randomizer",
+      "desc": "Play the whole game on FlutFlut, with Randomizer options available.",
       "URL": "https://github.com/dallmeyer/TheFlutFlutLegacy/tree/rando"
     },
     {
       "name": "The Zoomer Legacy (WIP)",
+      "desc": "Play the whole game on the Zoomer, with various changes to better explore the entire game.",
       "URL": "https://github.com/dallmeyer/The-Zoomer-Legacy"
     }
   ],
   "Inirdin": [
     {
       "name": "Texture Showcase",
+      "desc": "Showcase of various updated textures.",
       "URL": "https://github.com/Inirdin/opengoal-inirdin-texture-showcase/tree/main"
     }
   ],
   "InnocentMiau": [
     {
       "name": "Snowy Legacy",
+      "desc": "Snowy texture pack and snowy weather everywhere.",
       "URL": "https://github.com/kekdeveloper/opengoal-mod-snowy-legacy/tree/main"
     }
   ],
   "Ruh": [
     {
       "name": "TO BE ADDED",
+      "desc": "Uh...",
       "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
     }
   ]
