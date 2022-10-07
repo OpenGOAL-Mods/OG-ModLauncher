@@ -171,8 +171,8 @@ def launch(URL, MOD_NAME, LINK_TYPE):
         
         r = requests.get(LatestRelAssetsURL, allow_redirects=True)
         r.status_code  # 302
-        print(r.url)  # http://github.com, not https.
-        print(r.headers)  # https://github.com/ -- the redirect destination
+        #print(r.url)  # http://github.com, not https.
+        #print(r.headers)  # https://github.com/ -- the redirect destination
 
         response = requests.get(LatestRelAssetsURL)
         if response.history:
@@ -242,7 +242,7 @@ def launch(URL, MOD_NAME, LINK_TYPE):
         #Close Gk and goalc if they were open.
         try_kill_process("gk.exe")
         try_kill_process("goalc.exe")
-        print("Done update starting extractor\n")
+        print("Done update starting extractor This one can take a few moments! \n")
         extractor_command_list = [InstallDir +"\extractor.exe", "-f", iso_path]
         print(extractor_command_list)
         
