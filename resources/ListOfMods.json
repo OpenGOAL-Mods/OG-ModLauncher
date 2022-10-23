@@ -11,6 +11,13 @@
       "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-multiplayer-rando-mod-pack/tree/main"
     }
   ],
+  "Speedrun Practice": [
+    {
+      "name": "Speedrun practice mod",
+      "desc": "Fast reset with dpad up",
+      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/Jakspeedrunningpractice"
+    }
+  ],
   "HimHam": [
     {
       "name": "MicroTransactions",
