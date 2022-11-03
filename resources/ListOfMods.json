@@ -105,6 +105,13 @@
       "URL": "https://github.com/kekdeveloper/opengoal-mod-snowy-legacy/tree/main"
     }
   ],
+  "MortisDG": [
+    {
+      "name": "Mystery Word V2",
+      "desc": "If you say a certain word the game resets itself (requires 'VoiceAttack')",
+      "URL": "https://github.com/MortisDG/MysteryWordV2"
+    }
+  ],
   "Ruh": [
     {
       "name": "TO BE ADDED",
