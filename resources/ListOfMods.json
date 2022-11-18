@@ -14,7 +14,7 @@
   "Speedrun Practice": [
     {
       "name": "Speedrun practice mod",
-      "desc": "Fast reset with dpad up",
+      "desc": "Extra speedrun trick checkpoints. Custom checkpoints: L3 + down to set / L3 + up to respawn",
       "URL": "https://github.com/OpenGOAL-Unofficial-Mods/Jakspeedrunningpractice"
     }
   ],
