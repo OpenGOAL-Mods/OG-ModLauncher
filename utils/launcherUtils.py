@@ -283,7 +283,40 @@ def launch(URL, MOD_NAME, LINK_TYPE):
         for f in allfiles:
             shutil.move(SubDir + "/" + f, InstallDir + "/" + f)
         try_remove_dir(TempDir)
+        
+        
+        
+        
+        # creating a variable and storing the discord RPC text,
+        # if the mod has changed this then we leave it as the modder wanted.
+        # that we want to search
+        search_text = "Playing Jak and Daxter: The Precursor Legacy"
+  
+        # creating a variable and storing the mod name we want to display
+        # in discord RPC
+        replace_text = MOD_NAME
+  
+        # Opening our pckernel file in read only
+        # mode using the open() function
+        with open(InstallDir + r'\data\goal_src\jak1\pc\pckernel.gc', 'r') as file:
+  
+        # Reading the content of the pckernel file
+        # using the read() function and storing
+        # them in a new variable
+            data = file.read()
 
+        # Searching and replacing the text
+        # using the replace() function
+            data = data.replace(search_text, replace_text)
+  
+        # Opening our pckernel file in write only
+        # mode to write the replaced content
+        with open(InstallDir + r'\data\goal_src\jak1\pc\pckernel.gc', 'w') as file:
+  
+        # Writing the replaced data in our
+        # pckernel file
+            file.write(data)
+  
         #if extractOnUpdate is True, check their ISO_DATA folder
 
         #Close Gk and goalc if they were open.
