@@ -5,10 +5,8 @@ Created on Thu Aug 25 18:33:45 2022
 @author: Zed
 """
 
-# img_viewer.py
+# we will clean these up later but for now leave even unused imports
 
-# we will clean these up later but for now even leave unused imports
-#we are not in cleanup phase yet
 from PIL import Image 
 from utils import launcherUtils, githubUtils
 import PySimpleGUI as sg
@@ -19,7 +17,6 @@ import os.path
 import requests
 import sys
 import webbrowser
-
 import os
 from os.path import exists
 import urllib.request
@@ -28,8 +25,10 @@ from appdirs import AppDirs
 
 # Folder where script is placed, It looks in this for the Exectuable
 if getattr(sys, 'frozen', False):
+    #If we are a pyinstaller exe get the path of this file, not python
     LauncherDir = os.path.dirname(os.path.realpath(sys.executable))
 elif __file__:
+    #if we are running the .py directly use this path
     LauncherDir = os.path.dirname(__file__)
 
 installpath = str(LauncherDir + "\\resources\\")
@@ -41,22 +40,21 @@ currentModURL = None
 currentModImage = None
 steamDIR = None
 dirs = AppDirs(roaming=True)
+#C:\Users\USERNAME\AppData\Roaming\OPENGOAL-UnofficalModLauncher\
 AppdataPATH = os.path.join(dirs.user_data_dir, "OPENGOAL-UnofficalModLauncher","")
+
+#C:\Users\USERNAME\AppData\Roaming\OpenGOAL-Mods\
 ModFolderPATH = os.path.join(dirs.user_data_dir, "OpenGOAL-Mods","")
-
-
 
 
 #comment this out if you want to test with a local file
 moddersAndModsJSON = requests.get("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/ListOfMods.json").json()
 
 j_file = json.dumps(moddersAndModsJSON)
-#print(moddersAndModsJSON["Modding Community"][0]["name"])
-#print(moddersAndModsJSON["Modding Community"][0]["URL"])
 
 
-# First the window layout in 2 columns
 
+# Left hand column showing installed mods
 installed_mods_column = [
     [sg.Text("Installed Mods", font=("Helvetica", 14))],
     [sg.Listbox(values=["This List is not", "Classic+"],size=(40,5),key="InstalledModListBox",enable_events=True)],
@@ -66,7 +64,7 @@ installed_mods_column = [
         sg.Btn(button_text="Add to Steam",key='AddToSteam',enable_events=True)
     ],
 ]
-
+# Second half of Left Hand column letting user select mod
 mod_list_column = [
 	[sg.Text("Available Mods", font=("Helvetica", 14))],
 	[sg.Text("Mod Creator")], 
@@ -75,7 +73,7 @@ mod_list_column = [
     [sg.Combo([], key='pick_mod', size=(40, 0),enable_events=True)],
     [sg.Btn(button_text="Search Available mods",key='mod_search')]
 ]
-
+# Right column showing the currently selected mod + area for user to interact
 mod_details_column = [
     [sg.Text("Selected Mod", font=("Helvetica", 14))], 
     [
@@ -104,6 +102,7 @@ layout = [
     sg.Column(mod_details_column)]
 ]
 sg.theme('Python')
+# url to icon for the window
 url= "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/appicon.ico"
 jpg_data = (
                 cloudscraper.create_scraper(
@@ -118,6 +117,7 @@ png_bio = io.BytesIO()
 pil_image.save(png_bio, format="PNG")
 iconfile = png_bio.getvalue()
 
+# url to use if we have no image
 url= "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/noRepoImageERROR.png"
 jpg_data = (
                 cloudscraper.create_scraper(
@@ -134,6 +134,8 @@ noimagefile = png_bio.getvalue()
 
 window = sg.Window('OpenGOAL Mod Launcher v0.03', layout, icon = iconfile, finalize=True)
 window.Element('AddToSteam').Update(visible = False)
+
+#When we boot, start with a currently installed mod selected, if there are no installed mods, default to a featured mod.
 def bootup():
     #print("BOOT")
     
@@ -162,8 +164,7 @@ def bootup():
         [currentModderSelected, currentModSelected, currentModURL, currentModImage] = handleModSelected()
     
     if subfolders != [] and subfolders[0] != "No Mods Installed":
-    #if there is a mod installed, use the first one in the list on boot.
-    
+    #if there is a mod installed, use the first one in the list on boot. This can error if only a local mod is installed.
         for modder in moddersAndModsJSON.keys():
                 for mod in moddersAndModsJSON[modder]:
                     if mod["name"] == subfolders[0]:
