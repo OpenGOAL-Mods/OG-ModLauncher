@@ -42,13 +42,11 @@ steamDIR = None
 AppdataPATH = os.getenv('APPDATA')
 
 
-#comment this out if you want to test with a local file
+# comment this out if you want to test with a local file
 moddersAndModsJSON = requests.get("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/ListOfMods.json").json()
 
-j_file = json.dumps(moddersAndModsJSON)
-#print(moddersAndModsJSON["Modding Community"][0]["name"])
-#print(moddersAndModsJSON["Modding Community"][0]["URL"])
-
+# with open('resources/ListOfMods.json') as f:
+#   moddersAndModsJSON = json.load(f)
 
 # First the window layout in 2 columns
 
