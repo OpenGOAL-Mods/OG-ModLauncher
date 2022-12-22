@@ -155,5 +155,12 @@
       "desc": "Uh...",
       "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
     }
+  ],
+  "Yopie": [
+    {
+      "name": "OpenGhosts",
+      "desc": "Record and playback Jak's position. Saves to a file so you can share with your friends!",
+      "URL": "https://github.com/dryice10/openghosts"
+    }
   ]
 }
