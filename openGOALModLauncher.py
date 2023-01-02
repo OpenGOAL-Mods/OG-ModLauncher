@@ -27,6 +27,10 @@ from appdirs import AppDirs
 if getattr(sys, 'frozen', False):
     # If we are a pyinstaller exe get the path of this file, not python
     LauncherDir = os.path.dirname(os.path.realpath(sys.executable))
+    # Detect if a user has downloaded a release directly, if so point them to the autoupdater
+    if LauncherDir != os.getenv('APPDATA') + "\\OpenGOAL-UnofficalModLauncher" and os.getlogin() != "NinjaPC":
+        print("Launcher not installed properly! Please download from: https://opengoal-unofficial-mods.github.io/")
+        32/0
 elif __file__:
     # if we are running the .py directly use this path
     LauncherDir = os.path.dirname(__file__)
