@@ -3,26 +3,31 @@
     {
       "name": "Randomizer",
       "desc": "Warp to a random checkpoint on various triggers (cells, flies, orbs, eco, death).",
-      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
+      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main",
+      "video": "https://www.youtube.com/watch?v=B5mEhVt0v68"
+
     },
     {
       "name": "Local Multiplayer (beta) + Randomizer",
       "desc": "Shared-screen multiplayer, with Randomizer options available.",
-      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-multiplayer-rando-mod-pack/tree/main"
+      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-multiplayer-rando-mod-pack/tree/main",
+      "video": "https://www.youtube.com/watch?v=BeVl4x6gjC0"
     }
   ],
   "Speedrun Practice": [
     {
       "name": "Speedrun practice mod",
-      "desc": "Extra speedrun trick checkpoints. Custom checkpoints: L3 + down to set / L3 + up to respawn",
-      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/Jakspeedrunningpractice"
+      "desc": "Extra speedrun trick checkpoints. Custom checkpoints: L2 + down to set / L2 + up to respawn",
+      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/Jakspeedrunningpractice",
+      "video": "https://www.youtube.com/watch?v=a_SIccmgpj4"
     }
   ],
   "HimHam": [
     {
       "name": "MicroTransactions",
       "desc": "Unlock Jak's moveset with orbs!",
-      "URL": "https://github.com/himham-jak/Jak1-but-Microtransactions/releases"
+      "URL": "https://github.com/himham-jak/Jak1-but-Microtransactions/releases",
+      "video": "https://www.youtube.com/watch?v=q5TZ9U399J8"      
     },
     {
       "name": "Jak1 but every power cell he gets faster",
@@ -34,7 +39,8 @@
     {
       "name": "First Person Mode",
       "desc": "Play the whole game from Jak's POV.",
-      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/First-person-jak"
+      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/First-person-jak",
+      "video": "https://www.youtube.com/watch?v=2RhxWSSaNlM"
     },
     {
       "name": "Classic+",
@@ -44,12 +50,14 @@
     {
       "name": "Randomizer",
       "desc": "Warp to a random checkpoint on various triggers (cells, flies, orbs, eco, death).",
-      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
+      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main",
+      "video": "https://www.youtube.com/watch?v=B5mEhVt0v68"
     },
     {
       "name": "The FlutFlut Legacy",
       "desc": "Play the whole game on FlutFlut.",
-      "URL": "https://github.com/Zedb0T/TheFlutFlutLegacy"
+      "URL": "https://github.com/Zedb0T/TheFlutFlutLegacy",
+      "video": "https://www.youtube.com/watch?v=_z8GhVWFYfI"
     },
     {
       "name": "Ice Everywhere",
@@ -61,12 +69,14 @@
     {
       "name": "Randomizer",
       "desc": "Warp to a random checkpoint on various triggers (cells, flies, orbs, eco, death).",
-      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
+      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main",
+      "video": "https://www.youtube.com/watch?v=B5mEhVt0v68"
     },
     {
       "name": "Local Multiplayer (beta) + Randomizer",
       "desc": "Shared-screen multiplayer, with Randomizer options available.",
-      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-multiplayer-rando-mod-pack/tree/main"
+      "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-multiplayer-rando-mod-pack/tree/main",
+      "video": "https://www.youtube.com/watch?v=BeVl4x6gjC0"
     },
     {
       "name": "The FlutFlut Legacy + Randomizer",
@@ -76,12 +86,14 @@
     {
       "name": "The Zoomer Legacy",
       "desc": "Play the whole game on the Zoomer, with various changes to better explore the entire game.",
-      "URL": "https://github.com/dallmeyer/The-Zoomer-Legacy"
+      "URL": "https://github.com/dallmeyer/The-Zoomer-Legacy",
+      "video": "https://www.youtube.com/watch?v=BDvvCY8gFDQ"
     },
     {
       "name": "The SM64 Legacy",
       "desc": "Plays similar to Super Mario 64 (stars->cells, red coins->scout flies, coins->orbs)",
-      "URL": "https://github.com/dallmeyer/opengoal-sm64"
+      "URL": "https://github.com/dallmeyer/opengoal-sm64",
+      "video": "https://www.youtube.com/watch?v=xNpsAzsPBTQ"
     }
   ],
   "Inirdin": [
@@ -95,7 +107,8 @@
     {
       "name": "Jak and Daxter But Every Time He Grabs An Orb He Grows",
       "desc": "Jak and Daxter But Every Time He Grabs An Orb He Grows.",
-      "URL": "https://github.com/Xyphles/X-mod-base/tree/Jak-and-Daxter-But-Every-Time-He-Grabs-An-Orb-He-Grows"
+      "URL": "https://github.com/Xyphles/X-mod-base/tree/Jak-and-Daxter-But-Every-Time-He-Grabs-An-Orb-He-Grows",
+      "video": "https://www.youtube.com/watch?v=dBP_25yT5YU"
     }
   ],
   "InnocentMiau": [
@@ -109,14 +122,21 @@
     {
       "name": "Mystery Word V2",
       "desc": "If you say a certain word the game resets itself (requires 'VoiceAttack')",
-      "URL": "https://github.com/MortisDG/MysteryWordV2"
+      "URL": "https://github.com/MortisDG/MysteryWordV2",
+      "video": "https://www.youtube.com/watch?v=dlXkd6FhjyY&t=1224s"
     }
   ],
   "In Development": [
+    
     {
       "name": "Random Actors/entities",
       "desc": "Frong beach",
       "URL": "https://github.com/Zedb0T/Zed-Mods/tree/Random-Actor-dev"
+    },
+    {
+      "name": "MIKEEEE",
+      "desc": "Mike",
+      "URL": "https://github.com/Zedb0T/Zed-Mods/tree/Random-enemies"
     },
     {
       "name": "Mirror mode every cell",
@@ -134,6 +154,13 @@
       "name": "TO BE ADDED",
       "desc": "Uh...",
       "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main"
+    }
+  ],
+  "Yopie": [
+    {
+      "name": "OpenGhosts",
+      "desc": "Record and playback Jak's position. Saves to a file so you can share with your friends!",
+      "URL": "https://github.com/dryice10/openghosts"
     }
   ]
 }
