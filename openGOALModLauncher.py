@@ -21,6 +21,7 @@ import os
 from os.path import exists
 import urllib.request
 import shutil
+from tkinter import *
 from appdirs import AppDirs
 
 # Folder where script is placed, It looks in this for the Exectuable
@@ -28,9 +29,22 @@ if getattr(sys, 'frozen', False):
     # If we are a pyinstaller exe get the path of this file, not python
     LauncherDir = os.path.dirname(os.path.realpath(sys.executable))
     # Detect if a user has downloaded a release directly, if so point them to the autoupdater
-    if LauncherDir != os.getenv('APPDATA') + "\\OpenGOAL-UnofficalModLauncher" and os.getlogin() != "NinjaPC":
-        print("Launcher not installed properly! Please download from: https://opengoal-unofficial-mods.github.io/")
-        32/0
+    if LauncherDir != os.getenv('APPDATA') + "\\OpenGOAL-UnofficalModLauncher" and os.getlogin() != "NianjaPC":
+        # Creating the tkinter window
+        root = Tk()
+        root.winfo_toplevel().title("Error")
+        root.title = ("test")
+        root.geometry("700x150")
+        message = Label(root, text = "Launcher not installed properly! \n Please download from: \n https://opengoal-unofficial-mods.github.io/")
+        message.config(font =("Courier", 14))
+        message.pack()
+        # Button for closing
+    
+        exit_button = Button(root, text="Exit", command=root.destroy)
+        exit_button.pack(pady=20)
+  
+        root.mainloop()
+        0/32
 elif __file__:
     # if we are running the .py directly use this path
     LauncherDir = os.path.dirname(__file__)
