@@ -20,6 +20,10 @@ import time
 import tkinter as tk
 import urllib.request
 import zipfile
+from appdirs import AppDirs
+import platform
+import stat
+
 
 EXTRACT_ON_UPDATE="true"            
 FILE_DATE_TO_CHECK="gk.exe"
@@ -34,7 +38,11 @@ elif __file__:
 extractOnUpdate = bool(str(EXTRACT_ON_UPDATE).replace("t","T").replace("f", "F"))
 ExecutableName = str(FILE_DATE_TO_CHECK) # Executable we're checking the 'modified' time of
 FileExt = str(UPDATE_FILE_EXTENTION) # content_type of the .deb release is also "application\zip", so rely on file ext
-FileIdent = "" # If we ever get to multiple .zip files in a release, include other identifying information from the name (e.g. "windows-x64")
+FileIdent = "" # If we ever get to multiple .zip files in a release, include other identifying information from the name
+dirs = AppDirs(roaming=True)
+currentOS = platform.system()
+ModFolderPATH = os.path.join(dirs.user_data_dir, "OpenGOAL-Mods","")
+AppdataPATH = dirs.user_data_dir
 
 
 pbar = None
@@ -88,7 +96,7 @@ def try_remove_dir(dir):
         shutil.rmtree(dir)
 
 def local_mod_image(MOD_NAME):
-    path = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + MOD_NAME + "\\ModImage.png"
+    path = ModFolderPATH + MOD_NAME + "\\ModImage.png"
     if exists(path):
         return path
     return None
@@ -100,8 +108,8 @@ def launch_local(MOD_NAME):
         try_kill_process("goalc.exe")
 
         time.sleep(1)
-        InstallDir = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + MOD_NAME
-        AppdataPATH = os.getenv('APPDATA')
+        InstallDir = ModFolderPATH + MOD_NAME
+
         UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data\iso_data"
         GKCOMMANDLINElist = [InstallDir +"\gk.exe", "-proj-path", InstallDir + "\\data", "-boot", "-fakeiso", "-v"]
         print(GKCOMMANDLINElist)
@@ -114,7 +122,7 @@ def openFolder(path):
     subprocess.run([FILEBROWSER_PATH, path])
 
 def reinstall(MOD_NAME):
-    InstallDir = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + MOD_NAME
+    InstallDir = ModFolderPATH + MOD_NAME
     AppdataPATH = os.getenv('APPDATA')
     UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data\iso_data"
     GKCOMMANDLINElist = [InstallDir +"\gk.exe", "-proj-path", InstallDir + "\\data", "-boot", "-fakeiso", "-v"]
@@ -138,7 +146,16 @@ def reinstall(MOD_NAME):
     try_kill_process("gk.exe")
     try_kill_process("goalc.exe")
     print("Done update starting extractor\n")
-    extractor_command_list = [InstallDir +"\extractor.exe", "-f", iso_path]
+    if (currentOS == "Windows"):
+            extractor_command_list = [os.path.join(InstallDir,"extractor.exe"), "-f", iso_path]
+    if (currentOS == "Linux"):
+            #We need to give the executibles execute permissions in Linux but this doesn't work
+            #chmod_command_list = ["cd" + os.path.join(LauncherDir), "chmod +x extractor goalc gk"]
+            #subprocess.Popen(chmod_command_list)
+            os.chmod(os.path.join(LauncherDir, "extractor"), stat.S_IXOTH)
+            print("Done chmods!")
+            #Then we need to call the Linux extractor when we do the next Popen
+            extractor_command_list = [os.path.join(LauncherDir), "./extractor -f" + iso_path + "--proj-path" + InstallDir]
     print(extractor_command_list)
     
     subprocess.Popen(extractor_command_list)
@@ -171,7 +188,7 @@ def launch(URL, MOD_NAME, LINK_TYPE):
     r = json.loads(json.dumps(requests.get(url = launchUrl, params = PARAMS).json()))
 
     #paths  
-    InstallDir = os.getenv('APPDATA') + "\\OpenGOAL-Mods\\" + MOD_NAME
+    InstallDir = ModFolderPATH + MOD_NAME
     AppdataPATH = os.getenv('APPDATA')
     UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data\iso_data"
     GKCOMMANDLINElist = [InstallDir +"\gk.exe", "-proj-path", InstallDir + "\\data", "-boot", "-fakeiso", "-v"]
@@ -345,3 +362,5 @@ def launch(URL, MOD_NAME, LINK_TYPE):
         print("Game is up to date!")
         print("Launching now!")
         launch_local(MOD_NAME)
+
+

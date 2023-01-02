@@ -13,6 +13,7 @@ import json
 import requests
 import datetime
 
+
 class LinkTypes(Enum):
     BRANCH = 1
     RELEASE = 2
@@ -106,16 +107,16 @@ def resize_image(image_path, resize=None): #image_path: "C:User/Image/img.jpg"
   
     while cur_width == 400:
         print("Too wide fixing it.")
-        img = img.resize((int(cur_width*0.95), int(cur_height*0.95)), PIL.Image.Resampling.LANCZOS)
+        img = img.resize((int(cur_width*0.95), int(cur_height*0.95)), PIL.Image.LANCZOS)
         cur_width, cur_height = img.size
         print(img.size)
     while cur_height == 250:
         print("Too high fixing it.")
-        img = img.resize((int(cur_width*0.95), int(cur_height*0.95)), PIL.Image.Resampling.LANCZOS)
+        img = img.resize((int(cur_width*0.95), int(cur_height*0.95)), PIL.Image.LANCZOS)
         cur_width, cur_height = img.size
         print(img.size)
 
-    img= img.resize(((426, 240)),PIL.Image.Resampling.LANCZOS)
+    img= img.resize(((426, 240)),PIL.Image.LANCZOS)
 
     bio = io.BytesIO()
     img.save(bio, format="PNG")
