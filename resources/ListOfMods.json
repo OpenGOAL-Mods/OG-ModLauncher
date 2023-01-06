@@ -67,6 +67,11 @@
   ],
   "Barg": [
     {
+      "name": "Orb Hunt",
+      "desc": "Jak 1 but everything is all moved around! More info on the GitHub page",
+      "URL": "https://github.com/dallmeyer/opengoal-orbhunt",
+    },
+    {
       "name": "Randomizer",
       "desc": "Warp to a random checkpoint on various triggers (cells, flies, orbs, eco, death).",
       "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main",
