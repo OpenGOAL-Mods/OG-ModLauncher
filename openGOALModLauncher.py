@@ -48,18 +48,14 @@ AppdataPATH = os.path.join(
 ModFolderPATH = os.path.join(dirs.user_data_dir, "OpenGOAL-Mods", "")
 
 
-# comment this out if you want to test with a local file
-listOfModsJSON = requests.get(
-    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/ListOfMods.json").json()
-
-
-j_file = json.dumps(listOfModsJSON)
-
+# uncomment/comment the next two lines if you want to test with a local file
+# listOfModsJSON = json.loads(open("resources/ListOfMods.json", "r").read())
+listOfModsJSON = requests.get("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/ListOfMods.json").json()
 
 # Left hand column showing installed mods
 installed_mods_column = [
     [sg.Text("Installed Mods", font=("Helvetica", 14))],
-    [sg.Listbox(values=["This List is not", "Classic+"], size=(40, 5),
+    [sg.Listbox(values=["This List is not", "Classic+"], size=(40, 8),
                 key="InstalledModListBox", enable_events=True)],
     [
         sg.Btn(button_text="Refresh"),
@@ -85,8 +81,8 @@ mod_details_column = [
         sg.Text("", key="-SELECTEDMOD-"),
         sg.Text("", key="-SELECTEDMODURL-", visible=False)
     ],
-    [sg.Text("", key="-SELECTEDMODDESC-")],
-    [sg.Image(key="-SELECTEDMODIMAGE-")],
+    [sg.Text("", key="-SELECTEDMODDESC-", size=(60,2))],
+    [sg.Frame(title="",border_width=0,layout=[[sg.Image(key="-SELECTEDMODIMAGE-")]],size=(450,250))],
     [
         sg.Btn(button_text="Launch!"),
         sg.Btn(button_text="View Folder", key="ViewFolder_1"),
