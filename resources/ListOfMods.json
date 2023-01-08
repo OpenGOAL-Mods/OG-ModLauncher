@@ -132,7 +132,6 @@
     }
   ],
   "In Development": [
-    
     {
       "name": "Random Actors/entities",
       "desc": "Frong beach",
@@ -172,7 +171,7 @@
     {
       "name": "The Forgotten Lands",
       "desc": "Kuitar's first level. Just start a normal game at Geyser Rock. This is a work in progress and not fully finished yet.",
-      "URL": "https://github.com/Kuitar5/kuitar-secret-project"
+      "URL": "https://github.com/Kuitar5/kuitar-secret-project/releases"
     }
   ]
 }
