@@ -132,7 +132,6 @@
     }
   ],
   "In Development": [
-    
     {
       "name": "Random Actors/entities",
       "desc": "Frong beach",
@@ -166,6 +165,13 @@
       "name": "OpenGhosts",
       "desc": "Record and playback Jak's position. Saves to a file so you can share with your friends!",
       "URL": "https://github.com/dryice10/openghosts"
+    }
+  ],
+  "Kuitar": [
+    {
+      "name": "The Forgotten Lands",
+      "desc": "Kuitar's first level. Just start a normal game at Geyser Rock. This is a work in progress and not fully finished yet.",
+      "URL": "https://github.com/Kuitar5/kuitar-secret-project/releases"
     }
   ]
 }
