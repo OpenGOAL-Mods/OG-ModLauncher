@@ -244,7 +244,17 @@ def launch(URL, MOD_NAME, LINK_TYPE):
 
     print("Currently installed version created on: " + LastWrite.strftime('%Y-%m-%d %H:%M:%S'))
     print("Newest version created on: " + LatestRel.strftime('%Y-%m-%d %H:%M:%S'))
-
+    if(NotExtracted):
+        print("Error! Iso data does not appear to be extracted to " + UniversalIsoPath +r"\jak1\Z6TAIL.DUP")
+        print("Will ask user to provide ISO")
+    if(NotCompiled):
+        print("Error! The game is not compiled")
+    if((LastWrite < LatestRel)):
+        print("Looks like we need to download a new update!")
+        print(LastWrite)
+        print(LatestRel)
+        print("Is newest posted update older than what we have installed? " + str((LastWrite < LatestRel)))
+        
     if (needUpdate):
         
         #start the actual update method if needUpdate is true
@@ -298,9 +308,12 @@ def launch(URL, MOD_NAME, LINK_TYPE):
 
         #if ISO_DATA has content, store this path to pass to the extractor
         if (exists(UniversalIsoPath +r"\jak1\Z6TAIL.DUP")):
+            print("We found ISO data from a previous mod installation! Lets use it!")
+            print("Found in " + UniversalIsoPath +r"\jak1\Z6TAIL.DUP")
             iso_path = UniversalIsoPath + "\jak1"
         else:
             #if ISO_DATA is empty, prompt for their ISO and store its path.
+            print("We did not find ISO data from a previous mod, lets ask for some!")
             root = tk.Tk()
             print("Please select your iso.")
             root.title("Select ISO")
