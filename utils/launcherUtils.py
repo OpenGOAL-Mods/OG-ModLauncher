@@ -313,6 +313,7 @@ def launch(URL, MOD_NAME, LINK_TYPE):
             iso_path = UniversalIsoPath + "\jak1"
         else:
             #if ISO_DATA is empty, prompt for their ISO and store its path.
+            print("Looking for some ISO data in " + UniversalIsoPath +r"\jak1\")
             print("We did not find ISO data from a previous mod, lets ask for some!")
             root = tk.Tk()
             print("Please select your iso.")
