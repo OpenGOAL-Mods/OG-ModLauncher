@@ -133,7 +133,7 @@ png_bio = io.BytesIO()
 pil_image.save(png_bio, format="PNG")
 noimagefile = png_bio.getvalue()
 
-window = sg.Window('OpenGOAL Mod Launcher v0.03',
+window = sg.Window('OpenGOAL Mod Launcher',
                    layout, icon=iconfile, finalize=True)
 window.Element('AddToSteam').Update(visible=False)
 

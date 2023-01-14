@@ -270,13 +270,7 @@ def launch(URL, MOD_NAME, LINK_TYPE):
         if not os.path.exists(InstallDir + "/temp"):
             print("Creating install dir: " + InstallDir)
             os.makedirs(InstallDir + "/temp")
-        
-        
-        r = requests.get(LatestRelAssetsURL, allow_redirects=True)
-        r.status_code  # 302
-        #print(r.url)  # http://github.com, not https.
-        #print(r.headers)  # https://github.com/ -- the redirect destination
-
+            
         response = requests.get(LatestRelAssetsURL)
         if response.history:
             print("Request was redirected")
@@ -313,7 +307,7 @@ def launch(URL, MOD_NAME, LINK_TYPE):
             iso_path = UniversalIsoPath + "\jak1"
         else:
             #if ISO_DATA is empty, prompt for their ISO and store its path.
-            print("Looking for some ISO data in " + UniversalIsoPath +r"\jak1\")
+            print("Looking for some ISO data in " + UniversalIsoPath + "\\jak1\\")
             print("We did not find ISO data from a previous mod, lets ask for some!")
             root = tk.Tk()
             print("Please select your iso.")

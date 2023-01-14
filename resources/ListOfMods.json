@@ -9,7 +9,7 @@
     },
     {
       "name": "Local Multiplayer (beta) + Randomizer",
-      "desc": "Shared-screen multiplayer, with Randomizer options available.",
+      "desc": "Shared-screen multiplayer, with Randomizer options available. L1+L2+R1+R2 on additional controllers to join.",
       "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-multiplayer-rando-mod-pack/tree/main",
       "video": "https://www.youtube.com/watch?v=BeVl4x6gjC0"
     }
@@ -31,7 +31,7 @@
     },
     {
       "name": "Jak1 but every power cell he gets faster",
-      "desc": "^ seems pretty self-explanatory to me.",
+      "desc": "Jak1 but every power cell he gets faster",
       "URL": "https://github.com/himham-jak/Jak-1-Movement-Mod/releases"
     }
   ],
