@@ -84,7 +84,7 @@ ModFolderPATH = os.path.join(dirs.user_data_dir, "OpenGOAL-Mods", "")
 # grab images from web
 
 # url to splash screen image
-url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/overhaul/resources/modlaunchersplash.png"
+url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlaunchersplash.png"
 jpg_data = (
     cloudscraper.create_scraper(
         browser={"browser": "firefox", "platform": "windows", "mobile": False}
@@ -187,8 +187,8 @@ LATEST_TABLE_SORT = [6, True] # wakeup sorted by last launch date
 
 def getRefreshedTableData(sort_col_idx):
     # uncomment/comment the next two lines if you want to test with a local file
-    # mod_dict = requests.get("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/overhaul/resources/mods.json").json()
-    mod_dict = json.loads(open("resources/mods.json", "r").read())
+    mod_dict = requests.get("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/mods.json").json()
+    # mod_dict = json.loads(open("resources/mods.json", "r").read())
     mod_dict = dict(sorted(mod_dict.items(), key=lambda x: x[1]["release_date"], reverse=True))
 
     mod_table_data = []
