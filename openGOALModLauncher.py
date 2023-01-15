@@ -278,7 +278,7 @@ layout = [
     [sg.Frame(title="", key='-SPLASHFRAME-', border_width=0, size=(972, 609), visible=True, element_justification="center", vertical_alignment="center", 
       layout=
       [
-        [sg.Image(key='-SPLASHIMAGE-', source=splashfile, expand_y=True)]
+        [sg.Image(key='-SPLASHIMAGE-', source=githubUtils.resize_image(splashfile, 970, 607), expand_y=True)]
       ])
     ],
     [sg.Frame(title="", key='-MAINFRAME-', border_width=0, visible=False, layout=
@@ -440,13 +440,13 @@ def handleModTableSelection(row):
             png_bio = io.BytesIO()
             pil_image.save(png_bio, format="PNG")
             png_data = png_bio.getvalue()
-            window["-SELECTEDMODIMAGE-"].update(githubUtils.resize_image(png_data))
+            window["-SELECTEDMODIMAGE-"].update(githubUtils.resize_image(png_data, 500.0, 300.0))
             # prints the int of the status code. Find more at httpstatusrappers.com :)
         else:
-            window["-SELECTEDMODIMAGE-"].update(githubUtils.resize_image(noimagefile))
+            window["-SELECTEDMODIMAGE-"].update(githubUtils.resize_image(noimagefile, 500.0, 300.0))
 
     except requests.exceptions.MissingSchema:
-        window["-SELECTEDMODIMAGE-"].update(githubUtils.resize_image(noimagefile))
+        window["-SELECTEDMODIMAGE-"].update(githubUtils.resize_image(noimagefile, 500.0, 300.0))
 
 
 def reset():

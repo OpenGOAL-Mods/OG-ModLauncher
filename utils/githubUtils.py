@@ -154,7 +154,7 @@ def getLatestAvailableUpdateDatetime(URL):
         )
 
 
-def resize_image(image_path):  # image_path: "C:User/Image/img.jpg"
+def resize_image(image_path, width, height):  # image_path: "C:User/Image/img.jpg"
     if isinstance(image_path, str):
         img = PIL.Image.open(image_path)
     else:
@@ -166,8 +166,8 @@ def resize_image(image_path):  # image_path: "C:User/Image/img.jpg"
 
     cur_width, cur_height = img.size
 
-    w_ratio = 500.0 / cur_width
-    h_ratio = 300.0 / cur_height
+    w_ratio = width / cur_width
+    h_ratio = height / cur_height
 
     if w_ratio < h_ratio:
         img = img.resize(
