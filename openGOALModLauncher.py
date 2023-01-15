@@ -135,6 +135,7 @@ table_headings = [
     "Tags",
     "Contributors",
     "Install Date",
+    "Last Launched",
     # "Latest Update Date",
     "URL",
     "website_url",
@@ -148,6 +149,7 @@ col_vis = [
     False,
     True,
     True,
+    False,
     True,
     # True,
     False,
@@ -160,7 +162,7 @@ vis_col_map = [
     1,  # name
     3,  # tags
     4,  # contributors
-    5,  # install date
+    6,  # launch date
 ]
 
 col_width = [
@@ -169,7 +171,8 @@ col_width = [
     0,  # desc
     25,  # tags
     25,  # contributors
-    15,  # install date
+    0,  # install date
+    15,  # launch date
     0,  # url
     0,  # website
     0,  # videos
@@ -179,7 +182,7 @@ col_width = [
 FILTER_STR = ""
 INCLUDE_INSTALLED = True
 INCLUDE_UNINSTALLED = True
-LATEST_TABLE_SORT = [0, True]
+LATEST_TABLE_SORT = [6, True] # wakeup sorted by last launch date
 
 
 def getRefreshedTableData(sort_col_idx):
@@ -197,19 +200,25 @@ def getRefreshedTableData(sort_col_idx):
         mod = mod_dict[mod_id]
         mod_name = mod["name"]
 
-        # determine local install datetime
         mod["install_date"] = "Not Installed"
+        mod["access_date"] = "Not Installed"
+
+        # determine local install/access datetime
         if mod_id in installed_mod_subfolders:
-            mod[
-                "install_date"
-            ] = f"{datetime.datetime.fromtimestamp(installed_mod_subfolders[mod_id]):%Y-%m-%d %H:%M}"
+            mod["install_date"] = f"{datetime.datetime.fromtimestamp(installed_mod_subfolders[mod_id]):%Y-%m-%d %H:%M}"
+
+            if exists(f"{ModFolderPATH}/{mod_id}/gk.exe"):
+              gk_stat = os.stat(f"{ModFolderPATH}/{mod_id}/gk.exe")
+              mod["access_date"] = f"{datetime.datetime.fromtimestamp(gk_stat.st_atime):%Y-%m-%d %H:%M}"
         elif mod_name in installed_mod_subfolders:
             # previous installation using mod_name (will migrate after this step)
-            mod[
-                "install_date"
-            ] = f"{datetime.datetime.fromtimestamp(installed_mod_subfolders[mod_name]):%Y-%m-%d %H:%M}"
+            mod["install_date"] = f"{datetime.datetime.fromtimestamp(installed_mod_subfolders[mod_name]):%Y-%m-%d %H:%M}"
             # migrate folder to use mod_id instead of mod_name
             shutil.move(ModFolderPATH + "/" + mod_name, ModFolderPATH + "/" + mod_id)
+
+            if exists(f"{ModFolderPATH}/{mod_id}/gk.exe"):
+              gk_stat = os.stat(f"{ModFolderPATH}/{mod_id}/gk.exe")
+              mod["access_date"] = f"{datetime.datetime.fromtimestamp(gk_stat.st_atime):%Y-%m-%d %H:%M}"
 
         mod["contributors"] = ", ".join(mod["contributors"])
         mod["tags"] = ", ".join(mod["tags"])
@@ -228,8 +237,8 @@ def getRefreshedTableData(sort_col_idx):
             or FILTER_STR in mod["contributors"].lower()
             or FILTER_STR in mod["tags"].lower()
         ):
-            if (INCLUDE_INSTALLED and mod["install_date"] != "Not Installed") or (
-                INCLUDE_UNINSTALLED and mod["install_date"] == "Not Installed"
+            if (INCLUDE_INSTALLED and mod["access_date"] != "Not Installed") or (
+                INCLUDE_UNINSTALLED and mod["access_date"] == "Not Installed"
             ):
                 mod_table_data.append(
                     [
@@ -239,6 +248,7 @@ def getRefreshedTableData(sort_col_idx):
                         mod["tags"],
                         mod["contributors"],
                         mod["install_date"],
+                        mod["access_date"],
                         # mod["latest_available_update_date"],
                         mod["URL"],
                         (mod["website_url"] if "website_url" in mod else ""),
@@ -262,7 +272,10 @@ def getRefreshedTableData(sort_col_idx):
             LATEST_TABLE_SORT[0] = remapped_col_idx
             LATEST_TABLE_SORT[1] = True
 
-    mod_table_data.sort(key=lambda x: x[remapped_col_idx].lower())
+    if remapped_col_idx == 5 or remapped_col_idx == 6: # special sort for install/access date
+      mod_table_data.sort(key=lambda x: "0" if x[remapped_col_idx] == "Not Installed" else x[remapped_col_idx].lower(), reverse=True)
+    else:
+      mod_table_data.sort(key=lambda x: x[remapped_col_idx].lower())
 
     if not LATEST_TABLE_SORT[1]:
         mod_table_data.reverse()
@@ -271,7 +284,7 @@ def getRefreshedTableData(sort_col_idx):
     return mod_table_data
 
 
-LATEST_TABLE_DATA = getRefreshedTableData(0)
+LATEST_TABLE_DATA = []
 
 # ----- Full layout -----
 layout = [
@@ -394,14 +407,15 @@ def handleModTableSelection(row):
     mod_tags = mod[3]
     mod_contributors = mod[4]
     mod_install_date = mod[5]
-    mod_url = mod[6]
-    mod_website_url = mod[7]
-    mod_videos_url = mod[8]
-    mod_photos_url = mod[9]
+    mod_access_date = mod[6]
+    mod_url = mod[7]
+    mod_website_url = mod[8]
+    mod_videos_url = mod[9]
+    mod_photos_url = mod[10]
 
     # update text and metadata
     window["-LAUNCH-"].update(
-        "Install" if mod_install_date == "Not Installed" else "Launch"
+        "Install" if mod_access_date == "Not Installed" else "Launch"
     )
     window["-SELECTEDMODNAME-"].update(mod_name)
     window["-SELECTEDMODNAME-"].metadata["id"] = mod_id
@@ -409,9 +423,9 @@ def handleModTableSelection(row):
     window["-SELECTEDMODDESC-"].update(mod_desc)
     window["-SELECTEDMODTAGS-"].update(f"Tags: {mod_tags}")
     window["-SELECTEDMODCONTRIBUTORS-"].update(f"Contributors: {mod_contributors}")
-    window["-VIEWFOLDER-"].update(disabled=(mod_install_date == "Not Installed"))
-    window["-REINSTALL-"].update(disabled=(mod_install_date == "Not Installed"))
-    window["-UNINSTALL-"].update(disabled=(mod_install_date == "Not Installed"))
+    window["-VIEWFOLDER-"].update(disabled=(mod_access_date == "Not Installed"))
+    window["-REINSTALL-"].update(disabled=(mod_access_date == "Not Installed"))
+    window["-UNINSTALL-"].update(disabled=(mod_access_date == "Not Installed"))
     window["-WEBSITE-"].update(disabled=(mod_website_url == ""))
     window["-WEBSITE-"].metadata["url"] = mod_website_url
     window["-VIDEOS-"].update(disabled=(mod_videos_url == ""))
@@ -513,6 +527,9 @@ while True:
         window["-LAUNCH-"].update("Updating...")
         [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
         launcherUtils.launch(tmpModURL, tmpModSelected, tmpModName, linkType)
+
+        # refresh table in case new mod installed
+        reset()
 
         # turn the button back on
         window["-LAUNCH-"].update("Launch")
