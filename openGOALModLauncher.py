@@ -24,7 +24,7 @@ import urllib.request
 import shutil
 from appdirs import AppDirs
 
-sg.theme("DarkBlue12")
+sg.theme("DarkBlue3")
 
 # Folder where script is placed, It looks in this for the Exectuable
 if getattr(sys, 'frozen', False):
@@ -90,8 +90,8 @@ col_width = [
   40,  # name
   0,    # desc
   25,  # tags
-  20,  # contributors
-  16,   # install date
+  25,  # contributors
+  15,   # install date
   0,    # url
   0,    # website
   0,    # videos
@@ -119,8 +119,9 @@ def getRefreshedTableData(sort_col_idx):
     if mod_id in installed_mod_subfolders:
       mod["install_date"] = f"{datetime.datetime.fromtimestamp(installed_mod_subfolders[mod_id]):%Y-%m-%d %H:%M}"
     elif mod_name in installed_mod_subfolders:
+      # previous installation using mod_name (will migrate after this step)
       mod["install_date"] = f"{datetime.datetime.fromtimestamp(installed_mod_subfolders[mod_name]):%Y-%m-%d %H:%M}"
-      # rename folder to use mod_id
+      # migrate folder to use mod_id instead of mod_name
       shutil.move(ModFolderPATH + "/" + mod_name, ModFolderPATH + "/" + mod_id)
 
     mod["contributors"] = ", ".join(mod["contributors"])
@@ -176,22 +177,26 @@ LATEST_TABLE_DATA = getRefreshedTableData(0)
 layout = [
   [
     sg.Column([
-      [sg.Text("", key="-SELECTEDMODNAME-", font=("Helvetica", 13), metadata={"id":"", "url":""})],
-      [sg.Text("", key="-SELECTEDMODDESC-", size=(60,12))],
-      [sg.Text("Tags:", key="-SELECTEDMODTAGS-")],
-      [sg.Text("Contributors:", key="-SELECTEDMODCONTRIBUTORS-")]
-    ], size=(450,300), expand_x=True, expand_y=True),
-    sg.Frame(title="", element_justification='center', vertical_alignment="center", border_width=0, layout=[[sg.Image(key="-SELECTEDMODIMAGE-")]], size=(450,300)),
-    sg.Column([
-      [sg.Btn(p=8, button_text="Launch", key="-LAUNCH-", expand_x=True)],
-      [sg.Btn(p=8, button_text="View Folder", key="-VIEWFOLDER-", expand_x=True)],
-      [sg.Btn(p=8, button_text="Reinstall", key="-REINSTALL-", expand_x=True)],
-      [sg.Btn(p=8, button_text="Uninstall", key="-UNINSTALL-", expand_x=True)],
-      [sg.Btn(p=8, button_text="Website", key="-WEBSITE-", expand_x=True, metadata={"url":""})],
-      [sg.Btn(p=8, button_text="Video(s)", key="-VIDEOS-", expand_x=True, metadata={"url":""})],
-      [sg.Btn(p=8, button_text="Photo(s)", key="-PHOTOS-", expand_x=True, metadata={"url":""})],
-    ], size=(90,300), vertical_alignment="center", expand_y=True)
+        [sg.Text("", key="-SELECTEDMODNAME-", font=("Helvetica", 13), metadata={"id":"", "url":""})],
+        [sg.Text("", key="-SELECTEDMODDESC-", size=(55,7))],
+        [sg.Text("Tags:", key="-SELECTEDMODTAGS-")],
+        [sg.Text("Contributors:", key="-SELECTEDMODCONTRIBUTORS-")],
+        [sg.Text("")],
+        [
+          sg.Btn(button_text="Launch", key="-LAUNCH-", expand_x=True),
+          sg.Btn(button_text="View Folder", key="-VIEWFOLDER-", expand_x=True),
+          sg.Btn(button_text="Reinstall", key="-REINSTALL-", expand_x=True),
+          sg.Btn(button_text="Uninstall", key="-UNINSTALL-", expand_x=True)
+        ],
+        [
+          sg.Btn(button_text="Website", key="-WEBSITE-", expand_x=True, metadata={"url":""}),
+          sg.Btn(button_text="Video(s)", key="-VIDEOS-", expand_x=True, metadata={"url":""}),
+          sg.Btn(button_text="Photo(s)", key="-PHOTOS-", expand_x=True, metadata={"url":""})
+        ]
+      ], size=(400,300), expand_x=True, expand_y=True),
+    sg.Frame(title="", element_justification='center', vertical_alignment="center", border_width=0, layout=[[sg.Image(key="-SELECTEDMODIMAGE-", expand_y=True)]], size=(500,300))
   ],
+  [sg.HorizontalSeparator()],
   [
     sg.Text('Search'), 
     sg.Input(expand_x=True, enable_events=True, key='-FILTER-'),
@@ -339,6 +344,7 @@ while True:
   elif event == "-REFRESH-":
     reset()
   elif event == "-LAUNCH-":
+    tmpModName = window['-SELECTEDMODNAME-'].get()
     tmpModSelected = window['-SELECTEDMODNAME-'].metadata["id"]
     tmpModURL = window['-SELECTEDMODNAME-'].metadata["url"]
 
@@ -346,7 +352,7 @@ while True:
     window['-LAUNCH-'].update(disabled=True)
     window['-LAUNCH-'].update('Updating...')
     [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
-    launcherUtils.launch(tmpModURL, tmpModSelected, linkType)
+    launcherUtils.launch(tmpModURL, tmpModSelected, tmpModName, linkType)
     
     # turn the button back on
     window['-LAUNCH-'].update('Launch')

@@ -95,20 +95,20 @@ def try_remove_dir(dir):
     if exists(dir):
         shutil.rmtree(dir)
 
-def local_mod_image(MOD_NAME):
-    path = ModFolderPATH + MOD_NAME + "\\ModImage.png"
+def local_mod_image(MOD_ID):
+    path = ModFolderPATH + MOD_ID + "\\ModImage.png"
     if exists(path):
         return path
     return None
 
-def launch_local(MOD_NAME):
+def launch_local(MOD_ID):
     try:
         #Close Gk and goalc if they were open.
         try_kill_process("gk.exe")
         try_kill_process("goalc.exe")
 
         time.sleep(1)
-        InstallDir = ModFolderPATH + MOD_NAME
+        InstallDir = ModFolderPATH + MOD_ID
 
         UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data\iso_data"
         GKCOMMANDLINElist = [InstallDir +"\gk.exe", "-proj-path", InstallDir + "\\data", "-boot", "-fakeiso", "-v"]
@@ -121,8 +121,8 @@ def openFolder(path):
     FILEBROWSER_PATH = os.path.join(os.getenv('WINDIR'), 'explorer.exe')
     subprocess.run([FILEBROWSER_PATH, path])
 
-def reinstall(MOD_NAME):
-    InstallDir = ModFolderPATH + MOD_NAME
+def reinstall(MOD_ID):
+    InstallDir = ModFolderPATH + MOD_ID
     AppdataPATH = os.getenv('APPDATA')
     UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data\iso_data"
     GKCOMMANDLINElist = [InstallDir +"\gk.exe", "-proj-path", InstallDir + "\\data", "-boot", "-fakeiso", "-v"]
@@ -174,35 +174,35 @@ def reinstall(MOD_NAME):
         #os.symlink("" + UniversalIsoPath +"", InstallDir + "/data/iso_data")
 
 def replaceText(path, search_text, replace_text):
-            # creating a variable and storing the discord RPC text,
-        # if the mod has changed this then we leave it as the modder wanted.
-        # that we want to search
-         
-        # creating a variable and storing the mod name we want to display
-        # in discord RPC
-        
-        # Opening our pckernel file in read only
-        # mode using the open() function
-        with open(path, 'r') as file:
-
-        # Reading the content of the pckernel file
-        # using the read() function and storing
-        # them in a new variable
-            data = file.read()
-
-        # Searching and replacing the text
-        # using the replace() function
-            data = data.replace(search_text, replace_text)
+  # creating a variable and storing the discord RPC text,
+  # if the mod has changed this then we leave it as the modder wanted.
+  # that we want to search
+    
+  # creating a variable and storing the mod name we want to display
+  # in discord RPC
   
-        # Opening our pckernel file in write only
-        # mode to write the replaced content
-        with open(path, 'w') as file:
-  
-        # Writing the replaced data in our
-        # pckernel file
-            file.write(data)
+  # Opening our pckernel file in read only
+  # mode using the open() function
+  with open(path, 'r') as file:
 
-def launch(URL, MOD_NAME, LINK_TYPE):
+    # Reading the content of the pckernel file
+    # using the read() function and storing
+    # them in a new variable
+    data = file.read()
+
+    # Searching and replacing the text
+    # using the replace() function
+    data = data.replace(search_text, replace_text)
+
+  # Opening our pckernel file in write only
+  # mode to write the replaced content
+  with open(path, 'w') as file:
+
+    # Writing the replaced data in our
+    # pckernel file
+    file.write(data)
+
+def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
     if URL is None:
         return
 
@@ -217,7 +217,7 @@ def launch(URL, MOD_NAME, LINK_TYPE):
     r = json.loads(json.dumps(requests.get(url = launchUrl, params = PARAMS).json()))
 
     #paths  
-    InstallDir = ModFolderPATH + MOD_NAME
+    InstallDir = ModFolderPATH + MOD_ID
     AppdataPATH = os.getenv('APPDATA')
     UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data\iso_data"
     GKCOMMANDLINElist = [InstallDir +"\gk.exe", "-proj-path", InstallDir + "\\data", "-boot", "-fakeiso", "-v"]
@@ -231,7 +231,6 @@ def launch(URL, MOD_NAME, LINK_TYPE):
         LatestRelAssetsURL = (json.loads(json.dumps(requests.get(url = r[0].get("assets_url"), params = PARAMS).json())))[0].get("browser_download_url")
         response = requests.get(url = LatestRelAssetsURL, params = PARAMS)
         content_type = response.headers['content-type']
-
     
     LastWrite = datetime(2020, 5, 17)
     if (exists(InstallDir + "/" + ExecutableName)):
@@ -244,9 +243,21 @@ def launch(URL, MOD_NAME, LINK_TYPE):
 
     print("Currently installed version created on: " + LastWrite.strftime('%Y-%m-%d %H:%M:%S'))
     print("Newest version created on: " + LatestRel.strftime('%Y-%m-%d %H:%M:%S'))
+    
+    # attempt to migrate any old settings files from using MOD_NAME to MOD_ID
+    if exists(AppdataPATH + "\OpenGOAL\jak1\settings\\" + MOD_NAME + "-settings.gc"):
+      # just to be safe delete the migrated settings file if it already exists (shouldn't happen but prevents rename from failing below)
+      if exists(AppdataPATH + "\OpenGOAL\jak1\settings\\" + MOD_ID + "-settings.gc"):
+        os.remove(AppdataPATH + "\OpenGOAL\jak1\settings\\" + MOD_ID + "-settings.gc")
+
+      # rename settings file
+      os.rename(AppdataPATH + "\OpenGOAL\jak1\settings\\" + MOD_NAME + "-settings.gc",
+                AppdataPATH + "\OpenGOAL\jak1\settings\\" + MOD_ID + "-settings.gc")
+      
+      # force update to ensure we recompile with adjusted settings filename in pckernel.gc
+      needUpdate = True
 
     if (needUpdate):
-        
         #start the actual update method if needUpdate is true
         print("\nNeed to update")
         print("Starting Update...")
@@ -330,8 +341,8 @@ def launch(URL, MOD_NAME, LINK_TYPE):
             shutil.move(SubDir + "/" + f, InstallDir + "/" + f)
         try_remove_dir(TempDir)
         
-        replaceText(InstallDir + r'\data\goal_src\jak1\pc\pckernel.gc',"Playing Jak and Daxter: The Precursor Legacy", MOD_NAME)
-        replaceText(InstallDir + r'\data\goal_src\jak1\pc\pckernel.gc',"/pc-settings.gc", r"/"+MOD_NAME+"-settings.gc")
+        replaceText(InstallDir + r'\data\goal_src\jak1\pc\pckernel.gc',"Playing Jak and Daxter: The Precursor Legacy", "Playing " + MOD_ID)
+        replaceText(InstallDir + r'\data\goal_src\jak1\pc\pckernel.gc',"/pc-settings.gc", r"/"+MOD_ID+"-settings.gc")
            
         #if extractOnUpdate is True, check their ISO_DATA folder
 
@@ -360,6 +371,6 @@ def launch(URL, MOD_NAME, LINK_TYPE):
         #if we dont need to update, then close any open instances of the game and just launch it
         print("Game is up to date!")
         print("Launching now!")
-        launch_local(MOD_NAME)
+        launch_local(MOD_ID)
 
 

@@ -118,7 +118,7 @@ def resize_image(image_path): #image_path: "C:User/Image/img.jpg"
 
     cur_width, cur_height = img.size
 
-    w_ratio = 450.0 / cur_width
+    w_ratio = 500.0 / cur_width
     h_ratio = 300.0 / cur_height
 
     if w_ratio < h_ratio:
