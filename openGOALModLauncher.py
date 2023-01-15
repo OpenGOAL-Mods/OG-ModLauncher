@@ -15,6 +15,7 @@ import io
 import json
 import os.path
 import requests
+import time
 import datetime
 import sys
 import webbrowser
@@ -79,6 +80,53 @@ AppdataPATH = os.path.join(dirs.user_data_dir, "OPENGOAL-UnofficalModLauncher", 
 
 # C:\Users\USERNAME\AppData\Roaming\OpenGOAL-Mods\
 ModFolderPATH = os.path.join(dirs.user_data_dir, "OpenGOAL-Mods", "")
+
+# grab images from web
+
+# url to splash screen image
+url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/overhaul/resources/modlaunchersplash.png"
+jpg_data = (
+    cloudscraper.create_scraper(
+        browser={"browser": "firefox", "platform": "windows", "mobile": False}
+    )
+    .get(url)
+    .content
+)
+
+pil_image = Image.open(io.BytesIO(jpg_data))
+png_bio = io.BytesIO()
+pil_image.save(png_bio, format="PNG")
+splashfile = png_bio.getvalue()
+
+# url to icon for the window
+url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/appicon.ico"
+jpg_data = (
+    cloudscraper.create_scraper(
+        browser={"browser": "firefox", "platform": "windows", "mobile": False}
+    )
+    .get(url)
+    .content
+)
+
+pil_image = Image.open(io.BytesIO(jpg_data))
+png_bio = io.BytesIO()
+pil_image.save(png_bio, format="PNG")
+iconfile = png_bio.getvalue()
+
+# url to use if we have no image
+url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/noRepoImageERROR.png"
+jpg_data = (
+    cloudscraper.create_scraper(
+        browser={"browser": "firefox", "platform": "windows", "mobile": False}
+    )
+    .get(url)
+    .content
+)
+
+pil_image = Image.open(io.BytesIO(jpg_data))
+png_bio = io.BytesIO()
+pil_image.save(png_bio, format="PNG")
+noimagefile = png_bio.getvalue()
 
 table_headings = [
     "id",
@@ -227,130 +275,109 @@ LATEST_TABLE_DATA = getRefreshedTableData(0)
 
 # ----- Full layout -----
 layout = [
-    [
-        sg.Column(
-            [
-                [
-                    sg.Text(
-                        "",
-                        key="-SELECTEDMODNAME-",
-                        font=("Helvetica", 13),
-                        metadata={"id": "", "url": ""},
-                    )
-                ],
-                [sg.Text("", key="-SELECTEDMODDESC-", size=(55, 7))],
-                [sg.Text("Tags:", key="-SELECTEDMODTAGS-")],
-                [sg.Text("Contributors:", key="-SELECTEDMODCONTRIBUTORS-")],
-                [sg.Text("")],
-                [
-                    sg.Btn(button_text="Launch", key="-LAUNCH-", expand_x=True),
-                    sg.Btn(
-                        button_text="View Folder", key="-VIEWFOLDER-", expand_x=True
-                    ),
-                    sg.Btn(button_text="Reinstall", key="-REINSTALL-", expand_x=True),
-                    sg.Btn(button_text="Uninstall", key="-UNINSTALL-", expand_x=True),
-                ],
-                [
-                    sg.Btn(
-                        button_text="Website",
-                        key="-WEBSITE-",
-                        expand_x=True,
-                        metadata={"url": ""},
-                    ),
-                    sg.Btn(
-                        button_text="Video(s)",
-                        key="-VIDEOS-",
-                        expand_x=True,
-                        metadata={"url": ""},
-                    ),
-                    sg.Btn(
-                        button_text="Photo(s)",
-                        key="-PHOTOS-",
-                        expand_x=True,
-                        metadata={"url": ""},
-                    ),
-                ],
-            ],
-            size=(400, 300),
-            expand_x=True,
-            expand_y=True,
-        ),
-        sg.Frame(
-            title="",
-            element_justification="center",
-            vertical_alignment="center",
-            border_width=0,
-            layout=[[sg.Image(key="-SELECTEDMODIMAGE-", expand_y=True)]],
-            size=(500, 300),
-        ),
+    [sg.Frame(title="", key='-SPLASHFRAME-', visible=True, layout=
+      [
+        [sg.Image(key='-SPLASHIMAGE-', source=splashfile)]
+      ])
     ],
-    [sg.HorizontalSeparator()],
-    [
-        sg.Text("Search"),
-        sg.Input(expand_x=True, enable_events=True, key="-FILTER-"),
-        sg.Checkbox(
-            text="Show Installed",
-            default=True,
-            enable_events=True,
-            key="-SHOWINSTALLED-",
-        ),
-        sg.Checkbox(
-            text="Show Uninstalled",
-            default=True,
-            enable_events=True,
-            key="-SHOWUNINSTALLED-",
-        ),
-    ],
-    [
-        sg.Table(
-            values=LATEST_TABLE_DATA,
-            headings=table_headings,
-            visible_column_map=col_vis,
-            col_widths=col_width,
-            auto_size_columns=False,
-            num_rows=15,
-            text_color="black",
-            background_color="lightblue",
-            alternating_row_color="white",
-            justification="left",
-            selected_row_colors="black on yellow",
-            key="-MODTABLE-",
-            expand_x=True,
-            expand_y=True,
-            enable_click_events=True,
-        )
-    ],
+    [sg.Frame(title="", key='-MAINFRAME-', visible=False, layout=
+      [
+        [
+          sg.Column(
+              [
+                  [
+                      sg.Text(
+                          "",
+                          key="-SELECTEDMODNAME-",
+                          font=("Helvetica", 13),
+                          metadata={"id": "", "url": ""},
+                      )
+                  ],
+                  [sg.Text("", key="-SELECTEDMODDESC-", size=(55, 7))],
+                  [sg.Text("Tags:", key="-SELECTEDMODTAGS-")],
+                  [sg.Text("Contributors:", key="-SELECTEDMODCONTRIBUTORS-")],
+                  [sg.Text("")],
+                  [
+                      sg.Btn(button_text="Launch", key="-LAUNCH-", expand_x=True),
+                      sg.Btn(
+                          button_text="View Folder", key="-VIEWFOLDER-", expand_x=True
+                      ),
+                      sg.Btn(button_text="Reinstall", key="-REINSTALL-", expand_x=True),
+                      sg.Btn(button_text="Uninstall", key="-UNINSTALL-", expand_x=True),
+                  ],
+                  [
+                      sg.Btn(
+                          button_text="Website",
+                          key="-WEBSITE-",
+                          expand_x=True,
+                          metadata={"url": ""},
+                      ),
+                      sg.Btn(
+                          button_text="Video(s)",
+                          key="-VIDEOS-",
+                          expand_x=True,
+                          metadata={"url": ""},
+                      ),
+                      sg.Btn(
+                          button_text="Photo(s)",
+                          key="-PHOTOS-",
+                          expand_x=True,
+                          metadata={"url": ""},
+                      ),
+                  ],
+              ],
+              size=(400, 300),
+              expand_x=True,
+              expand_y=True,
+          ),
+          sg.Frame(
+              title="",
+              element_justification="center",
+              vertical_alignment="center",
+              border_width=0,
+              layout=[[sg.Image(key="-SELECTEDMODIMAGE-", expand_y=True)]],
+              size=(500, 300),
+          ),
+        ],
+        [sg.HorizontalSeparator()],
+        [
+            sg.Text("Search"),
+            sg.Input(expand_x=True, enable_events=True, key="-FILTER-"),
+            sg.Checkbox(
+                text="Show Installed",
+                default=True,
+                enable_events=True,
+                key="-SHOWINSTALLED-",
+            ),
+            sg.Checkbox(
+                text="Show Uninstalled",
+                default=True,
+                enable_events=True,
+                key="-SHOWUNINSTALLED-",
+            ),
+        ],
+        [
+            sg.Table(
+                values=LATEST_TABLE_DATA,
+                headings=table_headings,
+                visible_column_map=col_vis,
+                col_widths=col_width,
+                auto_size_columns=False,
+                num_rows=15,
+                text_color="black",
+                background_color="lightblue",
+                alternating_row_color="white",
+                justification="left",
+                selected_row_colors="black on yellow",
+                key="-MODTABLE-",
+                expand_x=True,
+                expand_y=True,
+                enable_click_events=True,
+            )
+        ],
+      ])
+    ]
 ]
-
-# url to icon for the window
-url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/appicon.ico"
-jpg_data = (
-    cloudscraper.create_scraper(
-        browser={"browser": "firefox", "platform": "windows", "mobile": False}
-    )
-    .get(url)
-    .content
-)
-
-pil_image = Image.open(io.BytesIO(jpg_data))
-png_bio = io.BytesIO()
-pil_image.save(png_bio, format="PNG")
-iconfile = png_bio.getvalue()
-
-# url to use if we have no image
-url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/noRepoImageERROR.png"
-jpg_data = (
-    cloudscraper.create_scraper(
-        browser={"browser": "firefox", "platform": "windows", "mobile": False}
-    )
-    .get(url)
-    .content
-)
-
-pil_image = Image.open(io.BytesIO(jpg_data))
-png_bio = io.BytesIO()
-pil_image.save(png_bio, format="PNG")
-noimagefile = png_bio.getvalue()
 
 window = sg.Window("OpenGOAL Mod Launcher", layout, icon=iconfile, finalize=True)
 
@@ -429,13 +456,25 @@ def reset():
 
 # this is the main event loop where we handle user input
 reset()
+bootstart = time.time()
 while True:
-    event, values = window.read()
+    event, values = window.read(timeout=100)
 
     if event == "Exit" or event == sg.WIN_CLOSED:
         break
 
-    if isinstance(event, tuple):
+    if event == "__TIMEOUT__":
+      if bootstart is not None:
+        curtime = time.time()
+        if curtime - bootstart > 3:
+          # switch from splash screen to main screen after 3s
+          bootstart = None
+          window["-MAINFRAME-"].update(visible=True)
+          window["-MAINFRAME-"].unhide_row()
+          window["-SPLASHFRAME-"].update(visible=False)
+          window["-SPLASHFRAME-"].hide_row()
+          window.refresh()
+    elif isinstance(event, tuple):
         if event[0] == "-MODTABLE-":
             row = event[2][0]
             col = event[2][1]
