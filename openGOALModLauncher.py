@@ -275,12 +275,13 @@ LATEST_TABLE_DATA = getRefreshedTableData(0)
 
 # ----- Full layout -----
 layout = [
-    [sg.Frame(title="", key='-SPLASHFRAME-', visible=True, layout=
+    [sg.Frame(title="", key='-SPLASHFRAME-', border_width=0, size=(972, 609), visible=True, element_justification="center", vertical_alignment="center", 
+      layout=
       [
-        [sg.Image(key='-SPLASHIMAGE-', source=splashfile)]
+        [sg.Image(key='-SPLASHIMAGE-', source=splashfile, expand_y=True)]
       ])
     ],
-    [sg.Frame(title="", key='-MAINFRAME-', visible=False, layout=
+    [sg.Frame(title="", key='-MAINFRAME-', border_width=0, visible=False, layout=
       [
         [
           sg.Column(
@@ -474,6 +475,7 @@ while True:
           window["-SPLASHFRAME-"].update(visible=False)
           window["-SPLASHFRAME-"].hide_row()
           window.refresh()
+          # print("SIZE:", window.size)
     elif isinstance(event, tuple):
         if event[0] == "-MODTABLE-":
             row = event[2][0]
