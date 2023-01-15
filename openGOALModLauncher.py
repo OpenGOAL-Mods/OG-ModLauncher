@@ -99,6 +99,8 @@ col_width = [
 ]
 
 FILTER_STR = ""
+INCLUDE_INSTALLED = True
+INCLUDE_UNINSTALLED = True
 LATEST_TABLE_SORT = [0, True]
 
 def getRefreshedTableData(sort_col_idx):
@@ -132,19 +134,20 @@ def getRefreshedTableData(sort_col_idx):
     
     # only add to data if passes filter (if any)
     if FILTER_STR is None or FILTER_STR == "" or FILTER_STR in mod_name.lower() or FILTER_STR in mod["contributors"].lower() or FILTER_STR in mod["tags"].lower():
-      mod_table_data.append([
-        mod_id,
-        mod_name,
-        mod["desc"],
-        mod["tags"],
-        mod["contributors"],
-        mod["install_date"],
-        # mod["latest_available_update_date"],
-        mod["URL"],
-        (mod["website_url"] if "website_url" in mod else ""),
-        (mod["videos_url"] if "videos_url" in mod else ""),
-        (mod["photos_url"] if "photos_url" in mod else "")
-      ])
+      if (INCLUDE_INSTALLED and mod["install_date"] != "Not Installed") or (INCLUDE_UNINSTALLED and mod["install_date"] == "Not Installed"):
+        mod_table_data.append([
+          mod_id,
+          mod_name,
+          mod["desc"],
+          mod["tags"],
+          mod["contributors"],
+          mod["install_date"],
+          # mod["latest_available_update_date"],
+          mod["URL"],
+          (mod["website_url"] if "website_url" in mod else ""),
+          (mod["videos_url"] if "videos_url" in mod else ""),
+          (mod["photos_url"] if "photos_url" in mod else "")
+        ])
 
   if sort_col_idx is None:
     # not from a heading click, retain sorting
@@ -191,7 +194,9 @@ layout = [
   ],
   [
     sg.Text('Search'), 
-    sg.Input(expand_x=True, enable_events=True, key='-FILTER-')
+    sg.Input(expand_x=True, enable_events=True, key='-FILTER-'),
+    sg.Checkbox(text="Show Installed", default=True, enable_events=True, key="-SHOWINSTALLED-"),
+    sg.Checkbox(text="Show Uninstalled", default=True, enable_events=True, key="-SHOWUNINSTALLED-")
   ],
   [
     sg.Table(values=LATEST_TABLE_DATA, headings=table_headings, visible_column_map=col_vis, col_widths=col_width, auto_size_columns=False, num_rows=15, 
@@ -321,6 +326,14 @@ while True:
         handleModTableSelection(row)
   elif event == '-FILTER-':
     FILTER_STR = values['-FILTER-'].lower()
+    LATEST_TABLE_DATA = getRefreshedTableData(None)
+    window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
+  elif event == "-SHOWINSTALLED-":
+    INCLUDE_INSTALLED = window["-SHOWINSTALLED-"].get()
+    LATEST_TABLE_DATA = getRefreshedTableData(None)
+    window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
+  elif event == "-SHOWUNINSTALLED-":
+    INCLUDE_UNINSTALLED = window["-SHOWUNINSTALLED-"].get()
     LATEST_TABLE_DATA = getRefreshedTableData(None)
     window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
   elif event == "-REFRESH-":
