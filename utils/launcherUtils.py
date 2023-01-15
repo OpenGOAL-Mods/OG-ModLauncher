@@ -308,11 +308,18 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
     NotCompiled = bool(not (exists(InstallDir + r"\data\out\jak1\fr3\GAME.fr3")))
     needUpdate = bool((LastWrite < LatestRel) or (NotExtracted) or NotCompiled)
 
-    print(
-        "Currently installed version created on: "
-        + LastWrite.strftime("%Y-%m-%d %H:%M:%S")
-    )
-    print("Newest version created on: " + LatestRel.strftime("%Y-%m-%d %H:%M:%S"))
+    print("Currently installed version created on: " + LastWrite.strftime('%Y-%m-%d %H:%M:%S'))
+    print("Newest version created on: " + LatestRel.strftime('%Y-%m-%d %H:%M:%S'))
+    if(NotExtracted):
+        print("Error! Iso data does not appear to be extracted to " + UniversalIsoPath +r"\jak1\Z6TAIL.DUP")
+        print("Will ask user to provide ISO")
+    if(NotCompiled):
+        print("Error! The game is not compiled")
+    if((LastWrite < LatestRel)):
+        print("Looks like we need to download a new update!")
+        print(LastWrite)
+        print(LatestRel)
+        print("Is newest posted update older than what we have installed? " + str((LastWrite < LatestRel)))
 
     # attempt to migrate any old settings files from using MOD_NAME to MOD_ID
     if exists(AppdataPATH + "\OpenGOAL\jak1\settings\\" + MOD_NAME + "-settings.gc"):
@@ -330,9 +337,10 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
 
         # force update to ensure we recompile with adjusted settings filename in pckernel.gc
         needUpdate = True
-
-    if needUpdate:
-        # start the actual update method if needUpdate is true
+        
+    if (needUpdate):
+        
+        #start the actual update method if needUpdate is true
         print("\nNeed to update")
         print("Starting Update...")
         # Close Gk and goalc if they were open.
@@ -345,12 +353,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
         if not os.path.exists(InstallDir + "/temp"):
             print("Creating install dir: " + InstallDir)
             os.makedirs(InstallDir + "/temp")
-
-        r = requests.get(LatestRelAssetsURL, allow_redirects=True)
-        r.status_code  # 302
-        # print(r.url)  # http://github.com, not https.
-        # print(r.headers)  # https://github.com/ -- the redirect destination
-
+            
         response = requests.get(LatestRelAssetsURL)
         if response.history:
             print("Request was redirected")
@@ -380,11 +383,15 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
         try_remove_file(InstallDir + "/goalc.exe")
         try_remove_file(InstallDir + "/extractor.exe")
 
-        # if ISO_DATA has content, store this path to pass to the extractor
-        if exists(UniversalIsoPath + r"\jak1\Z6TAIL.DUP"):
+        #if ISO_DATA has content, store this path to pass to the extractor
+        if (exists(UniversalIsoPath +r"\jak1\Z6TAIL.DUP")):
+            print("We found ISO data from a previous mod installation! Lets use it!")
+            print("Found in " + UniversalIsoPath +r"\jak1\Z6TAIL.DUP")
             iso_path = UniversalIsoPath + "\jak1"
         else:
-            # if ISO_DATA is empty, prompt for their ISO and store its path.
+            #if ISO_DATA is empty, prompt for their ISO and store its path.
+            print("Looking for some ISO data in " + UniversalIsoPath + "\\jak1\\")
+            print("We did not find ISO data from a previous mod, lets ask for some!")
             root = tk.Tk()
             print("Please select your iso.")
             root.title("Select ISO")
