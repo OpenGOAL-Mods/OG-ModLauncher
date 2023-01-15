@@ -11,7 +11,7 @@ import base64
 from enum import Enum
 import json
 import requests
-import datetime
+from datetime import datetime
 
 
 class LinkTypes(Enum):
@@ -92,8 +92,21 @@ def branchToApiURL(URL):
 def branchToArchiveURL(URL):
     return str(URL).replace('/tree/','/archive/') + ".zip"
     
-    
-def resize_image(image_path, resize=None): #image_path: "C:User/Image/img.jpg"
+def getLatestAvailableUpdateDatetime(URL):
+  [link_type, URL] = identifyLinkType(URL)
+  if link_type == LinkTypes.BRANCH:
+    URL = branchToApiURL(URL)
+  
+  print("\nlaunching from " + URL)
+  PARAMS = {'address':"yolo"} 
+  r = json.loads(json.dumps(requests.get(url = URL, params = PARAMS).json()))
+
+  if link_type == LinkTypes.BRANCH:
+    return datetime.strptime(r.get("commit").get("commit").get("author").get("date").replace("T"," ").replace("Z",""),'%Y-%m-%d %H:%M:%S')
+  else: # if link_type == LinkTypes.RELEASE:
+    return datetime.strptime(r[0].get("published_at").replace("T"," ").replace("Z",""),'%Y-%m-%d %H:%M:%S')
+  
+def resize_image(image_path): #image_path: "C:User/Image/img.jpg"
     if isinstance(image_path, str):
         img = PIL.Image.open(image_path)
     else:
@@ -106,7 +119,7 @@ def resize_image(image_path, resize=None): #image_path: "C:User/Image/img.jpg"
     cur_width, cur_height = img.size
 
     w_ratio = 450.0 / cur_width
-    h_ratio = 250.0 / cur_height
+    h_ratio = 300.0 / cur_height
 
     if w_ratio < h_ratio:
       img = img.resize((int(cur_width*w_ratio), int(cur_height*w_ratio)), PIL.Image.LANCZOS)

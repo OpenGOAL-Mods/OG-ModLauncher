@@ -13,7 +13,7 @@
       "challenge"
     ],
     "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main",
-    "video": "https://www.youtube.com/watch?v=B5mEhVt0v68"
+    "videos_url": "https://www.youtube.com/watch?v=B5mEhVt0v68"
   },
   "local_multi": {
     "name": "Local Multiplayer (beta) + Randomizer",
@@ -29,7 +29,7 @@
       "beta"
     ],
     "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-multiplayer-rando-mod-pack/tree/main",
-    "video": "https://www.youtube.com/watch?v=BeVl4x6gjC0"
+    "videos_url": "https://www.youtube.com/watch?v=BeVl4x6gjC0"
   },
   "speedrun_practice": {
     "name": "Speedrun practice mod",
@@ -43,7 +43,7 @@
       "practice"
     ],
     "URL": "https://github.com/OpenGOAL-Unofficial-Mods/Jakspeedrunningpractice",
-    "video": "https://www.youtube.com/watch?v=a_SIccmgpj4"
+    "videos_url": "https://www.youtube.com/watch?v=a_SIccmgpj4"
   },
   "microtransactions": {
     "name": "MicroTransactions",
@@ -56,7 +56,7 @@
       "challenge"
     ],
     "URL": "https://github.com/himham-jak/Jak1-but-Microtransactions/releases",
-    "video": "https://www.youtube.com/watch?v=q5TZ9U399J8"  
+    "videos_url": "https://www.youtube.com/watch?v=q5TZ9U399J8"  
   },
   "jak_go_fast": {
     "name": "Jak1 but every power cell he gets faster",
@@ -81,7 +81,7 @@
       "challenge"
     ],
     "URL": "https://github.com/OpenGOAL-Unofficial-Mods/First-person-jak",
-    "video": "https://www.youtube.com/watch?v=2RhxWSSaNlM"
+    "videos_url": "https://www.youtube.com/watch?v=2RhxWSSaNlM"
   },
   "classic_plus": {
     "name": "Classic+",
@@ -106,7 +106,7 @@
       "challenge"
     ],
     "URL": "https://github.com/Zedb0T/TheFlutFlutLegacy",
-    "video": "https://www.youtube.com/watch?v=_z8GhVWFYfI"
+    "videos_url": "https://www.youtube.com/watch?v=_z8GhVWFYfI"
   },
   "ice_everywhere": {
     "name": "Ice Everywhere",
@@ -130,7 +130,8 @@
       "gameplay-mod",
       "challenge"
     ],
-    "URL": "https://github.com/dallmeyer/opengoal-orbhunt"
+    "URL": "https://github.com/dallmeyer/opengoal-orbhunt",
+    "website_url": "https://github.com/dallmeyer/opengoal-orbhunt/blob/main/README.md#opengoal---the-precursor-orb-hunt"
   },
   "flutflut_legacy_rando": {
     "name": "The FlutFlut Legacy + Randomizer",
@@ -158,7 +159,7 @@
       "texture-mod"
     ],
     "URL": "https://github.com/dallmeyer/opengoal-sm64",
-    "video": "https://www.youtube.com/watch?v=xNpsAzsPBTQ"
+    "videos_url": "https://www.youtube.com/watch?v=xNpsAzsPBTQ"
   },
   "zoomer_legacy": {
     "name": "The Zoomer Legacy",
@@ -172,7 +173,7 @@
       "challenge"
     ],
     "URL": "https://github.com/dallmeyer/The-Zoomer-Legacy",
-    "video": "https://www.youtube.com/watch?v=BDvvCY8gFDQ"
+    "videos_url": "https://www.youtube.com/watch?v=BDvvCY8gFDQ"
   },
   "inirdin_textures": {
     "name": "Texture Showcase",
@@ -196,7 +197,7 @@
       "challenge"
     ],
     "URL": "https://github.com/Xyphles/X-mod-base/tree/Jak-and-Daxter-But-Every-Time-He-Grabs-An-Orb-He-Grows",
-    "video": "https://www.youtube.com/watch?v=dBP_25yT5YU"
+    "videos_url": "https://www.youtube.com/watch?v=dBP_25yT5YU"
   },
   "snowy_legacy": {
     "name": "Snowy Legacy",
@@ -208,7 +209,7 @@
       "texture-mod"
     ],
     "URL": "https://github.com/kekdeveloper/opengoal-mod-snowy-legacy/tree/main",
-    "video": "https://www.youtube.com/watch?v=djoAMJMre6U"
+    "videos_url": "https://www.youtube.com/watch?v=djoAMJMre6U"
   },
   "mystery_word": {
     "name": "Mystery Word V2",
@@ -221,7 +222,7 @@
       "challenge"
     ],
     "URL": "https://github.com/MortisDG/MysteryWordV2",
-    "video": "https://www.youtube.com/watch?v=dlXkd6FhjyY"
+    "videos_url": "https://www.youtube.com/watch?v=dlXkd6FhjyY"
   },
   "random_actors": {
     "name": "Random Actors/entities",
@@ -287,5 +288,18 @@
       "speedrunning"
     ],
     "URL": "https://github.com/dryice10/openghosts"
+  },
+  "forgotten_lands": {
+    "name": "The Forgotten Lands",
+    "desc": "Kuitar's first level. Just start a normal game at Geyser Rock. This is a work in progress and not fully finished yet.",
+    "contributors": [
+      "Kuitar"
+    ],
+    "tags": [
+      "custom-level",
+      "texture-mod",
+      "beta"
+    ],
+    "URL": "https://github.com/Kuitar5/kuitar-secret-project/releases"
   }
 }
