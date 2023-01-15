@@ -188,7 +188,7 @@ LATEST_TABLE_SORT = [6, True] # wakeup sorted by last launch date
 def getRefreshedTableData(sort_col_idx):
     # uncomment/comment the next two lines if you want to test with a local file
     mod_dict = requests.get("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/jak1_mods.json").json()
-    # mod_dict = json.loads(open("resources/mods.json", "r").read())
+    # mod_dict = json.loads(open("resources/jak1_mods.json", "r").read())
     mod_dict = dict(sorted(mod_dict.items(), key=lambda x: x[1]["release_date"], reverse=True))
 
     mod_table_data = []
