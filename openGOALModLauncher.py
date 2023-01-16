@@ -500,7 +500,10 @@ while True:
         if event[0] == "-MODTABLE-":
             row = event[2][0]
             col = event[2][1]
-            if row == -1:
+            if row == None:
+                # empty row, do nothing
+                continue
+            elif row == -1:
                 # heading row, sort by col
                 LATEST_TABLE_DATA = getRefreshedTableData(col)
                 window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
