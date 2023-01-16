@@ -128,6 +128,10 @@ png_bio = io.BytesIO()
 pil_image.save(png_bio, format="PNG")
 noimagefile = png_bio.getvalue()
 
+#make the modfolderpath if first install
+if not os.path.exists(ModFolderPATH):
+    os.makedirs(ModFolderPATH)
+
 table_headings = [
     "id",
     "Name",
