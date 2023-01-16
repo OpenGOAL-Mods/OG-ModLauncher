@@ -225,6 +225,7 @@ def getRefreshedTableData(sort_col_idx):
               mod["access_date"] = f"{datetime.datetime.fromtimestamp(gk_stat.st_atime):%Y-%m-%d %H:%M}"
 
         mod["contributors"] = ", ".join(mod["contributors"])
+        mod["tags"].sort()
         mod["tags"] = ", ".join(mod["tags"])
 
         # determine latest available update datetime - disabled as too easy to get rate-limited by github (can we do in bulk maybe?)
