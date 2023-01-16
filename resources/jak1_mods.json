@@ -1,6 +1,6 @@
 {
   "randomizer": {
-    "name": "Randomizer",
+    "name": "Checkpoint Randomizer",
     "desc": "Warp to a random checkpoint on various triggers (cells, flies, orbs, eco, death).",
     "contributors": [
       "ZedB0T",
@@ -18,8 +18,8 @@
     "videos_url": "https://www.youtube.com/watch?v=B5mEhVt0v68"
   },
   "local_multi": {
-    "name": "Local Multiplayer (beta) + Randomizer",
-    "desc": "Shared-screen multiplayer, with Randomizer options available.",
+    "name": "SplitScreen Multiplayer! (beta) ",
+    "desc": "Shared-screen multiplayer. Press L1 + L2 + R1 + R2 at the same time on another controller to have another player join!",
     "contributors": [
       "ZedB0T",
       "barg034"
@@ -96,7 +96,7 @@
   },
   "classic_plus": {
     "name": "Classic+",
-    "desc": "Mimicks PS2 speedrun behavior with some openGOAL QoL improvements.",
+    "desc": "Mimicks PS2 Jak 1 speedrun behavior with some openGOAL QoL improvements. However runs are NOT valid for the leaderboard.",
     "contributors": [
       "ZedB0T"
     ],
@@ -273,8 +273,8 @@
     "website_url": "https://github.com/Zedb0T/Zed-Mods/tree/Random-Actor-dev"
   },
   "mikeeee": {
-    "name": "MIKEEEE",
-    "desc": "Mike",
+    "name": "Random Enemies",
+    "desc": "Enemys in each level are randomized when jak spawns in.",
     "contributors": [
       "ZedB0T"
     ],
@@ -319,7 +319,7 @@
   },
   "open_ghosts": {
     "name": "OpenGhosts",
-    "desc": "Record and playback Jak's position. Saves to a file so you can share with your friends!",
+    "desc": "Record and playback Jak's position. Saves to a file so you can share with your friends! Make Sure you restart the game in debug mode!",
     "contributors": [
       "Yopie"
     ],
