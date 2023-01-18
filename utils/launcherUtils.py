@@ -424,7 +424,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
         replaceText(
             InstallDir + r"\data\goal_src\jak1\pc\pckernel.gc",
             "Playing Jak and Daxter: The Precursor Legacy",
-            "Playing " + MOD_ID,
+            "Playing " + MOD_NAME,
         )
         replaceText(
             InstallDir + r"\data\goal_src\jak1\pc\pckernel.gc",
