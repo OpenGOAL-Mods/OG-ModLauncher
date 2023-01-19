@@ -17,6 +17,22 @@
     "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack",
     "videos_url": "https://www.youtube.com/watch?v=B5mEhVt0v68"
   },
+  "random_actor_scale": {
+    "name": "Fricked up",
+    "desc": "PAUSERS",
+    "contributor": [
+      "ZedB0T"
+    ],
+    "tags": [
+      "beta",
+      "gameplay-mod",
+      "challenge",
+      "rng"
+    ],
+    "release_date": "2023-01-19",
+    "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-mod-base/tree/fucked",
+    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-mod-base"
+  },
   "local_multi": {
     "name": "Shared Screen Multiplayer! (beta) ",
     "desc": "Shared-screen multiplayer. Press L1 + L2 + R1 + R2 at the same time on another controller to have another player join!",
