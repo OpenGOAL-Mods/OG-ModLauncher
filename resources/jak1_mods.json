@@ -362,5 +362,19 @@
     "release_date": "2023-01-08",
     "URL": "https://github.com/Kuitar5/kuitar-secret-project/releases",
     "website_url": "https://github.com/Kuitar5/kuitar-secret-project/blob/main/README.md#the-forgotten-lands"
+  },
+  "blindfold_assist": {
+    "name": "Blindfold Assist Mod",
+    "desc": "Mod for blindfolded runs. Limits stick input to 8 directions. Hold R2 to center camera behind Jak.",
+    "contributors": [
+      "barg034"
+    ],
+    "tags": [
+      "gameplay-mod",
+      "beta"
+    ],
+    "release_date": "2023-01-22",
+    "URL": "https://github.com/OpenGOAL-Unofficial-Mods/blindfold-assist",
+    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/blindfold-assist/blob/main/README.md"
   }
 }
