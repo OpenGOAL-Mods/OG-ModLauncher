@@ -51,6 +51,21 @@
     "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-multiplayer-rando-mod-pack/blob/main/README.md#opengoal-multiplayer--randomizer-mod-pack",
     "videos_url": "https://www.youtube.com/watch?v=BeVl4x6gjC0"
   },
+  "random_cell_order": {
+    "name": "Random Cell Order",
+    "desc": "Jak 1 but you must pick up cells in the (random) specified order",
+    "contributors": [
+      "barg034"
+    ],
+    "tags": [
+      "beta",
+      "speedrunning",
+      "rng"
+    ],
+    "release_date": "2023-02-02",
+    "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-rco",
+    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-rco/blob/main/README.md"    
+  },
   "speedrun_practice": {
     "name": "Speedrun practice mod",
     "desc": "Extra speedrun trick checkpoints. Custom checkpoints: L2 + down to set / L2 + up to respawn",
