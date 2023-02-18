@@ -379,6 +379,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
         # delete any previous installation
         print("Removing previous installation " + InstallDir)
         try_remove_dir(InstallDir + "/data")
+        try_remove_dir(InstallDir + "/.github")
         try_remove_file(InstallDir + "/gk.exe")
         try_remove_file(InstallDir + "/goalc.exe")
         try_remove_file(InstallDir + "/extractor.exe")
