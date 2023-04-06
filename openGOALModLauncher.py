@@ -147,6 +147,21 @@ table_headings = [
     "photos_url",
 ]
 
+sorted_table_headings = [
+    "id",
+    "Name",
+    "Description",
+    "Tags",
+    "Contributors",
+    "Install Date",
+    "Last Launched",
+    # "Latest Update Date",
+    "URL",
+    "website_url",
+    "videos_url",
+    "photos_url",
+]
+
 col_vis = [
     False,
     True,
@@ -186,7 +201,7 @@ col_width = [
 FILTER_STR = ""
 INCLUDE_INSTALLED = True
 INCLUDE_UNINSTALLED = True
-LATEST_TABLE_SORT = [6, True] # wakeup sorted by last launch date
+LATEST_TABLE_SORT = [6, False] # wakeup sorted by last launch date
 
 
 def getRefreshedTableData(sort_col_idx):
@@ -225,6 +240,7 @@ def getRefreshedTableData(sort_col_idx):
               mod["access_date"] = f"{datetime.datetime.fromtimestamp(gk_stat.st_atime):%Y-%m-%d %H:%M}"
 
         mod["contributors"] = ", ".join(mod["contributors"])
+        mod["tags"].sort()
         mod["tags"] = ", ".join(mod["tags"])
 
         # determine latest available update datetime - disabled as too easy to get rate-limited by github (can we do in bulk maybe?)
@@ -269,15 +285,17 @@ def getRefreshedTableData(sort_col_idx):
         remapped_col_idx = vis_col_map[sort_col_idx]
 
         if remapped_col_idx == LATEST_TABLE_SORT[0]:
-            LATEST_TABLE_SORT[1] = not LATEST_TABLE_SORT[
-                1
-            ]  # same column, flip asc/desc
+            LATEST_TABLE_SORT[1] = not LATEST_TABLE_SORT[1]  # same column, flip asc/desc
         else:
             LATEST_TABLE_SORT[0] = remapped_col_idx
             LATEST_TABLE_SORT[1] = True
 
+    global sorted_table_headings, table_headings
+    sorted_table_headings = table_headings.copy()
+    sorted_table_headings[remapped_col_idx] += (" ↑" if LATEST_TABLE_SORT[1] else " ↓")
+
     if remapped_col_idx == 5 or remapped_col_idx == 6: # special sort for install/access date
-      mod_table_data.sort(key=lambda x: "0" if x[remapped_col_idx] == "Not Installed" else x[remapped_col_idx].lower(), reverse=True)
+      mod_table_data.sort(key=lambda x: "0" if x[remapped_col_idx] == "Not Installed" else x[remapped_col_idx].lower())
     else:
       mod_table_data.sort(key=lambda x: x[remapped_col_idx].lower())
 
@@ -471,6 +489,8 @@ def reset():
     global LATEST_TABLE_DATA
     LATEST_TABLE_DATA = getRefreshedTableData(None)
     window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
+    for i in range(len(sorted_table_headings)):
+      window["-MODTABLE-"].Widget.heading(i, text=sorted_table_headings[i])
     window["-MODTABLE-"].update(select_rows=[0])
     handleModTableSelection(0)
 
@@ -500,10 +520,15 @@ while True:
         if event[0] == "-MODTABLE-":
             row = event[2][0]
             col = event[2][1]
-            if row == -1:
+            if row == None:
+                # empty row, do nothing
+                continue
+            elif row == -1:
                 # heading row, sort by col
                 LATEST_TABLE_DATA = getRefreshedTableData(col)
                 window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
+                for i in range(len(sorted_table_headings)):
+                  window["-MODTABLE-"].Widget.heading(i, text=sorted_table_headings[i])
             else:
                 # data row, mod selected
                 handleModTableSelection(row)

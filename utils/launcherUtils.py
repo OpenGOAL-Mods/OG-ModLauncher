@@ -379,6 +379,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
         # delete any previous installation
         print("Removing previous installation " + InstallDir)
         try_remove_dir(InstallDir + "/data")
+        try_remove_dir(InstallDir + "/.github")
         try_remove_file(InstallDir + "/gk.exe")
         try_remove_file(InstallDir + "/goalc.exe")
         try_remove_file(InstallDir + "/extractor.exe")
@@ -424,7 +425,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
         replaceText(
             InstallDir + r"\data\goal_src\jak1\pc\pckernel.gc",
             "Playing Jak and Daxter: The Precursor Legacy",
-            "Playing " + MOD_ID,
+            "Playing " + MOD_NAME,
         )
         replaceText(
             InstallDir + r"\data\goal_src\jak1\pc\pckernel.gc",

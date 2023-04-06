@@ -17,8 +17,24 @@
     "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack",
     "videos_url": "https://www.youtube.com/watch?v=B5mEhVt0v68"
   },
+  "random_actor_scale": {
+    "name": "Fricked up",
+    "desc": "PAUSERS",
+    "contributors": [
+      "ZedB0T"
+    ],
+    "tags": [
+      "beta",
+      "gameplay-mod",
+      "challenge",
+      "rng"
+    ],
+    "release_date": "2023-01-19",
+    "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-mod-base/tree/fucked",
+    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-mod-base"
+  },
   "local_multi": {
-    "name": "SplitScreen Multiplayer! (beta) ",
+    "name": "Shared Screen Multiplayer! (beta) ",
     "desc": "Shared-screen multiplayer. Press L1 + L2 + R1 + R2 at the same time on another controller to have another player join!",
     "contributors": [
       "ZedB0T",
@@ -34,6 +50,23 @@
     "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-multiplayer-rando-mod-pack/tree/main",
     "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-multiplayer-rando-mod-pack/blob/main/README.md#opengoal-multiplayer--randomizer-mod-pack",
     "videos_url": "https://www.youtube.com/watch?v=BeVl4x6gjC0"
+  },
+  "random_cell_order": {
+    "name": "Random Cell Order",
+    "desc": "Jak 1 but you must pick up cells in the (random) specified order",
+    "contributors": [
+      "barg034",
+      "SixRock",
+      "Dexz"
+    ],
+    "tags": [
+      "beta",
+      "speedrunning",
+      "rng"
+    ],
+    "release_date": "2023-02-02",
+    "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-rco",
+    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-rco/blob/main/README.md"    
   },
   "speedrun_practice": {
     "name": "Speedrun practice mod",
@@ -139,7 +172,7 @@
   },
   "orb_hunt": {
     "name": "Orb Hunt",
-    "desc": "Jak 1 but everything is all moved around! More info on the GitHub page",
+    "desc": "Jak 1 but everything is all moved around! More info on the website",
     "contributors": [
       "barg034"
     ],
@@ -149,7 +182,8 @@
     ],
     "release_date": "2023-01-05",
     "URL": "https://github.com/dallmeyer/opengoal-orbhunt",
-    "website_url": "https://github.com/dallmeyer/opengoal-orbhunt/blob/main/README.md#opengoal---the-precursor-orb-hunt"
+    "website_url": "https://github.com/dallmeyer/opengoal-orbhunt/blob/main/README.md#opengoal---the-precursor-orb-hunt",
+    "videos_url": "https://www.youtube.com/playlist?list=PLcFimep6cyLekygymgefmPqusnFYETuyb"
   },
   "flutflut_legacy_rando": {
     "name": "The FlutFlut Legacy + Randomizer",
@@ -344,7 +378,22 @@
     ],
     "release_date": "2023-01-08",
     "URL": "https://github.com/Kuitar5/kuitar-secret-project/releases",
-    "website_url": "https://github.com/Kuitar5/kuitar-secret-project/blob/main/README.md#the-forgotten-lands"
+    "website_url": "https://github.com/Kuitar5/kuitar-secret-project/blob/main/README.md#the-forgotten-lands",
+    "videos_url": "https://youtube.com/playlist?list=PLUvfXyvZk2SC0A8TtqYV8ap97aVGu9rRP"
+  },
+  "blindfold_assist": {
+    "name": "Blindfold Assist Mod",
+    "desc": "Mod for blindfolded runs. Limits stick input to 8 directions. Hold R2 to center camera behind Jak.",
+    "contributors": [
+      "barg034"
+    ],
+    "tags": [
+      "gameplay-mod",
+      "beta"
+    ],
+    "release_date": "2023-01-22",
+    "URL": "https://github.com/OpenGOAL-Unofficial-Mods/blindfold-assist",
+    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/blindfold-assist/blob/main/README.md"
   },
   "its_ogre_now": {
     "name": "ShrekAdventures",
