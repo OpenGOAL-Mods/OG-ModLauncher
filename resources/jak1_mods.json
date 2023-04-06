@@ -345,5 +345,20 @@
     "release_date": "2023-01-08",
     "URL": "https://github.com/Kuitar5/kuitar-secret-project/releases",
     "website_url": "https://github.com/Kuitar5/kuitar-secret-project/blob/main/README.md#the-forgotten-lands"
+  },
+  "its_ogre_now": {
+    "name": "ShrekAdventures",
+    "desc": "Shrek is life.",
+    "contributors": [
+      "Zed"
+    ],
+    "tags": [
+      "custom-level",
+      "texture-mod",
+      "beta"
+    ],
+    "release_date": "2023-04-05",
+    "URL": "https://github.com/Zedb0T/shrekadventures/releases",
+    "website_url": "https://github.com/Zedb0T/shrekadventures"
   }
 }
