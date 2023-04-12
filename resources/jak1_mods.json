@@ -399,7 +399,7 @@
     "name": "ShrekAdventures",
     "desc": "Shrek is life.",
     "contributors": [
-      "Zed"
+      "ZedB0T"
     ],
     "tags": [
       "custom-level",
@@ -408,6 +408,7 @@
     ],
     "release_date": "2023-04-05",
     "URL": "https://github.com/Zedb0T/shrekadventures/releases",
-    "website_url": "https://github.com/Zedb0T/shrekadventures"
+    "website_url": "https://github.com/Zedb0T/shrekadventures",
+    "videos_url": "https://twitter.com/JakSpeedruns/status/1645693475277668354"
   }
 }
