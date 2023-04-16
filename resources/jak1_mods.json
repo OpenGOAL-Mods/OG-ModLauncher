@@ -185,22 +185,6 @@
     "website_url": "https://github.com/dallmeyer/opengoal-orbhunt/blob/main/README.md#opengoal---the-precursor-orb-hunt",
     "videos_url": "https://www.youtube.com/playlist?list=PLcFimep6cyLekygymgefmPqusnFYETuyb"
   },
-  "flutflut_legacy_rando": {
-    "name": "The FlutFlut Legacy + Randomizer",
-    "desc": "Play the whole game on FlutFlut, with Randomizer options available.",
-    "contributors": [
-      "ZedB0T",
-      "barg034"
-    ],
-    "tags": [
-      "gameplay-mod",
-      "rng",
-      "challenge"
-    ],
-    "release_date": "2022-10-03",
-    "URL": "https://github.com/dallmeyer/TheFlutFlutLegacy/tree/rando",
-    "website_url": "https://github.com/dallmeyer/TheFlutFlutLegacy/tree/rando"
-  },
   "super_mario_64": {
     "name": "The SM64 Legacy",
     "desc": "Plays similar to Super Mario 64 (stars->cells, red coins->scout flies, coins->orbs)",
