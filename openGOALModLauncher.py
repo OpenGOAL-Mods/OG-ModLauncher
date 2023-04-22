@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Aug 25 18:33:45 2022
-
-@author: Zed
 """
 
 # we will clean these up later but for now leave even unused imports
@@ -24,9 +22,52 @@ from os.path import exists
 import urllib.request
 import shutil
 import tkinter
+import subprocess
 from appdirs import AppDirs
 
 sg.theme("DarkBlue3")
+
+def file_cleanup(old_file_paths):
+    for path in old_file_paths:
+        if os.path.exists(path):
+            if os.path.isdir(path):
+                num_files = sum(len(files) for _, _, files in os.walk(path))
+                size_bytes = sum(os.path.getsize(os.path.join(root, name)) for root, _, files in os.walk(path) for name in files)
+                size_mb = size_bytes / (1024 * 1024)
+                layout = [
+                    [sg.Text(f"Directory found in old unused location at {path}\n\nNumber of files: {num_files}\nSize: {size_mb:.2f} MB")],
+                    [sg.Button("Delete Directory", button_color=("white", "red")), sg.Button("Open Directory")]]
+            else:
+                parent_dir = os.path.dirname(path)
+                num_files = sum(len(files) for _, _, files in os.walk(parent_dir))
+                size_bytes = sum(os.path.getsize(os.path.join(root, name)) for root, _, files in os.walk(parent_dir) for name in files)
+                size_mb = size_bytes / (1024 * 1024)
+                layout = [
+                    [sg.Text(f"Files found in old unused location at {path}\n\nNumber of files in parent directory: {num_files}\nSize of parent directory: {size_mb:.2f} MB")],
+                    [sg.Button("Delete Parent Directory", button_color=("white", "red")), sg.Button("Open Parent Directory")]]
+            window = sg.Window("File Options", layout, keep_on_top=True)
+            event, values = window.read()
+            if event == "Delete Directory" or event == "Delete Parent Directory":
+                warning_layout = [
+                    [sg.Text("WARNING: This action is permanent and cannot be undone. Proceed at your own risk.")],
+                    [sg.Text("Press OK to delete the directory or Cancel to go back.")],
+                    [sg.Button("OK", button_color=("white", "red")), sg.Button("Cancel")]
+                ]
+                warning_window = sg.Window("Warning", warning_layout, keep_on_top=True)
+                warning_event, warning_values = warning_window.read()
+                if warning_event == "OK":
+                    if os.path.isdir(path):
+                        shutil.rmtree(path)
+                    else:
+                        parent_dir = os.path.dirname(path)
+                        shutil.rmtree(parent_dir)
+                warning_window.close()
+            elif event == "Open Directory" or event == "Open Parent Directory":
+                if os.name == 'nt':
+                    os.startfile(path if os.path.isdir(path) else parent_dir)
+                elif os.name == 'posix':
+                    subprocess.Popen(["xdg-open", path if os.path.isdir(path) else parent_dir])
+            window.close()
 
 def openLauncherWebsite():
   webbrowser.open("https://opengoal-unofficial-mods.github.io/")
@@ -498,6 +539,10 @@ def reset():
 # this is the main event loop where we handle user input
 reset()
 bootstart = time.time()
+old_file_paths = [r"C:\Users\NinjaPC\Documents\Github\FrickJak\jak-project\bin\test\test.txt","path/to/next/file/or/dir"]
+
+# call the file_cleanup function with your list of file paths
+file_cleanup(old_file_paths)
 while True:
     event, values = window.read(timeout=100)
 
