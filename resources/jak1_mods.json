@@ -70,7 +70,7 @@
   },
   "speedrun_practice": {
     "name": "Speedrun practice mod",
-    "desc": "Extra speedrun trick checkpoints. Custom checkpoints: L2 + down to set / L2 + up to respawn",
+    "desc": "Pseudo-save states: L2+down (or C on keyboard) to save / L2+up (or V on keyboard) to load. Extra checkpoints in speedrun menu (while holding L1+R1+X, press Select or Start)",
     "contributors": [
       "ZedB0T",
       "barg034"
