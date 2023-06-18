@@ -417,7 +417,6 @@ layout = [
 
 window = sg.Window("OpenGOAL Mod Launcher", layout, icon=iconfile, finalize=True)
 
-
 def handleModTableSelection(row):
     global LATEST_TABLE_DATA
     mod = LATEST_TABLE_DATA[row]

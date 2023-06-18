@@ -129,7 +129,7 @@ def launch_local(MOD_ID):
         UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data\iso_data"
         GKCOMMANDLINElist = [
             InstallDir + "\gk.exe",
-            "-proj-path",
+            "--proj-path",
             InstallDir + "\\data",
             "-boot",
             "-fakeiso",
@@ -152,7 +152,7 @@ def reinstall(MOD_ID):
     UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data\iso_data"
     GKCOMMANDLINElist = [
         InstallDir + "\gk.exe",
-        "-proj-path",
+        "--proj-path",
         InstallDir + "\\data",
         "-boot",
         "-fakeiso",
@@ -263,7 +263,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
     UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data\iso_data"
     GKCOMMANDLINElist = [
         InstallDir + "\gk.exe",
-        "-proj-path",
+        "--proj-path",
         InstallDir + "\\data",
         "-boot",
         "-fakeiso",
