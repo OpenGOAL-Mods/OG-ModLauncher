@@ -1,0 +1,9 @@
+pyinstaller
+python-dotenv
+ahk
+asyncio
+requests
+Pillow
+progressbar
+cloudscraper
+appdirs

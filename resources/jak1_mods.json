@@ -230,6 +230,20 @@
     "URL": "https://github.com/Inirdin/opengoal-inirdin-texture-showcase/tree/main",
     "website_url": "https://github.com/Inirdin/opengoal-inirdin-texture-showcase/blob/main/README.md#opengoal-inirdin-texture-showcase"
   },
+  "Ng_minus": {
+    "name": "NG-",
+    "desc": "Play the game backwards",
+    "contributors": [
+      "ZedB0T",
+      "PrinceVortex"
+    ],
+    "tags": [
+      "gameplay-mod"
+    ],
+    "release_date": "2023-04-16",
+    "URL": "https://github.com/OpenGOAL-Unofficial-Mods/ng-",
+    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/ng-"
+  },
   "jak_grows": {
     "name": "Jak and Daxter But Every Time He Grabs An Orb He Grows",
     "desc": "Jak and Daxter But Every Time He Grabs An Orb He Grows.",
