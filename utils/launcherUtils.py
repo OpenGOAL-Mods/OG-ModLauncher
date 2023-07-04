@@ -432,6 +432,16 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
             "/pc-settings.gc",
             r"/" + MOD_ID + "-settings.gc",
         )
+        replaceText(
+            InstallDir + r"\data\goal_src\jak1\pc\pckernel-common.gc",
+            "/pc-settings.gc",
+            r"/" + MOD_ID + "-settings.gc",
+        )
+        replaceText(
+            InstallDir + r"\data\goal_src\jak1\pc\pckernel-common.gc",
+            "/pc-settings.gc",
+            r"/" + MOD_ID + "-settings.gc",
+        )
 
         # if extractOnUpdate is True, check their ISO_DATA folder
 
