@@ -408,5 +408,20 @@
     "URL": "https://github.com/Zedb0T/shrekadventures/releases",
     "website_url": "https://github.com/Zedb0T/shrekadventures",
     "videos_url": "https://twitter.com/JakSpeedruns/status/1645693475277668354"
+  },
+  "invisible_Legacy": {
+    "name": "The Invisible Legacy",
+    "desc": "Jak1 but everything is invisible! Can you save Daxter? :O",
+    "contributors": [
+      "ZedB0T"
+    ],
+    "tags": [
+      "custom-level",
+      "texture-mod",
+      "challenge"
+    ],
+    "release_date": "2023-07-05",
+    "URL": "https://github.com/OpenGOAL-Mods/OG-Invisible-Legacy/releases",
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-Invisible-Legacy"
   }
 }
