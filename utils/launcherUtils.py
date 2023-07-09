@@ -251,7 +251,8 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
     # Github API Call
     launchUrl = URL
     if LINK_TYPE == githubUtils.LinkTypes.BRANCH:
-        launchUrl = githubUtils.branchToApiURL(URL)
+      launchUrl = githubUtils.branchToApiURL(URL)
+    LatestRelAssetsURL = ""
 
     print("\nlaunching from " + launchUrl)
     PARAMS = {"address": "yolo"}
@@ -272,30 +273,29 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
 
     # store Latest Release and check our local date too.
     if LINK_TYPE == githubUtils.LinkTypes.BRANCH:
-        LatestRel = datetime.strptime(
-            r.get("commit")
-            .get("commit")
-            .get("author")
-            .get("date")
-            .replace("T", " ")
-            .replace("Z", ""),
-            "%Y-%m-%d %H:%M:%S",
-        )
-        LatestRelAssetsURL = githubUtils.branchToArchiveURL(URL)
+      LatestRel = datetime.strptime(
+          r.get("commit")
+          .get("commit")
+          .get("author")
+          .get("date")
+          .replace("T", " ")
+          .replace("Z", ""),
+          "%Y-%m-%d %H:%M:%S",
+      )
+      LatestRelAssetsURL = githubUtils.branchToArchiveURL(URL)
     elif LINK_TYPE == githubUtils.LinkTypes.RELEASE:
-        LatestRel = datetime.strptime(
-            r[0].get("published_at").replace("T", " ").replace("Z", ""),
-            "%Y-%m-%d %H:%M:%S",
-        )
-        LatestRelAssetsURL = (
-            json.loads(
-                json.dumps(
-                    requests.get(url=r[0].get("assets_url"), params=PARAMS).json()
-                )
-            )
-        )[0].get("browser_download_url")
-        response = requests.get(url=LatestRelAssetsURL, params=PARAMS)
-        content_type = response.headers["content-type"]
+      LatestRel = datetime.strptime(
+          r[0].get("published_at").replace("T", " ").replace("Z", ""),
+          "%Y-%m-%d %H:%M:%S",
+      )
+      assets = json.loads(json.dumps(requests.get(url=r[0].get("assets_url"), params=PARAMS).json()))
+      for asset in assets:
+        if "linux" not in asset.get("name"):
+          LatestRelAssetsURL = asset.get("browser_download_url")
+          break
+      
+      # response = requests.get(url=LatestRelAssetsURL, params=PARAMS)
+      # content_type = response.headers["content-type"]
 
     LastWrite = datetime(2020, 5, 17)
     if exists(InstallDir + "/" + ExecutableName):

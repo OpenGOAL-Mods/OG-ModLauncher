@@ -274,6 +274,7 @@ def getRefreshedTableData(sort_col_idx):
                         (mod["website_url"] if "website_url" in mod else ""),
                         (mod["videos_url"] if "videos_url" in mod else ""),
                         (mod["photos_url"] if "photos_url" in mod else ""),
+                        (mod["image_override_url"] if "image_override_url" in mod else ""),
                     ]
                 )
 
@@ -433,6 +434,7 @@ def handleModTableSelection(row):
     mod_website_url = mod[8]
     mod_videos_url = mod[9]
     mod_photos_url = mod[10]
+    mod_image_override_url = mod[11]
 
     # update text and metadata
     window["-LAUNCH-"].update(
@@ -441,6 +443,7 @@ def handleModTableSelection(row):
     window["-SELECTEDMODNAME-"].update(mod_name)
     window["-SELECTEDMODNAME-"].metadata["id"] = mod_id
     window["-SELECTEDMODNAME-"].metadata["url"] = mod_url
+    window["-SELECTEDMODNAME-"].metadata["image_override_url"] = mod_image_override_url
     window["-SELECTEDMODDESC-"].update(mod_desc)
     window["-SELECTEDMODTAGS-"].update(f"Tags: {mod_tags}")
     window["-SELECTEDMODCONTRIBUTORS-"].update(f"Contributors: {mod_contributors}")
@@ -455,32 +458,31 @@ def handleModTableSelection(row):
     window["-PHOTOS-"].metadata["url"] = mod_photos_url
 
     # load mod image
-    mod_image_url = githubUtils.returnModImageURL(mod_url)
     try:
-        r = requests.head(mod_image_url).status_code
-        if r == 200:
-            jpg_data = (
-                cloudscraper.create_scraper(
-                    browser={
-                        "browser": "firefox",
-                        "platform": "windows",
-                        "mobile": False,
-                    }
-                )
-                .get(mod_image_url)
-                .content
-            )
+      mod_image_url = mod_image_override_url if mod_image_override_url != "" else githubUtils.returnModImageURL(mod_url)
+      r = requests.head(mod_image_url).status_code
+      if r == 200:
+          jpg_data = (
+              cloudscraper.create_scraper(
+                  browser={
+                      "browser": "firefox",
+                      "platform": "windows",
+                      "mobile": False,
+                  }
+              )
+              .get(mod_image_url)
+              .content
+          )
 
-            pil_image = Image.open(io.BytesIO(jpg_data))
-            png_bio = io.BytesIO()
-            pil_image.save(png_bio, format="PNG")
-            png_data = png_bio.getvalue()
-            window["-SELECTEDMODIMAGE-"].update(githubUtils.resize_image(png_data, 500.0, 300.0))
-            # prints the int of the status code. Find more at httpstatusrappers.com :)
-        else:
-            window["-SELECTEDMODIMAGE-"].update(githubUtils.resize_image(noimagefile, 500.0, 300.0))
-
-    except requests.exceptions.MissingSchema:
+          pil_image = Image.open(io.BytesIO(jpg_data))
+          png_bio = io.BytesIO()
+          pil_image.save(png_bio, format="PNG")
+          png_data = png_bio.getvalue()
+          window["-SELECTEDMODIMAGE-"].update(githubUtils.resize_image(png_data, 500.0, 300.0))
+          # prints the int of the status code. Find more at httpstatusrappers.com :)
+      else:
+          window["-SELECTEDMODIMAGE-"].update(githubUtils.resize_image(noimagefile, 500.0, 300.0))
+    except:
         window["-SELECTEDMODIMAGE-"].update(githubUtils.resize_image(noimagefile, 500.0, 300.0))
 
 
