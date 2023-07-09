@@ -423,5 +423,19 @@
     "release_date": "2023-07-05",
     "URL": "https://github.com/OpenGOAL-Mods/OG-Invisible-Legacy/releases",
     "website_url": "https://github.com/OpenGOAL-Mods/OG-Invisible-Legacy"
+  },
+  "orange_demon": {
+    "name": "Orange Demon Challenge",
+    "desc": "Play through the entire game while being chased by Daxter!",
+    "contributors": ["Hat Kid"],
+    "tags": [
+      "gameplay-mod",
+      "custom-enemy",
+      "challenge"
+    ],
+    "release_date": "2023-07-09",
+    "URL": "https://github.com/Hat-Kid/jak-project/releases",
+    "image_override_url": "https://cdn.discordapp.com/attachments/1124072608548266105/1127708472394391653/orange-demon-thumb.png",
+    "website_url": "https://gist.github.com/Hat-Kid/ede85d11ecf98f89f1e857160cdf82c7"
   }
 }
