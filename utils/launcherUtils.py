@@ -214,33 +214,23 @@ def reinstall(MOD_ID):
 
 
 def replaceText(path, search_text, replace_text):
-    # creating a variable and storing the discord RPC text,
-    # if the mod has changed this then we leave it as the modder wanted.
-    # that we want to search
+    # Check if the file exists
+    if not os.path.isfile(path):
+        print(f"File '{path}' does not exist.")
+        return
 
-    # creating a variable and storing the mod name we want to display
-    # in discord RPC
-
-    # Opening our pckernel file in read only
-    # mode using the open() function
+    # Open the file in read-only mode
     with open(path, "r") as file:
-
-        # Reading the content of the pckernel file
-        # using the read() function and storing
-        # them in a new variable
         data = file.read()
 
-        # Searching and replacing the text
-        # using the replace() function
-        data = data.replace(search_text, replace_text)
+    # Perform the search and replace operation
+    data = data.replace(search_text, replace_text)
 
-    # Opening our pckernel file in write only
-    # mode to write the replaced content
+    # Open the file in write mode to write the replaced content
     with open(path, "w") as file:
-
-        # Writing the replaced data in our
-        # pckernel file
         file.write(data)
+
+    print(f"Text replaced successfully in file '{path}'.")
 
 
 def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
