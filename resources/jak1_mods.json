@@ -437,5 +437,19 @@
     "URL": "https://github.com/Hat-Kid/jak-project/releases",
     "image_override_url": "https://cdn.discordapp.com/attachments/1124072608548266105/1127708472394391653/orange-demon-thumb.png",
     "website_url": "https://gist.github.com/Hat-Kid/ede85d11ecf98f89f1e857160cdf82c7"
+  },
+  "wood_crate_break_alot": {
+    "name": "Break wood creates!",
+    "desc": "Play the game, but this time make sure to break all wooden crates!",
+    "contributors": ["ZedB0T"],
+    "tags": [
+      "gameplay-mod",
+      "challenge",
+      "speedrunning"
+    ],
+    "release_date": "2023-07-19",
+    "URL": "https://github.com/OpenGOAL-Mods/OG-All-Wooden-Boxes/releases",
+    "image_override_url": "https://media.discordapp.net/attachments/183621467659960321/1131419019543576626/image.png",
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-All-Wooden-Boxes"
   }
 }
