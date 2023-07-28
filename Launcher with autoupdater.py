@@ -45,7 +45,7 @@ def downloadNewestmod():
     
     launchUrl ="https://api.github.com/repos/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases"
     response = requests.get(url = launchUrl, params = {'address':"yolo"})
-    if response is not None and response.status_code != 200:
+    if response is not None and response.status_code == 200:
       # didnt get rate limited yay
       r = json.loads(json.dumps(response.json()))
       LatestRel = datetime.strptime(r[0].get("published_at").replace("T"," ").replace("Z",""),'%Y-%m-%d %H:%M:%S')
