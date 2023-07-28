@@ -14,6 +14,7 @@ import requests
 import shutil
 import subprocess
 import urllib
+import traceback
 
 pbar = None
 def show_progress(block_num, block_size, total_size):
@@ -42,16 +43,23 @@ def downloadNewestmod():
     
     InstallDir = AppdataPATH
     
-    launchUrl ="https://api.github.com/repos/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases"  
-    r = json.loads(json.dumps(requests.get(url = launchUrl, params = {'address':"yolo"}).json()))
-    LatestRel = datetime.strptime(r[0].get("published_at").replace("T"," ").replace("Z",""),'%Y-%m-%d %H:%M:%S')
-    LatestRelAssetsURL = (json.loads(json.dumps(requests.get(url = r[0].get("assets_url"), params = {'address':"yolo"}).json())))[0].get("browser_download_url")
+    launchUrl ="https://api.github.com/repos/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases"
+    response = requests.get(url = launchUrl, params = {'address':"yolo"})
+    if response is not None and response.status_code != 200:
+      # didnt get rate limited yay
+      r = json.loads(json.dumps(response.json()))
+      LatestRel = datetime.strptime(r[0].get("published_at").replace("T"," ").replace("Z",""),'%Y-%m-%d %H:%M:%S')
+      LatestRelAssetsURL = (json.loads(json.dumps(requests.get(url = r[0].get("assets_url"), params = {'address':"yolo"}).json())))[0].get("browser_download_url")
+    else:
+      # fall back to some hard-coded release, surely we won't forget to update this occasionally
+      print("WARNING: failed to query github API, you might be rate-limited. Using default fallback release instead.")
+      LatestRel = datetime(2023, 7, 23)
+      LatestRelAssetsURL = "https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases/download/v1.10fixoldpckernel/openGOALModLauncher.exe"
 
     LastWrite = datetime(2020, 5, 17)
     if (os.path.exists(AppdataPATH + "\\OpengoalModLauncher.exe")):
         LastWrite = datetime.utcfromtimestamp( pathlib.Path(AppdataPATH + "\\OpengoalModLauncher.exe").stat().st_mtime)
 
-    
     #update checks
 
     needUpdate = bool((LastWrite < LatestRel))
@@ -98,17 +106,18 @@ def downloadNewestmod():
             shutil.move(SubDir + "/" + f, InstallDir + "/" + f)
         try_remove_dir(TempDir)
         
+try:
+  AppdataPATH = os.getenv('APPDATA') + "\\OpenGOAL-UnofficalModLauncher\\"
+  print(AppdataPATH)
 
-AppdataPATH = os.getenv('APPDATA') + "\\OpenGOAL-UnofficalModLauncher\\"
-print(AppdataPATH)
-
-if os.path.exists(AppdataPATH) == False:
-    print("Creating Directory " + AppdataPATH)
-    os.mkdir(AppdataPATH)
+  if os.path.exists(AppdataPATH) == False:
+      print("Creating Directory " + AppdataPATH)
+      os.mkdir(AppdataPATH)
 
 
-downloadNewestmod()
+  downloadNewestmod()
 
-subprocess.call([AppdataPATH + "OpengoalModLauncher.exe"])
-    
-    
+  subprocess.call([AppdataPATH + "OpengoalModLauncher.exe"])
+except Exception as e:
+  print("An unexcepted error occurred: ", e)
+  traceback.print_exc()
