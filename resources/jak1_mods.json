@@ -451,5 +451,19 @@
     "URL": "https://github.com/OpenGOAL-Mods/OG-All-Wooden-Boxes/releases",
     "image_override_url": "https://media.discordapp.net/attachments/183621467659960321/1131419019543576626/image.png",
     "website_url": "https://github.com/OpenGOAL-Mods/OG-All-Wooden-Boxes"
+  },
+  "casual_legacy": {
+    "name": "Casual Legacy!",
+    "desc": "How fast can speedrunners beat the game when you steal their movement??",
+    "contributors": ["ZedB0T"],
+    "tags": [
+      "gameplay-mod",
+      "challenge",
+      "speedrunning"
+    ],
+    "release_date": "2023-07-29",
+    "URL": "https://github.com/OpenGOAL-Mods/OG-Casual-Legacy/releases",
+    "image_override_url": "https://s3.amazonaws.com/ebaumsworld.prod/uploads1608065784494-hed.jpg",
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-Casual-Legacy"
   }
 }
