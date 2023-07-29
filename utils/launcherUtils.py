@@ -128,16 +128,16 @@ def launch_local(MOD_ID):
 
         UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data\iso_data"
         GKCOMMANDLINElist = [
-            InstallDir + "\gk.exe",
+            os.path.abspath(InstallDir + "\gk.exe"),  # Using os.path.abspath to get the absolute path.
             "--proj-path",
-            InstallDir + "\\data",
+            os.path.abspath(InstallDir + "\\data"),  # Using absolute path for data folder too.
             "-boot",
             "-fakeiso",
             "-v",
         ]
         print(GKCOMMANDLINElist)
-        subprocess.Popen(GKCOMMANDLINElist, shell=True)
-    except e:
+        subprocess.Popen(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir))
+    except Exception as e:  # Catch all exceptions and print the error message.
         return str(e)
 
 
@@ -197,7 +197,7 @@ def reinstall(MOD_ID):
         ]
     print(extractor_command_list)
 
-    subprocess.Popen(extractor_command_list)
+    subprocess.Popen(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir))
 
     # wait for extractor to finish
     while process_exists("extractor.exe"):
@@ -442,7 +442,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
         extractor_command_list = [InstallDir + "\extractor.exe", "-f", iso_path]
         print(extractor_command_list)
 
-        subprocess.Popen(extractor_command_list)
+        subprocess.Popen(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir))
 
         # move the extrated contents to the universal launchers directory for next time.
         if not (exists((UniversalIsoPath + r"\jak1\Z6TAIL.DUP"))):
