@@ -465,5 +465,19 @@
     "URL": "https://github.com/OpenGOAL-Mods/OG-Casual-Legacy/releases",
     "image_override_url": "https://s3.amazonaws.com/ebaumsworld.prod/uploads1608065784494-hed.jpg",
     "website_url": "https://github.com/OpenGOAL-Mods/OG-Casual-Legacy"
+  },
+  "super_jak_bros": {
+    "name": "Super Jak bros!",
+    "desc": "Explore this retro themed 2-d adventure",
+    "contributors": ["ZedB0T"],
+    "tags": [
+      "gameplay-mod",
+      "challenge",
+      "speedrunning"
+    ],
+    "release_date": "2023-07-31",
+    "URL": "https://github.com/Zed-Mod-School/OG-2D/releases",
+    "image_override_url": "https://cdn.discordapp.com/attachments/994297625585139834/1135434268714213376/jakbros.png",
+    "website_url": "https://github.com/Zed-Mod-School/OG-2D"
   }
 }
