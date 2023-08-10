@@ -479,5 +479,21 @@
     "URL": "https://github.com/Zed-Mod-School/OG-2D/releases",
     "image_override_url": "https://cdn.discordapp.com/attachments/994297625585139834/1135434268714213376/jakbros.png",
     "website_url": "https://github.com/Zed-Mod-School/OG-2D"
+  },
+  "up": {
+    "name": "Jak Up",
+    "desc": "Early test build. WARNING: the levels take up ~400MB, and will take a couple minutes to install.",
+    "contributors": ["barg034"],
+    "tags": [
+      "beta",
+      "gameplay-mod",
+      "challenge",
+      "custom-level",
+      "speedrunning"
+    ],
+    "release_date": "2023-08-10",
+    "URL": "https://github.com/dallmeyer/jak-up/releases",
+    "image_override_url": "https://cdn.discordapp.com/attachments/1007077732032721037/1139110276273287239/image.png",
+    "website_url": "https://github.com/dallmeyer/jak-up/blob/main/README.md"
   }
 }
