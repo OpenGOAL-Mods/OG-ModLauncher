@@ -280,7 +280,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
       )
       assets = json.loads(json.dumps(requests.get(url=r[0].get("assets_url"), params=PARAMS).json()))
       for asset in assets:
-        if "linux" not in asset.get("name"):
+        if "linux" not in asset.get("name") and "macos" not in asset.get("name") and "json" not in asset.get("name"):
           LatestRelAssetsURL = asset.get("browser_download_url")
           break
       
