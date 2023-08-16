@@ -7,3 +7,4 @@ Pillow
 progressbar
 cloudscraper
 appdirs
+pycdlib

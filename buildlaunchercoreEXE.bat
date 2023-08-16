@@ -1,8 +1,8 @@
 
 set mypath=%~dp0
-pyinstaller --onefile openGOALModLauncher.py --icon resources\appicon.ico 
+pyinstaller --onefile openGOALModLauncher.py --icon resources\appicon.ico --collect-data "pycdlib" --hidden-import=pycdlib datas=[(path.join(site_packages,"pycdlib")],
 move "%mypath%dist\openGOALModLauncher.exe" "%mypath%/"
 RENAME "%mypath%\openGOALModLauncher.exe" "openGOALModLauncher.exe"
-@RD /S /Q "%mypath%/build"
-@RD /S /Q "%mypath%/dist"
-DEL /S /Q "%mypath%/openGOALModLauncher.spec"
+REM @RD /S /Q "%mypath%/build"
+REM @RD /S /Q "%mypath%/dist"
+REM DEL /S /Q "%mypath%/openGOALModLauncher.spec"

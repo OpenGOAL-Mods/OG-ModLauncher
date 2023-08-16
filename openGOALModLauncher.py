@@ -21,10 +21,16 @@ import sys
 import webbrowser
 import os
 from os.path import exists
-import urllib.request
 import shutil
 import tkinter
 from appdirs import AppDirs
+from appdirs import AppDirs
+import platform
+import stat
+
+from pathlib import Path
+
+
 
 sg.theme("DarkBlue3")
 
@@ -203,11 +209,12 @@ INCLUDE_INSTALLED = True
 INCLUDE_UNINSTALLED = True
 LATEST_TABLE_SORT = [6, False] # wakeup sorted by last launch date
 
-
+mod_game = "jak2"
 def getRefreshedTableData(sort_col_idx):
     # uncomment/comment the next two lines if you want to test with a local file
-    mod_dict = requests.get("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/jak1_mods.json").json()
-    # mod_dict = json.loads(open("resources/jak1_mods.json", "r").read())
+    # mod_dict = requests.get("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/jak1_mods.json").json()
+    mod_dict = json.loads(open("resources/jak1_mods.json", "r").read())
+    
     mod_dict = dict(sorted(mod_dict.items(), key=lambda x: x[1]["release_date"], reverse=True))
 
     mod_table_data = []
@@ -216,8 +223,10 @@ def getRefreshedTableData(sort_col_idx):
     }
 
     for mod_id in mod_dict:
+
         mod = mod_dict[mod_id]
         mod_name = mod["name"]
+        
 
         mod["install_date"] = "Not Installed"
         mod["access_date"] = "Not Installed"
@@ -242,7 +251,7 @@ def getRefreshedTableData(sort_col_idx):
         mod["contributors"] = ", ".join(mod["contributors"])
         mod["tags"].sort()
         mod["tags"] = ", ".join(mod["tags"])
-
+        
         # determine latest available update datetime - disabled as too easy to get rate-limited by github (can we do in bulk maybe?)
         # mod["latest_available_update_date"] = "1900-01-01 00:00"
         # update_date = githubUtils.getLatestAvailableUpdateDatetime(mod["URL"])
@@ -275,9 +284,9 @@ def getRefreshedTableData(sort_col_idx):
                         (mod["videos_url"] if "videos_url" in mod else ""),
                         (mod["photos_url"] if "photos_url" in mod else ""),
                         (mod["image_override_url"] if "image_override_url" in mod else ""),
+                        (mod["game"] if "game" in mod else "")
                     ]
                 )
-
     if sort_col_idx is None:
         # not from a heading click, retain sorting
         remapped_col_idx = LATEST_TABLE_SORT[0]
@@ -417,11 +426,10 @@ layout = [
 ]
 
 window = sg.Window("OpenGOAL Mod Launcher", layout, icon=iconfile, finalize=True)
-
 def handleModTableSelection(row):
     global LATEST_TABLE_DATA
     mod = LATEST_TABLE_DATA[row]
-    # print(mod)
+    print(mod)
 
     mod_id = mod[0]
     mod_name = mod[1]
@@ -435,6 +443,8 @@ def handleModTableSelection(row):
     mod_videos_url = mod[9]
     mod_photos_url = mod[10]
     mod_image_override_url = mod[11]
+    mod_game = mod[12]
+    
 
     # update text and metadata
     window["-LAUNCH-"].update(
@@ -444,6 +454,7 @@ def handleModTableSelection(row):
     window["-SELECTEDMODNAME-"].metadata["id"] = mod_id
     window["-SELECTEDMODNAME-"].metadata["url"] = mod_url
     window["-SELECTEDMODNAME-"].metadata["image_override_url"] = mod_image_override_url
+    window["-SELECTEDMODNAME-"].metadata["game"] = mod_game
     window["-SELECTEDMODDESC-"].update(mod_desc)
     window["-SELECTEDMODTAGS-"].update(f"Tags: {mod_tags}")
     window["-SELECTEDMODCONTRIBUTORS-"].update(f"Contributors: {mod_contributors}")
@@ -551,12 +562,13 @@ while True:
         tmpModName = window["-SELECTEDMODNAME-"].get()
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
         tmpModURL = window["-SELECTEDMODNAME-"].metadata["url"]
+        tmpGame = window["-SELECTEDMODNAME-"].metadata["game"]
 
         # online launch
         window["-LAUNCH-"].update(disabled=True)
         window["-LAUNCH-"].update("Updating...")
         [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
-        launcherUtils.launch(tmpModURL, tmpModSelected, tmpModName, linkType)
+        launcherUtils.launch(tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame)
 
         # refresh table in case new mod installed
         reset()
