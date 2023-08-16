@@ -439,9 +439,10 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
         try_kill_process("gk.exe")
         try_kill_process("goalc.exe")
         print("Done update starting extractor This one can take a few moments! \n")
-        extractor_command_list = [InstallDir + "\extractor.exe", "-f", iso_path]
+        
+        #extract and compile, but dont boot the game so we can move the iso files
+        extractor_command_list = [InstallDir + "\extractor.exe", "-f", iso_path , "-e", "-v", "-d", "-c"]
         print(extractor_command_list)
-
         subprocess.Popen(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir))
 
         # move the extrated contents to the universal launchers directory for next time.
@@ -449,12 +450,33 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
             while process_exists("extractor.exe"):
                 print("extractor.exe still running, sleeping for 1s")
                 time.sleep(1)
-        if not (exists((UniversalIsoPath + r"\jak1\Z6TAIL.DUP"))):
-            # os.makedirs(AppdataPATH + "\OpenGOAL-Launcher\data\iso_data")
-            print("The new directory is created!")
-            shutil.move(InstallDir + "/data/iso_data", "" + UniversalIsoPath + "")
-            # try_remove_dir(InstallDir + "/data/iso_data")
-            # os.symlink("" + UniversalIsoPath +"", InstallDir + "/data/iso_data")
+
+        #cleanup and remove a corrupted iso
+        if os.path.exists(UniversalIsoPath + r"\iso_data") and os.path.isdir(UniversalIsoPath + r"\iso_data"):
+                print("Removing corrupted iso destination...")
+                shutil.rmtree(UniversalIsoPath + r"\iso_data")
+                print("corrupt iso removed.")
+        
+        #should be good to move iso now
+        shutil.move(InstallDir + "/data/iso_data", UniversalIsoPath + r"\iso_data")
+
+        #keep checking to make sure the move is in a finished state
+        while not (exists((UniversalIsoPath + r"\jak1\Z6TAIL.DUP"))):
+            time.sleep(1)
+        
+        if(NotExtracted):
+            print("Error! Iso data does not appear to be extracted to " + UniversalIsoPath +r"\jak1\Z6TAIL.DUP")
+            print("Will ask user to provide ISO")
+        if(NotCompiled):
+            print("Error! The game is not compiled")
+        if((LastWrite < LatestRel)):
+            print("Looks like we need to download a new update!")
+            print(LastWrite)
+            print(LatestRel)
+            print("Is newest posted update older than what we have installed? " + str((LastWrite < LatestRel)))
+
+        #ok launch game :D
+        subprocess.Popen(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir))
 
     else:
         # if we dont need to update, then close any open instances of the game and just launch it
