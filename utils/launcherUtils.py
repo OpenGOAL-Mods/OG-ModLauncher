@@ -126,7 +126,8 @@ def launch_local(MOD_ID):
         time.sleep(1)
         InstallDir = ModFolderPATH + MOD_ID
 
-        UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data\iso_data"
+        UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data"
+        
         GKCOMMANDLINElist = [
             os.path.abspath(InstallDir + "\gk.exe"),  # Using os.path.abspath to get the absolute path.
             "--proj-path",
@@ -149,7 +150,8 @@ def openFolder(path):
 def reinstall(MOD_ID):
     InstallDir = ModFolderPATH + MOD_ID
     AppdataPATH = os.getenv("APPDATA")
-    UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data\iso_data"
+    UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data"
+    
     GKCOMMANDLINElist = [
         InstallDir + "\gk.exe",
         "--proj-path",
@@ -162,6 +164,7 @@ def reinstall(MOD_ID):
     # if ISO_DATA has content, store this path to pass to the extractor
     if exists(UniversalIsoPath + r"\jak1\Z6TAIL.DUP"):
         iso_path = UniversalIsoPath + "\jak1"
+        
     else:
         # if ISO_DATA is empty, prompt for their ISO and store its path.
         root = tk.Tk()
@@ -206,9 +209,11 @@ def reinstall(MOD_ID):
 
     # move the extrated contents to the universal launchers directory for next time.
     if not (exists((UniversalIsoPath + r"\jak1\Z6TAIL.DUP"))):
+        
         # os.makedirs(AppdataPATH + "\OpenGOAL-Launcher\data\iso_data")
         print("The new directory is created!")
         shutil.move(InstallDir + "/data/iso_data", "" + UniversalIsoPath + "")
+        
         # try_remove_dir(InstallDir + "/data/iso_data")
         # os.symlink("" + UniversalIsoPath +"", InstallDir + "/data/iso_data")
 
@@ -251,7 +256,8 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
     # paths
     InstallDir = ModFolderPATH + MOD_ID
     AppdataPATH = os.getenv("APPDATA")
-    UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data\iso_data"
+    UniversalIsoPath = AppdataPATH + "\OpenGOAL\jak1\mods\data\iso_data"
+    
     GKCOMMANDLINElist = [
         InstallDir + "\gk.exe",
         "--proj-path",
@@ -295,6 +301,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
 
     # update checks
     NotExtracted = bool(not (exists(UniversalIsoPath + r"\jak1\Z6TAIL.DUP")))
+    
     NotCompiled = bool(not (exists(InstallDir + r"\data\out\jak1\fr3\GAME.fr3")))
     needUpdate = bool((LastWrite < LatestRel) or (NotExtracted) or NotCompiled)
 
@@ -376,18 +383,24 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
 
         #if ISO_DATA has content, store this path to pass to the extractor
         if (exists(UniversalIsoPath +r"\jak1\Z6TAIL.DUP")):
+            
             print("We found ISO data from a previous mod installation! Lets use it!")
             print("Found in " + UniversalIsoPath +r"\jak1\Z6TAIL.DUP")
             iso_path = UniversalIsoPath + "\jak1"
         else:
             #if ISO_DATA is empty, prompt for their ISO and store its path.
             print("Looking for some ISO data in " + UniversalIsoPath + "\\jak1\\")
+            
             print("We did not find ISO data from a previous mod, lets ask for some!")
+            # prompt for ISO file
             root = tk.Tk()
-            print("Please select your iso.")
             root.title("Select ISO")
             root.geometry("230x1")
-            iso_path = filedialog.askopenfilename()
+            
+            top_level = tk.Toplevel(root)
+            top_level.attributes("-topmost", True)  # Set the file dialog to stay on top
+            
+            iso_path = filedialog.askopenfilename(parent=top_level)
             root.destroy()
             if pathlib.Path(iso_path).is_file:
                 if not (pathlib.Path(iso_path).suffix).lower() == ".iso":
@@ -422,16 +435,6 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
             "/pc-settings.gc",
             r"/" + MOD_ID + "-settings.gc",
         )
-        replaceText(
-            InstallDir + r"\data\goal_src\jak1\pc\pckernel-common.gc",
-            "/pc-settings.gc",
-            r"/" + MOD_ID + "-settings.gc",
-        )
-        replaceText(
-            InstallDir + r"\data\goal_src\jak1\pc\pckernel-common.gc",
-            "/pc-settings.gc",
-            r"/" + MOD_ID + "-settings.gc",
-        )
 
         # if extractOnUpdate is True, check their ISO_DATA folder
 
@@ -452,13 +455,14 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE):
                 time.sleep(1)
 
         #cleanup and remove a corrupted iso
-        if os.path.exists(UniversalIsoPath + r"\iso_data") and os.path.isdir(UniversalIsoPath + r"\iso_data"):
-                print("Removing corrupted iso destination...")
-                shutil.rmtree(UniversalIsoPath + r"\iso_data")
-                print("corrupt iso removed.")
+        if os.path.exists(UniversalIsoPath ) and os.path.isdir(UniversalIsoPath ):
+            print("Removing corrupted iso destination...")
+            shutil.rmtree(UniversalIsoPath + "/jak1")
+            print("corrupt iso removed.")
         
         #should be good to move iso now
-        shutil.move(InstallDir + "/data/iso_data", UniversalIsoPath + r"\iso_data")
+        shutil.move(InstallDir + "/data/iso_data/jak1", UniversalIsoPath )
+        print("copying " + InstallDir + "/data/iso_data" + "to " + UniversalIsoPath )
 
         #keep checking to make sure the move is in a finished state
         while not (exists((UniversalIsoPath + r"\jak1\Z6TAIL.DUP"))):
