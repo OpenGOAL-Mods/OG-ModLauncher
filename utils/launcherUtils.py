@@ -25,6 +25,7 @@ import platform
 import stat
 import pycdlib
 from pathlib import Path
+import time
 
 EXTRACT_ON_UPDATE = "true"
 FILE_DATE_TO_CHECK = "gk.exe"
@@ -180,16 +181,28 @@ def reinstall(MOD_ID):
         iso_path = UniversalIsoPath + "\\" + GAME
         
     else:
-        # if ISO_DATA is empty, prompt for their ISO and store its path.
-        root = tk.Tk()
-        print("Please select your iso.")
-        root.title("Select ISO")
-        root.geometry("230x1")
-        iso_path = filedialog.askopenfilename()
-        root.destroy()
-        if pathlib.Path(iso_path).is_file:
-            if not (pathlib.Path(iso_path).suffix).lower() == ".iso" or not (pathlib.Path(iso_path).suffix).lower() == ".zip":
-                1 / 0
+        if GAME == "jak1":
+            # if ISO_DATA is empty, prompt for their ISO and store its path.
+            root = tk.Tk()
+            print("Please select your iso.")
+            root.title("Select ISO")
+            root.geometry("230x1")
+            iso_path = filedialog.askopenfilename()
+            root.destroy()
+            if pathlib.Path(iso_path).is_file:
+                if not (pathlib.Path(iso_path).suffix).lower() == ".iso" or not (pathlib.Path(iso_path).suffix).lower() == ".zip":
+                    1 / 0
+        if GAME == "jak2":
+            # if ISO_DATA is empty, prompt for their ISO and store its path.
+            root = tk.Tk()
+            print("Please select your JAK2")
+            root.title("Select ISO JAK222222222222S")
+            root.geometry("230x1")
+            iso_path = filedialog.askopenfilename()
+            root.destroy()
+            if pathlib.Path(iso_path).is_file:
+                if not (pathlib.Path(iso_path).suffix).lower() == ".iso" or not (pathlib.Path(iso_path).suffix).lower() == ".zip":
+                    1 / 0
 
 
     print("Extraction completed successfully.")
@@ -307,7 +320,31 @@ def extract_iso(ISO_PATH, EXTRACT_DIR):
     iso.close()
     return True
 
-    
+def open_browser_link():
+    url = "https://google.com"  # Replace with the desired URL
+    if sys.platform.startswith('linux'):
+        subprocess.Popen(["xdg-open", url])
+    elif sys.platform.startswith('win'):
+        subprocess.Popen(["start", url], shell=True)
+    elif sys.platform.startswith('darwin'):
+        subprocess.Popen(["open", url])
+    else:
+        print("Unsupported platform")
+
+def open_folder(path):
+    folder_path = path  # Replace with the desired folder path
+    if not os.path.exists(path):
+    # Create the directory
+        try:
+            os.makedirs(path)
+            print(f"Directory '{path}' created successfully.")
+        except OSError as e:
+            print(f"Error creating directory '{path}': {e}")
+    os.startfile(folder_path)
+
+def divide_by_zero():
+    1 / 0
+
 def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
     print(GAME)
     print(GAME)
@@ -482,39 +519,86 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
             iso_path = UniversalIsoPath + "\\" + GAME
         else:
                #cleanup and remove a corrupted iso
-            if os.path.exists(UniversalIsoPath) and os.path.isdir(UniversalIsoPath) and not (exists((UniversalIsoPath + "//" + GAME + "//" + "Z6TAIL.DUP"))):
+            if os.path.exists(UniversalIsoPath + "//" + GAME) and os.path.isdir(UniversalIsoPath) and not (exists((UniversalIsoPath + "//" + GAME + "//" + "Z6TAIL.DUP"))):
                 print("Removing corrupted iso destination...")
                 shutil.rmtree(UniversalIsoPath + "//" + GAME)
                 print("corrupt iso removed.")
+                if GAME == "jak2":
+                    os.makedirs(UniversalIsoPath + "//" + GAME) 
             #if ISO_DATA is empty, prompt for their ISO and store its path.
+            if GAME == "jak1":
+                # if ISO_DATA is empty, prompt for their ISO and store its path.
+                root = tk.Tk()
+                print("Please select your iso.")
+                root.title("Select ISO")
+                root.geometry("230x1")
+                iso_path = filedialog.askopenfilename()
+                root.destroy()
+                if pathlib.Path(iso_path).is_file:
+                    if not (pathlib.Path(iso_path).suffix).lower() == ".iso" or not (pathlib.Path(iso_path).suffix).lower() == ".zip":
+                        1 / 0
+            if GAME == "jak2":
+                # root = tk.Tk()
+                # root.title("Game Actions")
+                # root.geometry("300x100")
+
+                # button1 = tk.Button(root, text="Open Browser Link", command=open_browser_link)
+                # button1.pack(pady=10)
+
+                # button2 = tk.Button(root, text="Open Folder in Explorer", command=open_folder(UniversalIsoPath))
+                # button2.pack(pady=5)
+
+                # button3 = tk.Button(root, text="Divide by Zero", command=root.destroy)
+                # button3.pack(pady=5)
+
+                # iso_path = UniversalIsoPath + "//" + GAME + "//"
+
+                #root.mainloop()
+                while not (exists((UniversalIsoPath + "//" + GAME + "//" + "Z6TAIL.DUP"))):
+                    print("Didnt find ztail in " + UniversalIsoPath + "//" + GAME + "//" + "Z6TAIL.DUP" + " sleeping")
+                    time.sleep(1)
+                    if (exists((UniversalIsoPath + "//" + GAME + "//" + "Z6TAIL.DUP"))):
+                        print("ok we found the iso data! waiting 45 seconds to make sure the copy has time to finish")
+                        print("dont touch anything! This will take a moment!")
+                        start_time = time.time()
+                        elapsed_time = 0
+                        remaining_time = 45
+
+                        while elapsed_time < 45:
+                            time.sleep(1)  # Sleep for 1 second
+                            elapsed_time = time.time() - start_time
+                            remaining_time = max(0, 45 - elapsed_time)
+                            print(f"Time remaining: {remaining_time:.1f} seconds", end='\r')
             print("Looking for some ISO data in " + UniversalIsoPath + "//" + GAME + "//")
             
             print("We did not find ISO data from a previous mod, lets ask for some!")
             # prompt for ISO file
-            root = tk.Tk()
-            root.title("Select ISO")
-            root.geometry("230x1")
+            # root = tk.Tk()
+            # root.title("Select ISO")
+            # root.geometry("230x1")
             
-            top_level = tk.Toplevel(root)
-            top_level.attributes("-topmost", True)  # Set the file dialog to stay on top
+            # top_level = tk.Toplevel(root)
+            # top_level.attributes("-topmost", True)  # Set the file dialog to stay on top
             
-            iso_path = filedialog.askopenfilename(parent=top_level)
-            root.destroy()
-            if pathlib.Path(iso_path).is_file:
-                if not (pathlib.Path(iso_path).suffix).lower() == ".iso":
-                    1 / 0
-            if (GAME == "jak2"):
-                iso_file = iso_path
-                output_directory = UniversalIsoPath + "//" + GAME + "//"
+            # iso_path = filedialog.askopenfilename(parent=top_level)
+            # root.destroy()
+            # if pathlib.Path(iso_path).is_file:
+            #     if not (pathlib.Path(iso_path).suffix).lower() == ".iso":
+            #         1 / 0
 
-                extraction_successful = False
+            # if (GAME == "jak2"):
+            #     #iso_file = iso_path
+            #     iso_file = UniversalIsoPath + "//" + GAME + "//"
+            #     output_directory = UniversalIsoPath + "//" + GAME + "//"
 
-                while not extraction_successful:
-                    extraction_successful = extract_iso(iso_file, output_directory)
+            #     extraction_successful = False
 
-                    if not extraction_successful:
-                        print("Extraction failed. Retrying in 5 seconds...")
-                        time.sleep(5)
+            #     while not extraction_successful:
+            #         extraction_successful = extract_iso(iso_file, output_directory)
+
+            #         if not extraction_successful:
+            #             print("Extraction failed. Retrying in 5 seconds...")
+            #             time.sleep(5)
         # extract update
         print("Extracting update")
         TempDir = InstallDir + "/temp"
@@ -578,7 +662,8 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
             print("opened decompiler")
             
             #wait for decompiler before starting goalc
-            
+            #Decompiler
+            time.sleep(3)
             while process_exists("decompiler.exe"):
                 print("decompiler.exe still running, sleeping for 1s")
                 time.sleep(1)
@@ -598,8 +683,10 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
 
             subprocess.Popen(goalc_command_list, shell=True, cwd=os.path.abspath(InstallDir))
             
+            
         # move the extrated contents to the universal launchers directory for next time.
        
+        time.sleep(5)
         while process_exists("extractor.exe"):
             print("extractor.exe still running, sleeping for 1s")
             time.sleep(1)
