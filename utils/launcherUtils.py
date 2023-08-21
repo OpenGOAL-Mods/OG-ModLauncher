@@ -295,8 +295,26 @@ def open_folder(path):
 def divide_by_zero():
     1 / 0
 
+
+#check if we have decompiler in the path, if not check if we have a backup, if so use it, if not download a backup then use it
 def getDecompiler(path):
-    #check if we have decompiler in the path, if not check if we have a backup, if so use it, if not download a backup then use it
+    # print("AHHHHHHHH")
+    # time.sleep(15)
+    decompiler_exe = "decompiler.exe"
+    decompiler_url = "https://github.com/OpenGOAL-Mods/OG-Mod-Base/raw/main/out/build/Release/bin/decompiler.exe"  
+
+    # Check if the decompiler exists in the provided path
+    if os.path.exists(os.path.join(path, decompiler_exe)):
+        print(f"Found {decompiler_exe} in the directory.")
+        return
+    else:
+        # Check if the backup decompiler exists
+        print(f"Couldn't find {decompiler_exe} in the directory or backup. Downloading it...")
+        urllib.request.urlretrieve(decompiler_url, os.path.join(path, decompiler_exe))
+        print(f"{decompiler_exe} downloaded successfully as backup.")
+    while not os.path.exists(os.path.join(path, decompiler_exe)):
+        time.sleep(1)  # Wait for the download to complete
+
     return
 
 def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
