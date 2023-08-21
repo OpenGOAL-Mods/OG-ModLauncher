@@ -646,10 +646,11 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
             print("goalc.exe still running, sleeping for 1s")
             time.sleep(1)
 
-        while not (exists(InstallDir + "/data/iso_data/" + GAME + "//Z6TAIL.DUP")):
+        while not (exists(InstallDir + "/data/iso_data/" + GAME + "//Z6TAIL.DUP")) and (exists(InstallDir + "/data/iso_data/" + GAME + "//")):
             time.sleep(5)
 
-        shutil.copytree( InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "//" + GAME + "//")
+        if (exists(InstallDir + "/data/iso_data/" + GAME + "//Z6TAIL.DUP")):
+            shutil.copytree( InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "//" + GAME + "//")
         path_to_remove = InstallDir + "/data/iso_data/" + GAME
         if os.path.exists(path_to_remove):
             shutil.rmtree(path_to_remove)
