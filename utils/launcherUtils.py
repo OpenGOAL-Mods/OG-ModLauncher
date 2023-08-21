@@ -157,7 +157,10 @@ def launch_local(MOD_ID, GAME):
 
 
 def openFolder(path):
+    if not exists(dirs.user_data_dir + "\\OpenGOAL\\" + "mods\\data\\iso_data\\jak2"):
+        os.makedirs(dirs.user_data_dir + "\\OpenGOAL\\" + "mods\\data\\iso_data\\jak2")
     FILEBROWSER_PATH = os.path.join(os.getenv("WINDIR"), "explorer.exe")
+    print(path)
     subprocess.run([FILEBROWSER_PATH, path])
 
 #tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame
@@ -492,6 +495,8 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
                         1 / 0
             if GAME == "jak2":
                 #since extractor currently doesnt know about jak 2, we need to manually place the iso contents into the folder we expect
+                if not exists(dirs.user_data_dir + "\\OpenGOAL\\" + "mods\\data\\iso_data\\jak2"):
+                    os.makedirs(dirs.user_data_dir + "\\OpenGOAL\\" + "mods\\data\\iso_data\\jak2")
                 while not (exists((UniversalIsoPath + "//" + GAME + "//" + "Z6TAIL.DUP"))):
                     print("Didnt find iso in " + UniversalIsoPath + "//" + GAME + "//" + " sleeping for 5 seconds, then checking again.")
                     time.sleep(5)

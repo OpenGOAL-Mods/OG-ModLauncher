@@ -346,6 +346,9 @@ layout = [
                   [
                       sg.Btn(button_text="Launch", key="-LAUNCH-", expand_x=True),
                       sg.Btn(
+                          button_text="View ISO Folder", key="-VIEWISOFOLDER-", expand_x=True
+                      ),
+                      sg.Btn(
                           button_text="View Folder", key="-VIEWFOLDER-", expand_x=True
                       ),
                       sg.Btn(button_text="Reinstall", key="-REINSTALL-", expand_x=True),
@@ -585,6 +588,9 @@ while True:
             launcherUtils.openFolder(dir)
         else:
             sg.Popup("Selected mod is not installed", keep_on_top=True, icon=iconfile)
+    elif event == "-VIEWISOFOLDER-":
+        dir = dirs.user_data_dir + "\\OpenGOAL\\" + "mods\\data\\iso_data"
+        launcherUtils.openFolder(dir)
     elif event == "-REINSTALL-":
         tmpModName = window["-SELECTEDMODNAME-"].get()
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
