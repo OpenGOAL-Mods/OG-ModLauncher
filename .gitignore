@@ -1,6 +1,7 @@
 dist/*
 build/*
 .env
+launcherUtilsbackup.py
 twitchcommands.spec
 resources/data/decompiler_out/*
 resources/data/iso_data/*
