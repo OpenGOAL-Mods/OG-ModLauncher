@@ -586,7 +586,11 @@ while True:
         else:
             sg.Popup("Selected mod is not installed", keep_on_top=True, icon=iconfile)
     elif event == "-REINSTALL-":
+        tmpModName = window["-SELECTEDMODNAME-"].get()
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
+        tmpModURL = window["-SELECTEDMODNAME-"].metadata["url"]
+        tmpGame = window["-SELECTEDMODNAME-"].metadata["game"]
+        [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
         subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
 
         if tmpModSelected in subfolders:
@@ -598,7 +602,7 @@ while True:
                 icon=iconfile,
             )
             if ans == "OK":
-                launcherUtils.reinstall(tmpModSelected)
+                launcherUtils.reinstall(tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame)
                 reset()
         else:
             sg.Popup("Selected mod is not installed", keep_on_top=True, icon=iconfile)
