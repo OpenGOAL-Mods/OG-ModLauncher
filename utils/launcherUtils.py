@@ -23,7 +23,6 @@ import zipfile
 from appdirs import AppDirs
 import platform
 import stat
-import pycdlib
 from pathlib import Path
 import time
 
@@ -267,57 +266,6 @@ def replaceText(path, search_text, replace_text):
 
 def ensure_dir(path):
     path.mkdir(parents=True, exist_ok=True)
-
-def extract_recursive(iso, parent_iso_path, extract_dir_path):
-    for child in iso.list_children(iso_path=parent_iso_path):
-        identifier = child.file_identifier().decode()
-        absolute_iso_path = f'{parent_iso_path}{identifier}'
-
-        # Skip . and .. directories
-        if identifier in ['.', '..']:
-            continue
-
-        # Recurse directories or extract files
-        if child.is_dir():
-            extract_recursive(iso, f'{absolute_iso_path}/', extract_dir_path / identifier)
-        else:
-            file_name = identifier.split(';')[0]
-
-            # Strip empty file extensions (e.g. DMMY. -> DMMY)
-            if file_name.endswith('.'):
-                file_name = file_name[:-1]
-
-            file_path = extract_dir_path / file_name
-
-            # Ensure the parent directory exists
-            ensure_dir(extract_dir_path)
-
-            # Write the output file
-            print(f'  {absolute_iso_path}: ', end='', flush=True)
-            iso.get_file_from_iso(file_path, iso_path=f'{absolute_iso_path}')
-            print(f'DONE', flush=True)
-
-def extract_iso(ISO_PATH, EXTRACT_DIR):
-    # Clean original extraction directory
-    ISO_PATH = Path(ISO_PATH)
-    EXTRACT_DIR = Path(EXTRACT_DIR)
-    if EXTRACT_DIR.exists():
-        shutil.rmtree(EXTRACT_DIR)
-
-    # Create extraction directories
-    ensure_dir(EXTRACT_DIR)
-
-    # Open the iso for reading
-    iso = pycdlib.PyCdlib()
-    iso.open(ISO_PATH)
-
-    # Extract the contents of the iso
-    print('Extracting ISO contents', flush=True)
-    extract_recursive(iso, '/', EXTRACT_DIR)
-
-    # Close the iso
-    iso.close()
-    return True
 
 def open_browser_link():
     url = "https://google.com"  # Replace with the desired URL
