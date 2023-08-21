@@ -204,19 +204,22 @@ def reinstall(URL, MOD_ID, MODNAME, LINKTYPE, GAME):
             iso_path = filedialog.askopenfilename()
             root.destroy()
             if pathlib.Path(iso_path).is_file:
-                if not (pathlib.Path(iso_path).suffix).lower() == ".iso" or not (pathlib.Path(iso_path).suffix).lower() == ".zip":
+                if not (pathlib.Path(iso_path).suffix).lower() == ".iso" :
+                    print((pathlib.Path(iso_path).suffix).lower())
                     1 / 0
     print("Extraction completed successfully.")
     # Close Gk and goalc if they were open.
     try_kill_process("gk.exe")
     try_kill_process("goalc.exe")
     print("Done update starting extractor\n")
+    print(currentOS + " POOOOOOOOOOOOOOOP")
     if currentOS == "Windows":
         extractor_command_list = [
             os.path.join(InstallDir, "extractor.exe"),
             "-f",
             iso_path,
         ]
+        print("os is windows using " + extractor_command_list)
     if currentOS == "Linux":
         # We need to give the executibles execute permissions in Linux but this doesn't work
         # chmod_command_list = ["cd" + os.path.join(LauncherDir), "chmod +x extractor goalc gk"]
@@ -509,7 +512,9 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
                 iso_path = filedialog.askopenfilename()
                 root.destroy()
                 if pathlib.Path(iso_path).is_file:
-                    if not (pathlib.Path(iso_path).suffix).lower() == ".iso" or not (pathlib.Path(iso_path).suffix).lower() == ".zip":
+                    if not (pathlib.Path(iso_path).suffix).lower() == ".iso":
+                        print((pathlib.Path(iso_path).suffix).lower())
+                        print("error code: 23984h")
                         1 / 0
             if GAME == "jak2":
                 #since extractor currently doesnt know about jak 2, we need to manually place the iso contents into the folder we expect
@@ -575,7 +580,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
         #Extract and compile
         if(GAME == "jak1"):
             extractor_command_list = [InstallDir + "\extractor.exe", "-f", iso_path , "-e", "-v", "-d", "-c"]
-            #print(extractor_command_list)
+            print(extractor_command_list)
             subprocess.Popen(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir))
             while process_exists("extractor.exe"):
                 print("extractor.exe still running, sleeping for 1s")

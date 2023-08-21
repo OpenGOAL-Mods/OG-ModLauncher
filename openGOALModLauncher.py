@@ -81,6 +81,7 @@ currentModURL = None
 currentModImage = None
 steamDIR = None
 dirs = AppDirs(roaming=True)
+isdeveloper = False
 # C:\Users\USERNAME\AppData\Roaming\OPENGOAL-UnofficalModLauncher\
 AppdataPATH = os.path.join(dirs.user_data_dir, "OPENGOAL-UnofficalModLauncher", "")
 
@@ -88,6 +89,18 @@ AppdataPATH = os.path.join(dirs.user_data_dir, "OPENGOAL-UnofficalModLauncher", 
 ModFolderPATH = os.path.join(dirs.user_data_dir, "OpenGOAL-Mods", "")
 
 # grab images from web
+
+# set dev mode if we should
+developer_substrings = {
+    "NinjaPC",
+    # Add more entries as needed
+}
+
+for substring in developer_substrings:
+    if substring in AppdataPATH:
+        isdeveloper = True
+        break  
+
 
 # url to splash screen image
 url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlaunchersplash.png"
@@ -209,12 +222,13 @@ INCLUDE_INSTALLED = True
 INCLUDE_UNINSTALLED = True
 LATEST_TABLE_SORT = [6, False] # wakeup sorted by last launch date
 
-mod_game = "jak2"
 def getRefreshedTableData(sort_col_idx):
     # uncomment/comment the next two lines if you want to test with a local file
     # mod_dict = requests.get("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/jak1_mods.json").json()
     mod_dict = json.loads(open("resources/jak1_mods.json", "r").read())
     
+    if not isdeveloper:
+        mod_dict = {key: value for key, value in mod_dict.items() if not value.get("dev")}
     mod_dict = dict(sorted(mod_dict.items(), key=lambda x: x[1]["release_date"], reverse=True))
 
     mod_table_data = []
@@ -432,7 +446,7 @@ window = sg.Window("OpenGOAL Mod Launcher", layout, icon=iconfile, finalize=True
 def handleModTableSelection(row):
     global LATEST_TABLE_DATA
     mod = LATEST_TABLE_DATA[row]
-    print(mod)
+    #print(mod)
 
     mod_id = mod[0]
     mod_name = mod[1]
