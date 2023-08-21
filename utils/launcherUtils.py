@@ -127,7 +127,7 @@ def launch_local(MOD_ID, GAME):
         time.sleep(1)
         InstallDir = ModFolderPATH + MOD_ID
 
-        UniversalIsoPath = AppdataPATH + "\OpenGOAL\mods\data\iso_data"
+        UniversalIsoPath = AppdataPATH + "\OpenGOAL-Mods\_iso_data"
         
         GKCOMMANDLINElist = [
             os.path.abspath(InstallDir + "\gk.exe"),  # Using os.path.abspath to get the absolute path.
@@ -167,7 +167,7 @@ def openFolder(path):
 def reinstall(URL, MOD_ID, MODNAME, LINKTYPE, GAME):
     InstallDir = ModFolderPATH + MOD_ID
     AppdataPATH = os.getenv("APPDATA")
-    UniversalIsoPath = AppdataPATH + "\OpenGOAL\mods\data\iso_data"
+    UniversalIsoPath = AppdataPATH + "\OpenGOAL-Mods\_iso_data"
     #reinstall has a lot of duplicated logic not sure if there is a reason for this yet, but for now for jak 2 we can just delte the directory then call the install/launch function
     if GAME == "jak2":
         path_to_remove = InstallDir
@@ -335,7 +335,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
     # paths
     InstallDir = ModFolderPATH + MOD_ID
     AppdataPATH = os.getenv("APPDATA")
-    UniversalIsoPath = AppdataPATH + "\OpenGOAL\mods\data\iso_data"
+    UniversalIsoPath = AppdataPATH + "\OpenGOAL-Mods\_iso_data"
     DataFolder = InstallDir + "\\data"
     GkPATH = InstallDir + "\gk.exe"
     GoalCPATH = InstallDir + "\goalc.exe"
@@ -513,8 +513,8 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
                         1 / 0
             if GAME == "jak2":
                 #since extractor currently doesnt know about jak 2, we need to manually place the iso contents into the folder we expect
-                if not exists(dirs.user_data_dir + "\\OpenGOAL\\" + "mods\\data\\iso_data\\jak2"):
-                    os.makedirs(dirs.user_data_dir + "\\OpenGOAL\\" + "mods\\data\\iso_data\\jak2")
+                if not exists(UniversalIsoPath + "//" + GAME):
+                    os.makedirs(UniversalIsoPath + "//" + GAME)
                 while not (exists((UniversalIsoPath + "//" + GAME + "//" + "Z6TAIL.DUP"))):
                     print("Didnt find iso in " + UniversalIsoPath + "//" + GAME + "//" + " sleeping for 5 seconds, then checking again.")
                     time.sleep(5)

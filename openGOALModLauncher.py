@@ -589,7 +589,7 @@ while True:
         else:
             sg.Popup("Selected mod is not installed", keep_on_top=True, icon=iconfile)
     elif event == "-VIEWISOFOLDER-":
-        dir = dirs.user_data_dir + "\\OpenGOAL\\" + "mods\\data\\iso_data"
+        dir = dirs.user_data_dir + "\OpenGOAL-Mods\_iso_data"
         launcherUtils.openFolder(dir)
     elif event == "-REINSTALL-":
         tmpModName = window["-SELECTEDMODNAME-"].get()
