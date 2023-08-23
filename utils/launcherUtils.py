@@ -649,7 +649,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
         while not (exists(InstallDir + "/data/iso_data/" + GAME + "//Z6TAIL.DUP")) and (exists(InstallDir + "/data/iso_data/" + GAME + "//")):
             time.sleep(5)
 
-        if (exists(InstallDir + "/data/iso_data/" + GAME + "//Z6TAIL.DUP")):
+        if (exists(InstallDir + "/data/iso_data/" + GAME + "//Z6TAIL.DUP")) and not (exists(UniversalIsoPath + "//" + GAME + "//Z6TAIL.DUP")):
             shutil.copytree( InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "//" + GAME + "//")
         path_to_remove = InstallDir + "/data/iso_data/" + GAME
         if os.path.exists(path_to_remove):

@@ -93,6 +93,7 @@ ModFolderPATH = os.path.join(dirs.user_data_dir, "OpenGOAL-Mods", "")
 # set dev mode if we should
 developer_substrings = {
     "NinjaPC",
+    "Zed"
     # Add more entries as needed
 }
 
