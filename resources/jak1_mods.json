@@ -495,5 +495,18 @@
     "URL": "https://github.com/dallmeyer/jak-up/releases",
     "image_override_url": "https://cdn.discordapp.com/attachments/1007077732032721037/1139110276273287239/image.png",
     "website_url": "https://github.com/dallmeyer/jak-up/blob/main/README.md"
+  },
+
+  "candy_pop_keira": {
+    "name": "Candy Pop Keira",
+    "desc": "Keira's original outfit, but with a candy pop color scheme.",
+    "contributors": ["Ruh"],
+    "tags": [
+      "texture-mod"
+    ],
+    "release_date": "2023-08-27",
+    "URL": "https://github.com/Jak-Mods/candy-pop-keira/releases",
+    "image_override_url": "https://i.imgur.com/83xZThN.png",
+    "website_url": "https://github.com/Jak-Mods/candy-pop-keira"
   }
 }
