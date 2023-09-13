@@ -529,21 +529,19 @@
     "website_url": "https://github.com/dallmeyer/jak-up/blob/main/README.md",
     "game": "jak1"
   },
-  "mod_base_2": {
-    "name": "Jak 2",
-    "desc": "Early test build. Click View ISO Folder and place jak 2 iso there.",
-    "contributors": ["OpenGOAL"],
+ 
+
+  "candy_pop_keira": {
+    "name": "Candy Pop Keira",
+    "desc": "Keira's original outfit, but with a candy pop color scheme.",
+    "contributors": ["Ruh"],
     "tags": [
-      "beta",
-      "gameplay-mod",
-      "challenge",
-      "custom-level",
-      "speedrunning"
+      "texture-mod"
     ],
-    "release_date": "2023-08-10",
-    "URL": "https://github.com/OpenGOAL-Mods/OG-Mod-Base/releases",
-    "image_override_url": "https://vgboxart.com/boxes/PS2/38248-jak-ii.png",
-    "website_url": "https://github.com/dallmeyer/jak-up/blob/main/README.md",
-    "game": "jak2",
+    "release_date": "2023-08-27",
+    "URL": "https://github.com/Jak-Mods/candy-pop-keira/releases",
+    "image_override_url": "https://i.imgur.com/83xZThN.png",
+    "website_url": "https://github.com/Jak-Mods/candy-pop-keira",
+    "game": "jak2"
   }
 }

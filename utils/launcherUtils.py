@@ -52,6 +52,9 @@ AppdataPATH = dirs.user_data_dir
 
 pbar = None
 
+def makeDirSymlink(link, target):
+  subprocess.check_call('mklink /J "%s" "%s"' % (link, target), shell=True)
+
 
 def installedlist(PATH):
     print(PATH)
@@ -116,6 +119,13 @@ def local_mod_image(MOD_ID):
     if exists(path):
         return path
     return None
+
+def moveDirContents(src, dest):
+  # moves all files from src to dest, without moving src dir itself
+  for f in os.listdir(src):
+      src_path = os.path.join(src, f)
+      dst_path = os.path.join(dest, f)
+      shutil.move(src_path, dst_path)
 
 
 def launch_local(MOD_ID, GAME):
@@ -195,19 +205,21 @@ def reinstall(URL, MOD_ID, MODNAME, LINKTYPE, GAME):
         iso_path = UniversalIsoPath + "\\" + GAME
         
     else:
-        if GAME == "jak1":
-            # if ISO_DATA is empty, prompt for their ISO and store its path.
-            root = tk.Tk()
-            print("Please select your iso.")
-            root.title("Select ISO")
-            root.geometry("230x1")
-            iso_path = filedialog.askopenfilename()
-            root.destroy()
-            if pathlib.Path(iso_path).is_file:
-                if not (pathlib.Path(iso_path).suffix).lower() == ".iso" :
-                    print((pathlib.Path(iso_path).suffix).lower())
-                    1 / 0
-    print("Extraction completed successfully.")
+        # if ISO_DATA is empty, prompt for their ISO and store its path.
+        root = tk.Tk()
+        print("Please select your iso.")
+        root.title("Select ISO")
+        root.geometry("230x1")
+        iso_path = filedialog.askopenfilename()
+        root.destroy()
+        if pathlib.Path(iso_path).is_file:
+            if not (pathlib.Path(iso_path).suffix).lower() == ".iso":
+                1 / 0
+
+    # symlink isodata for custom levels art group (goalc doesnt take -f flag)
+    if exists(UniversalIsoPath + r"\jak1\Z6TAIL.DUP"):
+      makeDirSymlink(InstallDir + "\\data\\iso_data", UniversalIsoPath)
+
     # Close Gk and goalc if they were open.
     try_kill_process("gk.exe")
     try_kill_process("goalc.exe")
@@ -232,7 +244,7 @@ def reinstall(URL, MOD_ID, MODNAME, LINKTYPE, GAME):
         ]
     print(extractor_command_list)
 
-    subprocess.Popen(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir))
+    extractor_result = subprocess.run(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir))
 
     # wait for extractor to finish
     while process_exists("extractor.exe"):
@@ -241,13 +253,13 @@ def reinstall(URL, MOD_ID, MODNAME, LINKTYPE, GAME):
 
     # move the extrated contents to the universal launchers directory for next time.
     if not (exists((UniversalIsoPath + r"" + "//" + GAME + "//" + "Z6TAIL.DUP"))):
-        
-        # os.makedirs(AppdataPATH + "\OpenGOAL-Launcher\data\iso_data")
+        os.makedirs(UniversalIsoPath, exist_ok=True)
         print("The new directory is created!")
-        shutil.move(InstallDir + "/data/iso_data", "" + UniversalIsoPath + "")
-        
-        # try_remove_dir(InstallDir + "/data/iso_data")
-        # os.symlink("" + UniversalIsoPath +"", InstallDir + "/data/iso_data")
+        moveDirContents(InstallDir + "\\data\\iso_data", "" + UniversalIsoPath + "")
+        # replace iso_data with symlink
+        try_remove_dir(InstallDir + "\\data\\iso_data")
+        makeDirSymlink(InstallDir + "\\data\\iso_data", UniversalIsoPath)
+
 
 
 def replaceText(path, search_text, replace_text):
@@ -448,7 +460,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
         try_remove_dir(InstallDir + "/temp")
         if not os.path.exists(InstallDir + "/temp"):
             print("Creating install dir: " + InstallDir)
-            os.makedirs(InstallDir + "/temp")
+            os.makedirs(InstallDir + "/temp", exist_ok=True)
             
         response = requests.get(LatestRelAssetsURL)
         if response.history:
@@ -540,34 +552,47 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
         print("Extracting update")
         TempDir = InstallDir + "/temp"
         with zipfile.ZipFile(TempDir + "/updateDATA.zip", "r") as zip_ref:
-            zip_ref.extractall(TempDir)
+          zip_ref.extractall(TempDir)
 
         # delete the mod zipped update archive
         try_remove_file(TempDir + "/updateDATA.zip")
 
         SubDir = TempDir
         if LINK_TYPE == githubUtils.LinkTypes.BRANCH or len(os.listdir(SubDir)) == 1:
-            # for branches, the downloaded zip puts all files one directory down
-            SubDir = SubDir + "/" + os.listdir(SubDir)[0]
+          # for branches, the downloaded zip puts all files one directory down
+          SubDir = SubDir + "/" + os.listdir(SubDir)[0]
 
         print("Moving files from " + SubDir + " up to " + InstallDir)
         allfiles = os.listdir(SubDir)
         for f in allfiles:
-            shutil.move(SubDir + "/" + f, InstallDir + "/" + f)
-        time.sleep(2)
+          shutil.move(SubDir + "/" + f, InstallDir + "/" + f)
         try_remove_dir(TempDir)
 
         #replace the settings and discord RPC texts automatically before we build the game.
         replaceText(
-            InstallDir + r"\data\goal_src" + "//" + GAME + "//" + "pc\pckernel.gc",
-            "Playing Jak and Daxter: The Precursor Legacy",
-            "Playing " + MOD_NAME,
+          InstallDir + r"\data\goal_src\jak1\pc\pckernel.gc",
+          "Playing Jak and Daxter: The Precursor Legacy",
+          "Playing " + MOD_NAME,
         )
         replaceText(
-            InstallDir + r"\data\goal_src" + "//" + GAME + "//" + "pc\pckernel.gc",
-            "/pc-settings.gc",
-            r"/" + MOD_ID + "-settings.gc",
+          InstallDir + r"\data\goal_src\jak1\pc\pckernel.gc",
+          "/pc-settings.gc",
+          r"/" + MOD_ID + "-settings.gc",
         )
+        replaceText(
+          InstallDir + r"\data\goal_src\jak1\pc\pckernel-common.gc",
+          "/pc-settings.gc",
+          r"/" + MOD_ID + "-settings.gc",
+        )
+        replaceText(
+          InstallDir + r"\data\goal_src\jak1\pc\pckernel-common.gc",
+          "/pc-settings.gc",
+          r"/" + MOD_ID + "-settings.gc",
+        )
+
+        # symlink isodata for custom levels art group (goalc doesnt take -f flag)
+        if exists(UniversalIsoPath + r"\jak1\Z6TAIL.DUP"):
+          makeDirSymlink(InstallDir + "/data/iso_data", UniversalIsoPath)
 
         # if extractOnUpdate is True, check their ISO_DATA folder
 
