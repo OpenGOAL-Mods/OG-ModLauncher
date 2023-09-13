@@ -16,7 +16,7 @@ import json
 import os.path
 import requests
 import time
-import datetime
+from datetime import datetime
 import sys
 import webbrowser
 import os
@@ -27,7 +27,7 @@ from appdirs import AppDirs
 from appdirs import AppDirs
 import platform
 import stat
-
+from datetime import datetime
 from pathlib import Path
 
 
@@ -81,7 +81,7 @@ currentModURL = None
 currentModImage = None
 steamDIR = None
 dirs = AppDirs(roaming=True)
-isdeveloper = False
+
 # C:\Users\USERNAME\AppData\Roaming\OPENGOAL-UnofficalModLauncher\
 AppdataPATH = os.path.join(dirs.user_data_dir, "OPENGOAL-UnofficalModLauncher", "")
 
@@ -89,19 +89,6 @@ AppdataPATH = os.path.join(dirs.user_data_dir, "OPENGOAL-UnofficalModLauncher", 
 ModFolderPATH = os.path.join(dirs.user_data_dir, "OpenGOAL-Mods", "")
 
 # grab images from web
-
-# set dev mode if we should
-developer_substrings = {
-    "NinjaPC",
-    "Zed"
-    # Add more entries as needed
-}
-
-for substring in developer_substrings:
-    if substring in AppdataPATH:
-        isdeveloper = True
-        break  
-
 
 # url to splash screen image
 url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlaunchersplash.png"
@@ -225,11 +212,9 @@ LATEST_TABLE_SORT = [6, False] # wakeup sorted by last launch date
 
 def getRefreshedTableData(sort_col_idx):
     # uncomment/comment the next two lines if you want to test with a local file
-    # mod_dict = requests.get("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/jak1_mods.json").json()
-    mod_dict = json.loads(open("resources/jak1_mods.json", "r").read())
+    mod_dict = requests.get("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/jak1_mods.json").json()
+    #mod_dict = json.loads(open("resources/jak1_mods.json", "r").read())
     
-    if not isdeveloper:
-        mod_dict = {key: value for key, value in mod_dict.items() if not value.get("dev")}
     mod_dict = dict(sorted(mod_dict.items(), key=lambda x: x[1]["release_date"], reverse=True))
 
     mod_table_data = []
@@ -248,20 +233,20 @@ def getRefreshedTableData(sort_col_idx):
 
         # determine local install/access datetime
         if mod_id in installed_mod_subfolders:
-            mod["install_date"] = f"{datetime.datetime.fromtimestamp(installed_mod_subfolders[mod_id]):%Y-%m-%d %H:%M}"
+            mod["install_date"] = f"{datetime.fromtimestamp(installed_mod_subfolders[mod_id]):%Y-%m-%d %H:%M}"
 
             if exists(f"{ModFolderPATH}/{mod_id}/gk.exe"):
               gk_stat = os.stat(f"{ModFolderPATH}/{mod_id}/gk.exe")
-              mod["access_date"] = f"{datetime.datetime.fromtimestamp(gk_stat.st_atime):%Y-%m-%d %H:%M}"
+              mod["access_date"] = f"{datetime.fromtimestamp(gk_stat.st_atime):%Y-%m-%d %H:%M}"
         elif mod_name in installed_mod_subfolders:
             # previous installation using mod_name (will migrate after this step)
-            mod["install_date"] = f"{datetime.datetime.fromtimestamp(installed_mod_subfolders[mod_name]):%Y-%m-%d %H:%M}"
+            mod["install_date"] = f"{datetime.fromtimestamp(installed_mod_subfolders[mod_name]):%Y-%m-%d %H:%M}"
             # migrate folder to use mod_id instead of mod_name
             shutil.move(ModFolderPATH + "/" + mod_name, ModFolderPATH + "/" + mod_id)
 
             if exists(f"{ModFolderPATH}/{mod_id}/gk.exe"):
               gk_stat = os.stat(f"{ModFolderPATH}/{mod_id}/gk.exe")
-              mod["access_date"] = f"{datetime.datetime.fromtimestamp(gk_stat.st_atime):%Y-%m-%d %H:%M}"
+              mod["access_date"] = f"{datetime.fromtimestamp(gk_stat.st_atime):%Y-%m-%d %H:%M}"
 
         mod["contributors"] = ", ".join(mod["contributors"])
         mod["tags"].sort()
@@ -272,14 +257,15 @@ def getRefreshedTableData(sort_col_idx):
         # update_date = githubUtils.getLatestAvailableUpdateDatetime(mod["URL"])
         # if update_date:
         #   mod["latest_available_update_date"] = f"{update_date:%Y-%m-%d %H:%M}"
-
+        
         # only add to data if passes filter (if any)
         if (
             FILTER_STR is None
-            or FILTER_STR == ""
-            or FILTER_STR in mod_name.lower()
-            or FILTER_STR in mod["contributors"].lower()
-            or FILTER_STR in mod["tags"].lower()
+            or FILTER_STR == "" and mod["game"] != "jak2"
+            or FILTER_STR in mod_name.lower() and mod["game"] != "jak2"
+            or FILTER_STR in mod["contributors"].lower() and mod["game"] != "jak2"
+            or FILTER_STR in mod["tags"].lower() and mod["game"] != "jak2"
+            or FILTER_STR == "i understand this is a test and will report any bugs to jak-project on github or in the opengoal discord" and  mod["game"] == "jak2"
         ):
             if (INCLUDE_INSTALLED and mod["access_date"] != "Not Installed") or (
                 INCLUDE_UNINSTALLED and mod["access_date"] == "Not Installed"
@@ -581,6 +567,8 @@ while True:
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
         tmpModURL = window["-SELECTEDMODNAME-"].metadata["url"]
         tmpGame = window["-SELECTEDMODNAME-"].metadata["game"]
+        if FILTER_STR == "i understand this is a test and will report any bugs to jak-project on github or in the opengoal discord":
+            tmpGame = "jak2"
 
         # online launch
         window["-LAUNCH-"].update(disabled=True)

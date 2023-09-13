@@ -212,7 +212,6 @@ def reinstall(URL, MOD_ID, MODNAME, LINKTYPE, GAME):
     try_kill_process("gk.exe")
     try_kill_process("goalc.exe")
     print("Done update starting extractor\n")
-    print(currentOS + " POOOOOOOOOOOOOOOP")
     if currentOS == "Windows":
         extractor_command_list = [
             os.path.join(InstallDir, "extractor.exe"),
@@ -492,7 +491,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
             print("Found in " + UniversalIsoPath +"//" + GAME + "//" + "Z6TAIL.DUP")
             iso_path = UniversalIsoPath + "\\" + GAME
         else:
-            print("We did not find ISO data from a previous mod, lets ask for some!") 
+            print("We did not find "+ GAME + "ISO data from a previous mod, lets ask for some!") 
                #cleanup and remove a corrupted iso
             if os.path.exists(UniversalIsoPath + "//" + GAME) and os.path.isdir(UniversalIsoPath) and not (exists((UniversalIsoPath + "//" + GAME + "//" + "Z6TAIL.DUP"))):
                 print("Removing corrupted iso destination...")
