@@ -6,6 +6,7 @@ Created on Thu Aug 25 18:33:45 2022
 """
 
 # we will clean these up later but for now leave even unused imports
+import threading
 
 from PIL import Image
 from utils import launcherUtils, githubUtils
@@ -30,7 +31,10 @@ import stat
 from datetime import datetime
 from pathlib import Path
 
-
+def run_long_task():
+    # Perform your long-running task here
+    # This function runs in a separate thread
+    pass  # Replace with your task logic
 
 sg.theme("DarkBlue3")
 
@@ -39,7 +43,26 @@ def openLauncherWebsite():
 
 def exitWithError():
   sys.exit(1)
+def run_long_task():
+        tmpModName = window["-SELECTEDMODNAME-"].get()
+        tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
+        tmpModURL = window["-SELECTEDMODNAME-"].metadata["url"]
+        tmpGame = window["-SELECTEDMODNAME-"].metadata["game"]
+        if FILTER_STR == "i understand this is a test and will report any bugs to jak-project on github or in the opengoal discord":
+            tmpGame = "jak2"
 
+        # online launch
+        window["-LAUNCH-"].update(disabled=True)
+        window["-LAUNCH-"].update("Updating...")
+        [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
+        launcherUtils.launch(tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame)
+
+        # refresh table in case new mod installed
+        reset()
+
+        # turn the button back on
+        window["-LAUNCH-"].update("Launch")
+        window["-LAUNCH-"].update(disabled=False)
 # Folder where script is placed, It looks in this for the Exectuable
 if getattr(sys, "frozen", False):
     # If we are a pyinstaller exe get the path of this file, not python
@@ -212,8 +235,19 @@ LATEST_TABLE_SORT = [6, False] # wakeup sorted by last launch date
 
 def getRefreshedTableData(sort_col_idx):
     # uncomment/comment the next two lines if you want to test with a local file
-    mod_dict = requests.get("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/jak1_mods.json").json()
-    #mod_dict = json.loads(open("resources/jak1_mods.json", "r").read())
+    remote_url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/jak1_mods.json"
+    remote_mods = requests.get(remote_url).json()
+
+    # Initialize an empty dictionary to store the combined data
+    mod_dict = {}
+
+    # Load data from the local file if it exists
+    local_file_path = "resources/jak1_mods.json"
+    if os.path.exists(local_file_path):
+        local_mods = json.loads(open(local_file_path, "r").read())
+
+        # Merge the remote and local data while removing duplicates
+        mod_dict = {**remote_mods, **local_mods}
     
     mod_dict = dict(sorted(mod_dict.items(), key=lambda x: x[1]["release_date"], reverse=True))
 
@@ -563,25 +597,9 @@ while True:
     elif event == "-REFRESH-":
         reset()
     elif event == "-LAUNCH-":
-        tmpModName = window["-SELECTEDMODNAME-"].get()
-        tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
-        tmpModURL = window["-SELECTEDMODNAME-"].metadata["url"]
-        tmpGame = window["-SELECTEDMODNAME-"].metadata["game"]
-        if FILTER_STR == "i understand this is a test and will report any bugs to jak-project on github or in the opengoal discord":
-            tmpGame = "jak2"
-
-        # online launch
-        window["-LAUNCH-"].update(disabled=True)
-        window["-LAUNCH-"].update("Updating...")
-        [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
-        launcherUtils.launch(tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame)
-
-        # refresh table in case new mod installed
-        reset()
-
-        # turn the button back on
-        window["-LAUNCH-"].update("Launch")
-        window["-LAUNCH-"].update(disabled=False)
+        long_task_thread = threading.Thread(target=run_long_task)
+        long_task_thread.start()
+    
     elif event == "-VIEWFOLDER-":
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
         subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
@@ -593,6 +611,7 @@ while True:
             sg.Popup("Selected mod is not installed", keep_on_top=True, icon=iconfile)
     elif event == "-VIEWISOFOLDER-":
         dir = dirs.user_data_dir + "\OpenGOAL-Mods\_iso_data"
+        launcherUtils.ensure_jak_folders_exist()
         launcherUtils.openFolder(dir)
     elif event == "-REINSTALL-":
         tmpModName = window["-SELECTEDMODNAME-"].get()
@@ -601,7 +620,7 @@ while True:
         tmpGame = window["-SELECTEDMODNAME-"].metadata["game"]
         [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
         subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
-
+#I understand this is a test and will report any bugs to jak-project on github or in the opengoal discord
         if tmpModSelected in subfolders:
             dir = dirs.user_data_dir + "\\OpenGOAL-Mods\\" + tmpModSelected
             ans = sg.popup_ok_cancel(

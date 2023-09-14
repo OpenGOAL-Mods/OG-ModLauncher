@@ -127,6 +127,28 @@ def moveDirContents(src, dest):
       dst_path = os.path.join(dest, f)
       shutil.move(src_path, dst_path)
 
+def link_files_by_extension(source_dir, destination_dir):
+    # Ensure the source directory exists
+    if not os.path.exists(source_dir):
+        print(f"Source directory '{source_dir}' does not exist.")
+        return
+
+    # Ensure the destination directory exists
+    if not os.path.exists(destination_dir):
+        os.makedirs(destination_dir)
+
+    # Loop through the contents of the source directory
+    for filename in os.listdir(source_dir):
+        file_path = os.path.join(source_dir, filename)
+
+        # Check if it's a file and its extension matches the specified extension
+        if os.path.isfile(file_path):
+            # Construct the destination path
+            destination_path = os.path.join(destination_dir, filename)
+
+            # Create a symbolic link (change to shutil.copy if you want to copy instead)
+            os.symlink(file_path, destination_path)
+            print(f"Linked '{filename}' to '{destination_path}'")
 
 def launch_local(MOD_ID, GAME):
     try:
@@ -178,6 +200,7 @@ def reinstall(URL, MOD_ID, MODNAME, LINKTYPE, GAME):
     InstallDir = ModFolderPATH + MOD_ID
     AppdataPATH = os.getenv("APPDATA")
     UniversalIsoPath = AppdataPATH + "\OpenGOAL-Mods\_iso_data"
+    ensure_jak_folders_exist()
     #reinstall has a lot of duplicated logic not sure if there is a reason for this yet, but for now for jak 2 we can just delte the directory then call the install/launch function
     if GAME == "jak2":
         path_to_remove = InstallDir
@@ -217,8 +240,9 @@ def reinstall(URL, MOD_ID, MODNAME, LINKTYPE, GAME):
                 1 / 0
 
     # symlink isodata for custom levels art group (goalc doesnt take -f flag)
-    if exists(UniversalIsoPath + r"\jak1\Z6TAIL.DUP"):
+    if exists(UniversalIsoPath + "//" + GAME +r"\Z6TAIL.DUP"):
       makeDirSymlink(InstallDir + "\\data\\iso_data", UniversalIsoPath)
+      link_files_by_extension( UniversalIsoPath + "//" + GAME + "//VAG",InstallDir + "//data//out//" + GAME + "//iso")
 
     # Close Gk and goalc if they were open.
     try_kill_process("gk.exe")
@@ -309,6 +333,18 @@ def open_folder(path):
 def divide_by_zero():
     1 / 0
 
+def ensure_jak_folders_exist():
+    directory = dirs.user_data_dir + "\OpenGOAL-Mods\_iso_data"
+    jak1_path = os.path.join(directory, "jak1")
+    jak2_path = os.path.join(directory, "jak2")
+
+    if not os.path.exists(jak1_path):
+        os.makedirs(jak1_path)
+        print(f"Created 'jak1' folder at {jak1_path}")
+
+    if not os.path.exists(jak2_path):
+        os.makedirs(jak2_path)
+        print(f"Created 'jak2' folder at {jak2_path}")
 
 #check if we have decompiler in the path, if not check if we have a backup, if so use it, if not download a backup then use it
 def getDecompiler(path):
@@ -350,6 +386,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
     InstallDir = ModFolderPATH + MOD_ID
     AppdataPATH = os.getenv("APPDATA")
     UniversalIsoPath = AppdataPATH + "\OpenGOAL-Mods\_iso_data"
+    ensure_jak_folders_exist()
     DataFolder = InstallDir + "\\data"
     GkPATH = InstallDir + "\gk.exe"
     GoalCPATH = InstallDir + "\goalc.exe"
@@ -591,8 +628,9 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
         )
 
         # symlink isodata for custom levels art group (goalc doesnt take -f flag)
-        if exists(UniversalIsoPath + r"\jak1\Z6TAIL.DUP"):
+        if exists(UniversalIsoPath + r"" + "//" + GAME + "//" + "Z6TAIL.DUP"):
           makeDirSymlink(InstallDir + "/data/iso_data", UniversalIsoPath)
+
 
         # if extractOnUpdate is True, check their ISO_DATA folder
 
@@ -603,7 +641,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
         
         #Extract and compile
         if(GAME == "jak1"):
-            extractor_command_list = [InstallDir + "\extractor.exe", "-f", iso_path , "-e", "-v", "-d", "-c"]
+            extractor_command_list = [InstallDir + "\extractor.exe", "-e", "-v", "-d", "-c"]
             print(extractor_command_list)
             subprocess.Popen(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir))
             while process_exists("extractor.exe"):
@@ -643,18 +681,6 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
 
             #print(goalc_command_list)
 
-            # move the extrated contents to the universal launchers directory for next time.
-
-            #shutil.copytree(UniversalIsoPath + "//" + GAME + "//", InstallDir + "/data/iso_data/" + GAME)
-
-            #should be good to move iso now
-            shutil.copytree(UniversalIsoPath + "//" + GAME + "//", InstallDir + "/data/iso_data/" + GAME)
-
-            #keep checking to make sure the move is in a finished state
-            while not (exists(InstallDir + "/data/iso_data/" + GAME + "//Z6TAIL.DUP")):
-                print(InstallDir + "/data/iso_data/" + GAME + "//Z6TAIL.DUP " + "Not found yet, sleeping then checking again to make sure the install finished")
-                time.sleep(5)
-
             #open GoalC to build jak2, for jak 1 extractor can handle this.
             print("Opening the Compiler subprocess - Sleeping for 5 seconds so it has time to initalize.")
             subprocess.Popen(goalc_command_list, shell=True, cwd=os.path.abspath(InstallDir))
@@ -675,13 +701,8 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
 
         if (exists(InstallDir + "/data/iso_data/" + GAME + "//Z6TAIL.DUP")) and not (exists(UniversalIsoPath + "//" + GAME + "//Z6TAIL.DUP")):
             shutil.copytree( InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "//" + GAME + "//")
-        path_to_remove = InstallDir + "/data/iso_data/" + GAME
-        if os.path.exists(path_to_remove):
-            shutil.rmtree(path_to_remove)
-            print(f"Path '{path_to_remove}' removed successfully.")
-        else:
-            print(f"Path '{path_to_remove}' does not exist.")
-        #print("copying " + InstallDir + "/data/iso_data/" + GAME + "to " + UniversalIsoPath )
+       
+       
 
 
         # at this point we should be good to launch, these are just sanity checks that should never be reached
