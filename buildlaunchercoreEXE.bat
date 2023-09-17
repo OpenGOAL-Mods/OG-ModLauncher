@@ -1,6 +1,6 @@
 
 set mypath=%~dp0
-pyinstaller --onefile openGOALModLauncher2.py --icon resources\appicon.ico --noconsole
+pyinstaller --onefile openGOALModLauncher.py --icon resources\appicon.ico --noconsole
 move "%mypath%dist\openGOALModLauncher.exe" "%mypath%/"
 RENAME "%mypath%\openGOALModLauncher.exe" "openGOALModLauncher.exe"
 REM @RD /S /Q "%mypath%/build"

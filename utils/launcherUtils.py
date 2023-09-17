@@ -485,17 +485,18 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
             print("We found ISO data from a previous mod installation! Lets use it!")
             print("Found in " + UniversalIsoPath +"//" + GAME + "//" + "Z6TAIL.DUP")
             iso_path = UniversalIsoPath + "\\" + GAME
+
+
+            while not (exists(InstallDir + "/data/iso_data/" + GAME + "//Z6TAIL.DUP")) and (exists(InstallDir + "/data/iso_data/" + GAME + "//")):
+                shutil.copytree( InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "//" + GAME + "//")
         else:
             print("We did not find "+ GAME + "ISO data from a previous mod, lets ask for some!") 
                #cleanup and remove a corrupted iso
             if os.path.exists(UniversalIsoPath + "//" + GAME) and os.path.isdir(UniversalIsoPath) and not (exists((UniversalIsoPath + "//" + GAME + "//" + "Z6TAIL.DUP"))):
                 print("Removing corrupted iso destination...")
                 shutil.rmtree(UniversalIsoPath + "//" + GAME)
-                print("corrupt iso removed.")
+                ensure_jak_folders_exist()
                 #jak2hack
-                #since we are having users manually drop the iso into the folder creating it for them is nice :)
-                if GAME == "jak2":
-                    os.makedirs(UniversalIsoPath + "//" + GAME) 
             #if ISO_DATA is empty, prompt for their ISO and store its path.
             if GAME == "jak1":
                 # if ISO_DATA is empty, prompt for their ISO and store its path.
@@ -584,9 +585,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
           "\"process_tpages\": false,",
         )
 
-        # symlink isodata for custom levels art group (goalc doesnt take -f flag)
-        if exists(UniversalIsoPath + r"" + "//" + GAME + "//" + "Z6TAIL.DUP"):
-          makeDirSymlink(InstallDir + "/data/iso_data", UniversalIsoPath)
+
 
 
         # if extractOnUpdate is True, check their ISO_DATA folder
@@ -608,6 +607,8 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
                 print("done extracting!")
             else:
                 print("Extractor error!")
+            
+
         
         if(GAME == "jak2"):
             getDecompiler(InstallDir)
@@ -642,8 +643,32 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
                             "(mi) (e)"
             ]
 
-            #print(goalc_command_list)
+        #print(goalc_command_list)
 
+        # symlink isodata for custom levels art group (goalc doesnt take -f flag)
+        if exists(UniversalIsoPath + r"" + "//" + GAME + "//" + "Z6TAIL.DUP"):
+            ensure_jak_folders_exist();
+            makeDirSymlink(InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "//" + GAME)
+            
+        # move the extrated contents to the universal launchers directory for next time.
+        if not (exists((UniversalIsoPath + r"\\" + GAME + "\Z6TAIL.DUP"))):
+            ensure_jak_folders_exist()
+            moveDirContents(InstallDir + "\\data\\iso_data/" + GAME, UniversalIsoPath + "//" + GAME)
+            # replace iso_data with symlink
+            try_remove_dir(InstallDir + "\\data\\iso_data/" + GAME)
+            makeDirSymlink(InstallDir + "\\data\\iso_data/" + GAME, UniversalIsoPath + "\\" + GAME)
+
+
+        if exists(UniversalIsoPath + "//" + GAME +r"\Z6TAIL.DUP"):
+            #makeDirSymlink(InstallDir + "\\data\\iso_data", UniversalIsoPath)
+            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//VAG",InstallDir + "//data//out//" + GAME + "//iso")
+            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//SBK",InstallDir + "//data//out//" + GAME + "//iso")
+            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//MUS",InstallDir + "//data//out//" + GAME + "//iso")
+            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//STR",InstallDir + "//data//out//" + GAME + "//iso")
+            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//DRIVERS",InstallDir + "//data//out//" + GAME + "//iso")
+            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//TEXT",InstallDir + "//data//out//" + GAME + "//iso")
+
+        if(GAME == "jak2"):    
             #open GoalC to build jak2, for jak 1 extractor can handle this.
             print("Opening the Compiler subprocess - Sleeping for 5 seconds so it has time to initalize.")
             goalc_result = subprocess.run(goalc_command_list, shell=True, cwd=os.path.abspath(InstallDir))
@@ -654,17 +679,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
             else:
                 print("goalc error!")
 
-        while not (exists(InstallDir + "/data/iso_data/" + GAME + "//Z6TAIL.DUP")) and (exists(InstallDir + "/data/iso_data/" + GAME + "//")):
-           shutil.copytree( InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "//" + GAME + "//")
-
-        if exists(UniversalIsoPath + "//" + GAME +r"\Z6TAIL.DUP"):
-            #makeDirSymlink(InstallDir + "\\data\\iso_data", UniversalIsoPath)
-            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//VAG",InstallDir + "//data//out//" + GAME + "//iso")
-            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//SBK",InstallDir + "//data//out//" + GAME + "//iso")
-            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//MUS",InstallDir + "//data//out//" + GAME + "//iso")
-            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//STR",InstallDir + "//data//out//" + GAME + "//iso")
-            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//DRIVERS",InstallDir + "//data//out//" + GAME + "//iso")
-            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//TEXT",InstallDir + "//data//out//" + GAME + "//iso")
+        
 
         # at this point we should be good to launch, these are just sanity checks that should never be reached
 

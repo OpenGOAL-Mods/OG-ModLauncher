@@ -88,49 +88,40 @@ ModFolderPATH = os.path.join(dirs.user_data_dir, "OpenGOAL-Mods", "")
 # grab images from web
 
 # url to splash screen image
-url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlaunchersplash.png"
-jpg_data = (
-    cloudscraper.create_scraper(
-        browser={"browser": "firefox", "platform": "windows", "mobile": False}
-    )
-    .get(url)
-    .content
-)
 
-pil_image = Image.open(io.BytesIO(jpg_data))
-png_bio = io.BytesIO()
-pil_image.save(png_bio, format="PNG")
-splashfile = png_bio.getvalue()
+def getPNGFromURL(URL):
+    result = None  # Initialize the result variable
+
+    def fetch_image(url):  # Accept the URL parameter
+        nonlocal result  # Access the result variable in the outer scope
+        jpg_data = (
+            cloudscraper.create_scraper(
+                browser={"browser": "firefox", "platform": "windows", "mobile": False}
+            )
+            .get(url)  # Use the provided URL parameter
+            .content
+        )
+
+        pil_image = Image.open(io.BytesIO(jpg_data))
+        png_bio = io.BytesIO()
+        pil_image.save(png_bio, format="PNG")
+        result = png_bio.getvalue()  # Store the fetched image in the result variable
+
+    thread = threading.Thread(target=fetch_image, args=(URL,))  # Pass the URL as an argument
+    thread.start()
+    thread.join()  # Wait for the thread to finish
+
+    return result  # Return the fetched image data
 
 # url to icon for the window
-url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/appicon.ico"
-jpg_data = (
-    cloudscraper.create_scraper(
-        browser={"browser": "firefox", "platform": "windows", "mobile": False}
-    )
-    .get(url)
-    .content
-)
 
-pil_image = Image.open(io.BytesIO(jpg_data))
-png_bio = io.BytesIO()
-pil_image.save(png_bio, format="PNG")
-iconfile = png_bio.getvalue()
+splashfile = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlaunchersplash.png")
 
-# url to use if we have no image
-url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/noRepoImageERROR.png"
-jpg_data = (
-    cloudscraper.create_scraper(
-        browser={"browser": "firefox", "platform": "windows", "mobile": False}
-    )
-    .get(url)
-    .content
-)
+noimagefile = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/noRepoImageERROR.png")
 
-pil_image = Image.open(io.BytesIO(jpg_data))
-png_bio = io.BytesIO()
-pil_image.save(png_bio, format="PNG")
-noimagefile = png_bio.getvalue()
+iconfile = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/appicon.ico")
+
+loadingimage = getPNGFromURL("https://cdn.discordapp.com/attachments/1012837220664750172/1151746308000989184/image.png")
 
 #make the modfolderpath if first install
 if not os.path.exists(ModFolderPATH):
@@ -498,6 +489,14 @@ def handleModTableSelection(row):
     except:
         window["-SELECTEDMODIMAGE-"].update(githubUtils.resize_image(noimagefile, 500.0, 300.0))
 
+windowstatus = "main"
+
+launch_finished_event = threading.Event()
+def launch_mod(tmpModURL):
+    [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
+    
+    launcherUtils.launch(tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame)
+    launch_finished_event.set()
 
 def reset():
     global LATEST_TABLE_DATA
@@ -571,15 +570,28 @@ while True:
         # online launch
         window["-LAUNCH-"].update(disabled=True)
         window["-LAUNCH-"].update("Updating...")
-        [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
-        launcherUtils.launch(tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame)
+        launch_thread = threading.Thread(target=launch_mod, args=(tmpModURL,))
+        launch_thread.start()
+        #launch_thread.join()
 
-        # refresh table in case new mod installed
+            # Continue processing events while the background thread runs
+        while not launch_finished_event.is_set():
+            event, values = window.read(timeout=100)
+
+            if event == "Exit" or event == sg.WIN_CLOSED:
+                break
+
+            # Handle other events here...
+
+        # Reset windowstatus back to "main"
+        windowstatus = "main"
+       
         reset()
+        
 
-        # turn the button back on
-        window["-LAUNCH-"].update("Launch")
-        window["-LAUNCH-"].update(disabled=False)
+        # # turn the button back on
+        # window["-LAUNCH-"].update("Launch")
+        # window["-LAUNCH-"].update(disabled=False)
     elif event == "-VIEWFOLDER-":
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
         subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
