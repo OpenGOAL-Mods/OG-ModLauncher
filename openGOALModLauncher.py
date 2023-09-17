@@ -538,12 +538,16 @@ def launch_mod(tmpModURL):
 
 def reset():
     global LATEST_TABLE_DATA
-    LATEST_TABLE_DATA = getRefreshedTableData(None)
-    window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
-    for i in range(len(sorted_table_headings)):
-      window["-MODTABLE-"].Widget.heading(i, text=sorted_table_headings[i])
-    window["-MODTABLE-"].update(select_rows=[0])
-    handleModTableSelection(0)
+    if window is not None:
+        LATEST_TABLE_DATA = getRefreshedTableData(None)
+        window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
+        for i in range(len(sorted_table_headings)):
+            window["-MODTABLE-"].Widget.heading(i, text=sorted_table_headings[i])
+            window["-MODTABLE-"].update(select_rows=[0])
+        handleModTableSelection(0)
+    else:
+        print("Window is closed. Cannot reset.")
+
 
 
 # this is the main event loop where we handle user input

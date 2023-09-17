@@ -25,7 +25,7 @@ import platform
 import stat
 from pathlib import Path
 import time
-import win32file
+
 import ctypes
 
 EXTRACT_ON_UPDATE = "true"
@@ -134,7 +134,8 @@ def moveDirContents(src, dest):
       shutil.move(src_path, dst_path)
 
 def makeDirSymlink(link, target):
-  subprocess.check_call('mklink /J "%s" "%s"' % (link, target), shell=True)
+    subprocess.check_call('mklink /J "%s" "%s"' % (link, target), shell=True)
+
 
 def makeFileSymlink(link, target):
     # if ctypes.windll.shell32.IsUserAnAdmin():
@@ -203,7 +204,7 @@ def launch_local(MOD_ID, GAME):
             "-debug",
         ]
         print(GKCOMMANDLINElist)
-        subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir), creationflags=subprocess.CREATE_NO_WINDOW,stdout=subprocess.PIPE,
+        subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir), stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT,
                             stdin=subprocess.PIPE,
                             env=os.environ)
@@ -604,7 +605,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
         if(GAME == "jak1"):
             extractor_command_list = [InstallDir + "\extractor.exe", "-f", iso_path, "-e", "-v", "-d", "-c"]
             print(extractor_command_list)
-            extractor_result = subprocess.run(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir), creationflags=subprocess.CREATE_NO_WINDOW,stdout=subprocess.PIPE,
+            extractor_result = subprocess.run(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir), stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT,
                             stdin=subprocess.PIPE,
                             env=os.environ)
@@ -628,7 +629,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
                                        '{"decompile_code": false}'
                         ]
             #print(decompiler_command_list)
-            decompiler_result = subprocess.run(decompiler_command_list, shell=True, cwd=os.path.abspath(InstallDir), creationflags=subprocess.CREATE_NO_WINDOW,stdout=subprocess.PIPE,
+            decompiler_result = subprocess.run(decompiler_command_list, shell=True, cwd=os.path.abspath(InstallDir), stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT,
                             stdin=subprocess.PIPE,
                             env=os.environ)
@@ -655,38 +656,40 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
         #print(goalc_command_list)
 
         # symlink isodata for custom levels art group (goalc doesnt take -f flag)
-        if exists(UniversalIsoPath + r"" + "//" + GAME + "//" + "Z6TAIL.DUP"):
-            ensure_jak_folders_exist();
-            makeDirSymlink(InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "//" + GAME)
+        # if exists(UniversalIsoPath + r"" + "//" + GAME + "//" + "Z6TAIL.DUP") and GAME == "jak1":
+        #     ensure_jak_folders_exist();
+        #     makeDirSymlink(InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "//" + GAME)
 
         # move the extrated contents to the universal launchers directory for next time.
         if not (exists((UniversalIsoPath + r"\\" + GAME + "\Z6TAIL.DUP"))):
             ensure_jak_folders_exist()
             moveDirContents(InstallDir + "\\data\\iso_data/" + GAME, UniversalIsoPath + "//" + GAME)
             # replace iso_data with symlink
-            try_remove_dir(InstallDir + "\\data\\iso_data/" + GAME)
+            try_remove_dir(InstallDir + "\\data\\iso_data/")
             makeDirSymlink(InstallDir + "\\data\\iso_data/" + GAME, UniversalIsoPath + "\\" + GAME)
 
 
-        if exists(UniversalIsoPath + "//" + GAME +r"\Z6TAIL.DUP"):
-            #makeDirSymlink(InstallDir + "\\data\\iso_data", UniversalIsoPath)
-            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//VAG",InstallDir + "//data//out//" + GAME + "//iso")
-            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//SBK",InstallDir + "//data//out//" + GAME + "//iso")
-            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//MUS",InstallDir + "//data//out//" + GAME + "//iso")
-            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//STR",InstallDir + "//data//out//" + GAME + "//iso")
-            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//DRIVERS",InstallDir + "//data//out//" + GAME + "//iso")
-            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//TEXT",InstallDir + "//data//out//" + GAME + "//iso")
+        if exists(UniversalIsoPath + "//" + GAME +r"\Z6TAIL.DUP") and not exists(InstallDir + "/data/iso_data/" + GAME + "//Z6TAIL.DUP"):
+            try_remove_dir(InstallDir + "\\data\\iso_data/")
+            makeDirSymlink(InstallDir + "\\data\\iso_data\\", UniversalIsoPath)
+            # link_files_by_extension( UniversalIsoPath + "//" + GAME + "//VAG",InstallDir + "//data//out//" + GAME + "//iso")
+            # link_files_by_extension( UniversalIsoPath + "//" + GAME + "//SBK",InstallDir + "//data//out//" + GAME + "//iso")
+            # link_files_by_extension( UniversalIsoPath + "//" + GAME + "//MUS",InstallDir + "//data//out//" + GAME + "//iso")
+            # link_files_by_extension( UniversalIsoPath + "//" + GAME + "//STR",InstallDir + "//data//out//" + GAME + "//iso")
+            # link_files_by_extension( UniversalIsoPath + "//" + GAME + "//DRIVERS",InstallDir + "//data//out//" + GAME + "//iso")
+            # link_files_by_extension( UniversalIsoPath + "//" + GAME + "//TEXT",InstallDir + "//data//out//" + GAME + "//iso")
 
         if(GAME == "jak2"):    
             #open GoalC to build jak2, for jak 1 extractor can handle this.
             print("Opening the Compiler subprocess - Sleeping for 5 seconds so it has time to initalize.")
-            goalc_result = subprocess.run(goalc_command_list, shell=True, cwd=os.path.abspath(InstallDir), creationflags=subprocess.CREATE_NO_WINDOW,stdout=subprocess.PIPE,
+            time.sleep(17)
+            goalc_result = subprocess.run(goalc_command_list, shell=True, cwd=os.path.abspath(InstallDir), stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT,
                             stdin=subprocess.PIPE,
                             env=os.environ)
         
             #jak2hack this is only needed since extractor isnt aware of jak2
-            if goalc_result.returncode ==0:
+            if goalc_result.returncode == 0:
                 print("done goalc!")
             else:
                 print("goalc error!")
@@ -715,7 +718,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
             print("Is newest posted update older than what we have installed? " + str((LastWrite < LatestRel)))
 
         #ok launch game :D
-        subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir),creationflags=subprocess.CREATE_NO_WINDOW,stdout=subprocess.PIPE,
+        subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir),stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT,
                             stdin=subprocess.PIPE,
                             env=os.environ)
