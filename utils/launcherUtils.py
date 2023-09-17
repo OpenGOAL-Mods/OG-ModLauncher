@@ -203,7 +203,7 @@ def launch_local(MOD_ID, GAME):
             "-debug",
         ]
         print(GKCOMMANDLINElist)
-        subprocess.Popen(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir))
+        subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir))
     except Exception as e:  # Catch all exceptions and print the error message.
         return str(e)
 
@@ -580,6 +580,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
         replaceText(
           InstallDir + r"\data\decompiler\config\jak1_pal.jsonc",
           "\"process_tpages\": true,",
+
           "\"process_tpages\": false,",
         )
 
@@ -620,7 +621,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
                                        '{"decompile_code": false}'
                         ]
             #print(decompiler_command_list)
-            decompiler_result = subprocess.Popen(decompiler_command_list, shell=True, cwd=os.path.abspath(InstallDir))
+            decompiler_result = subprocess.run(decompiler_command_list, shell=True, cwd=os.path.abspath(InstallDir))
             print("opened decompiler")
             
             #wait for decompiler before starting goalc
@@ -645,7 +646,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
 
             #open GoalC to build jak2, for jak 1 extractor can handle this.
             print("Opening the Compiler subprocess - Sleeping for 5 seconds so it has time to initalize.")
-            goalc_result = subprocess.Popen(goalc_command_list, shell=True, cwd=os.path.abspath(InstallDir))
+            goalc_result = subprocess.run(goalc_command_list, shell=True, cwd=os.path.abspath(InstallDir))
         
             #jak2hack this is only needed since extractor isnt aware of jak2
             if goalc_result.returncode ==0:
@@ -687,7 +688,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
             print("Is newest posted update older than what we have installed? " + str((LastWrite < LatestRel)))
 
         #ok launch game :D
-        subprocess.Popen(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir))
+        subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir))
 
     else:
         # if we dont need to update, then close any open instances of the game and just launch it

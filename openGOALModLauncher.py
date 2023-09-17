@@ -263,6 +263,7 @@ def getRefreshedTableData(sort_col_idx):
             or FILTER_STR in mod["contributors"].lower() and mod["game"] != "jak2"
             or FILTER_STR in mod["tags"].lower() and mod["game"] != "jak2"
             or FILTER_STR == "i understand this is a test and will report any bugs to jak-project on github or in the opengoal discord" and  mod["game"] == "jak2"
+            #or mod["access_date"] != "Not Installed" and mod["game"] == "jak2" show up after installing or require pw each time.
         ):
             if (INCLUDE_INSTALLED and mod["access_date"] != "Not Installed") or (
                 INCLUDE_UNINSTALLED and mod["access_date"] == "Not Installed"
