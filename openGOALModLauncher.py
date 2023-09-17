@@ -316,6 +316,23 @@ layout = [
         [sg.Image(key='-SPLASHIMAGE-', source=githubUtils.resize_image(splashfile, 970, 607), expand_y=True)]
       ])
     ],
+    [sg.Frame(
+    title="",
+    key='-LOADINGFRAME-',
+    border_width=0,  # Set border_width to 0
+    visible=False,
+    element_justification="center",
+    vertical_alignment="center",
+    layout=[
+        [sg.Image(
+            key='-LOADINGIMAGE-',
+            source=githubUtils.resize_image(loadingimage, 970, 607),
+            pad=(0, 0),  # Set padding to 0
+            expand_x=True,
+            expand_y=True,
+        )]
+    ]
+)],
     [sg.Frame(title="", key='-MAINFRAME-', border_width=0, visible=False, layout=
       [
         [
@@ -512,6 +529,22 @@ def reset():
 reset()
 bootstart = time.time()
 while True:
+
+    if windowstatus == "main" and window["-LOADINGFRAME-"].visible:
+
+        # turn the button back on
+        window["-LAUNCH-"].update("Launch")
+        window["-LAUNCH-"].update(disabled=False)
+
+        #We are done installing show the main menu again
+        window["-MAINFRAME-"].update(visible=True)
+        window["-MAINFRAME-"].unhide_row()
+        window["-LOADINGFRAME-"].update(visible=False)
+        window["-LOADINGFRAME-"].hide_row()
+
+        # refresh table in case a new mod is installed
+        reset()
+
     event, values = window.read(timeout=100)
 
     if event == "Exit" or event == sg.WIN_CLOSED:
@@ -560,6 +593,15 @@ while True:
     elif event == "-REFRESH-":
         reset()
     elif event == "-LAUNCH-":
+
+        windowstatus = "launching"
+        #hide all the buttons and display a window showing that it is installing
+        window["-LOADINGFRAME-"].update(visible=True)
+        window["-LOADINGFRAME-"].unhide_row()
+        window["-MAINFRAME-"].update(visible=False)
+        window["-MAINFRAME-"].hide_row()
+        window.refresh()
+
         tmpModName = window["-SELECTEDMODNAME-"].get()
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
         tmpModURL = window["-SELECTEDMODNAME-"].metadata["url"]
@@ -574,7 +616,7 @@ while True:
         launch_thread.start()
         #launch_thread.join()
 
-            # Continue processing events while the background thread runs
+        # Continue processing events while the background thread runs
         while not launch_finished_event.is_set():
             event, values = window.read(timeout=100)
 
@@ -585,13 +627,9 @@ while True:
 
         # Reset windowstatus back to "main"
         windowstatus = "main"
+        launch_finished_event.clear()
        
         reset()
-        
-
-        # # turn the button back on
-        # window["-LAUNCH-"].update("Launch")
-        # window["-LAUNCH-"].update(disabled=False)
     elif event == "-VIEWFOLDER-":
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
         subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
