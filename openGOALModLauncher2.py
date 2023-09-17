@@ -30,6 +30,7 @@ import platform
 import stat
 from datetime import datetime
 from pathlib import Path
+import queue  # Import the queue modul
 
 
 
@@ -40,6 +41,32 @@ def openLauncherWebsite():
 
 def exitWithError():
   sys.exit(1)
+
+def getPNGFromURL(URL):
+    result = None  # Initialize the result variable
+
+    def fetch_image(url):  # Accept the URL parameter
+        nonlocal result  # Access the result variable in the outer scope
+        jpg_data = (
+            cloudscraper.create_scraper(
+                browser={"browser": "firefox", "platform": "windows", "mobile": False}
+            )
+            .get(url)  # Use the provided URL parameter
+            .content
+        )
+
+        pil_image = Image.open(io.BytesIO(jpg_data))
+        png_bio = io.BytesIO()
+        pil_image.save(png_bio, format="PNG")
+        result = png_bio.getvalue()  # Store the fetched image in the result variable
+
+    thread = threading.Thread(target=fetch_image, args=(URL,))  # Pass the URL as an argument
+    thread.start()
+    thread.join()  # Wait for the thread to finish
+
+    return result  # Return the fetched image data
+
+
 
 # Folder where script is placed, It looks in this for the Exectuable
 if getattr(sys, "frozen", False):
@@ -85,52 +112,15 @@ AppdataPATH = os.path.join(dirs.user_data_dir, "OPENGOAL-UnofficalModLauncher", 
 # C:\Users\USERNAME\AppData\Roaming\OpenGOAL-Mods\
 ModFolderPATH = os.path.join(dirs.user_data_dir, "OpenGOAL-Mods", "")
 
-# grab images from web
+#spawn thread to get splash file
 
-# url to splash screen image
-url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlaunchersplash.png"
-jpg_data = (
-    cloudscraper.create_scraper(
-        browser={"browser": "firefox", "platform": "windows", "mobile": False}
-    )
-    .get(url)
-    .content
-)
+splashfile = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlaunchersplash.png")
 
-pil_image = Image.open(io.BytesIO(jpg_data))
-png_bio = io.BytesIO()
-pil_image.save(png_bio, format="PNG")
-splashfile = png_bio.getvalue()
+noimagefile = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/noRepoImageERROR.png")
 
-# url to icon for the window
-url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/appicon.ico"
-jpg_data = (
-    cloudscraper.create_scraper(
-        browser={"browser": "firefox", "platform": "windows", "mobile": False}
-    )
-    .get(url)
-    .content
-)
+iconfile = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/appicon.ico")
 
-pil_image = Image.open(io.BytesIO(jpg_data))
-png_bio = io.BytesIO()
-pil_image.save(png_bio, format="PNG")
-iconfile = png_bio.getvalue()
-
-# url to use if we have no image
-url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/noRepoImageERROR.png"
-jpg_data = (
-    cloudscraper.create_scraper(
-        browser={"browser": "firefox", "platform": "windows", "mobile": False}
-    )
-    .get(url)
-    .content
-)
-
-pil_image = Image.open(io.BytesIO(jpg_data))
-png_bio = io.BytesIO()
-pil_image.save(png_bio, format="PNG")
-noimagefile = png_bio.getvalue()
+loadingimage = getPNGFromURL("https://cdn.discordapp.com/attachments/1012837220664750172/1151746308000989184/image.png")
 
 #make the modfolderpath if first install
 if not os.path.exists(ModFolderPATH):
@@ -208,9 +198,21 @@ INCLUDE_UNINSTALLED = True
 LATEST_TABLE_SORT = [6, False] # wakeup sorted by last launch date
 
 def getRefreshedTableData(sort_col_idx):
-    # uncomment/comment the next two lines if you want to test with a local file
-    #mod_dict = requests.get("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/jak1_mods.json").json()
-    mod_dict = json.loads(open("resources/jak1_mods.json", "r").read())
+    
+    # Load data from the local file if it exists
+    local_file_path = "resources/jak1_mods.json"
+    if os.path.exists(local_file_path):
+        local_mods = json.loads(open(local_file_path, "r").read())
+    # Load data from the remote URL
+    remote_url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/jak1_mods.json"
+    remote_mods = requests.get(remote_url).json()
+
+    # Initialize an empty dictionary to store the combined data
+    mod_dict = {}
+
+    if os.path.exists(local_file_path):
+        # Merge the remote and local data while removing duplicates
+        mod_dict = {**remote_mods, **local_mods}
     
     mod_dict = dict(sorted(mod_dict.items(), key=lambda x: x[1]["release_date"], reverse=True))
 
@@ -224,7 +226,6 @@ def getRefreshedTableData(sort_col_idx):
         mod = mod_dict[mod_id]
         mod_name = mod["name"]
         
-
         mod["install_date"] = "Not Installed"
         mod["access_date"] = "Not Installed"
 
@@ -313,120 +314,171 @@ def getRefreshedTableData(sort_col_idx):
     # print(mod_table_data)
     return mod_table_data
 
-
 LATEST_TABLE_DATA = []
 
 # ----- Full layout -----
 layout = [
-    [sg.Frame(title="", key='-SPLASHFRAME-', border_width=0, size=(972, 609), visible=True, element_justification="center", vertical_alignment="center", 
-      layout=
-      [
-        [sg.Image(key='-SPLASHIMAGE-', source=githubUtils.resize_image(splashfile, 970, 607), expand_y=True)]
-      ])
-    ],
-    [sg.Frame(title="", key='-MAINFRAME-', border_width=0, visible=False, layout=
-      [
-        [
-          sg.Column(
-              [
-                  [
-                      sg.Text(
-                          "",
-                          key="-SELECTEDMODNAME-",
-                          font=("Helvetica", 13),
-                          metadata={"id": "", "url": ""},
-                      )
-                  ],
-                  [sg.Text("", key="-SELECTEDMODDESC-", size=(55, 7))],
-                  [sg.Text("Tags:", key="-SELECTEDMODTAGS-")],
-                  [sg.Text("Contributors:", key="-SELECTEDMODCONTRIBUTORS-")],
-                  [sg.Text("")],
-                  [
-                      sg.Btn(button_text="Launch", key="-LAUNCH-", expand_x=True),
-                      sg.Btn(
-                          button_text="View ISO Folder", key="-VIEWISOFOLDER-", expand_x=True
-                      ),
-                      sg.Btn(
-                          button_text="View Folder", key="-VIEWFOLDER-", expand_x=True
-                      ),
-                      sg.Btn(button_text="Reinstall", key="-REINSTALL-", expand_x=True),
-                      sg.Btn(button_text="Uninstall", key="-UNINSTALL-", expand_x=True),
-                  ],
-                  [
-                      sg.Btn(
-                          button_text="Website",
-                          key="-WEBSITE-",
-                          expand_x=True,
-                          metadata={"url": ""},
-                      ),
-                      sg.Btn(
-                          button_text="Video(s)",
-                          key="-VIDEOS-",
-                          expand_x=True,
-                          metadata={"url": ""},
-                      ),
-                      sg.Btn(
-                          button_text="Photo(s)",
-                          key="-PHOTOS-",
-                          expand_x=True,
-                          metadata={"url": ""},
-                      ),
-                  ],
-              ],
-              size=(400, 300),
-              expand_x=True,
-              expand_y=True,
-          ),
-          sg.Frame(
-              title="",
-              element_justification="center",
-              vertical_alignment="center",
-              border_width=0,
-              layout=[[sg.Image(key="-SELECTEDMODIMAGE-", expand_y=True)]],
-              size=(500, 300),
-          ),
-        ],
-        [sg.HorizontalSeparator()],
-        [
-            sg.Text("Search"),
-            sg.Input(expand_x=True, enable_events=True, key="-FILTER-"),
-            sg.Checkbox(
-                text="Show Installed",
-                default=True,
-                enable_events=True,
-                key="-SHOWINSTALLED-",
-            ),
-            sg.Checkbox(
-                text="Show Uninstalled",
-                default=True,
-                enable_events=True,
-                key="-SHOWUNINSTALLED-",
-            ),
-        ],
-        [
-            sg.Table(
-                values=LATEST_TABLE_DATA,
-                headings=table_headings,
-                visible_column_map=col_vis,
-                col_widths=col_width,
-                auto_size_columns=False,
-                num_rows=15,
-                text_color="black",
-                background_color="lightblue",
-                alternating_row_color="white",
-                justification="left",
-                selected_row_colors="black on yellow",
-                key="-MODTABLE-",
-                expand_x=True,
-                expand_y=True,
-                enable_click_events=True,
-            )
-        ],
-      ])
+[sg.Frame(
+    title="",
+    key='-SPLASHFRAME-',
+    border_width=0,  # Set border_width to 0
+    visible=True,
+    element_justification="center",
+    vertical_alignment="center",
+    layout=[
+        [sg.Image(
+            key='-SPLASHIMAGE-',
+            source=githubUtils.resize_image(splashfile, 970, 607),
+            pad=(0, 0),  # Set padding to 0
+            expand_x=True,
+            expand_y=True
+        )]
     ]
+)],
+[sg.Frame(
+    title="",
+    key='-LOADINGFRAME-',
+    border_width=0,  # Set border_width to 0
+    visible=False,
+    element_justification="center",
+    vertical_alignment="center",
+    layout=[
+        [sg.Image(
+            key='-LOADINGIMAGE-',
+            source=githubUtils.resize_image(loadingimage, 970, 607),
+            pad=(0, 0),  # Set padding to 0
+            expand_x=True,
+            expand_y=True,
+        )]
+    ]
+)],
+
+    [sg.Frame(
+        title="",
+        key='-MAINFRAME-',
+        border_width=0,
+        visible=False,
+        layout=[
+            [
+                sg.Column(
+                    [
+                        [sg.Text(
+                            "",
+                            key="-SELECTEDMODNAME-",
+                            font=("Helvetica", 13),
+                            metadata={"id": "", "url": ""},
+                        )],
+                        [sg.Text("", key="-SELECTEDMODDESC-", size=(55, 7))],
+                        [sg.Text("Tags:", key="-SELECTEDMODTAGS-")],
+                        [sg.Text("Contributors:", key="-SELECTEDMODCONTRIBUTORS-")],
+                        [sg.Text("")],
+                        [
+                            sg.Btn(button_text="Launch", key="-LAUNCH-", expand_x=True),
+                            sg.Btn(
+                                button_text="View ISO Folder",
+                                key="-VIEWISOFOLDER-",
+                                expand_x=True
+                            ),
+                            sg.Btn(
+                                button_text="View Folder",
+                                key="-VIEWFOLDER-",
+                                expand_x=True
+                            ),
+                            sg.Btn(
+                                button_text="Reinstall",
+                                key="-REINSTALL-",
+                                expand_x=True
+                            ),
+                            sg.Btn(
+                                button_text="Uninstall",
+                                key="-UNINSTALL-",
+                                expand_x=True
+                            ),
+                        ],
+                        [
+                            sg.Btn(
+                                button_text="Website",
+                                key="-WEBSITE-",
+                                expand_x=True,
+                                metadata={"url": ""},
+                            ),
+                            sg.Btn(
+                                button_text="Video(s)",
+                                key="-VIDEOS-",
+                                expand_x=True,
+                                metadata={"url": ""},
+                            ),
+                            sg.Btn(
+                                button_text="Photo(s)",
+                                key="-PHOTOS-",
+                                expand_x=True,
+                                metadata={"url": ""},
+                            ),
+                        ],
+                    ],
+                    size=(400, 300),
+                    expand_x=True,
+                    expand_y=True,
+                ),
+                sg.Frame(
+                    title="",
+                    element_justification="center",
+                    vertical_alignment="center",
+                    border_width=0,
+                    layout=[[sg.Image(key="-SELECTEDMODIMAGE-", expand_x=True, expand_y=True)]],
+                    size=(500, 300),
+                ),
+            ],
+            [sg.HorizontalSeparator()],
+            [
+                sg.Text("Search"),
+                sg.Input(expand_x=True, enable_events=True, key="-FILTER-"),
+                sg.Checkbox(
+                    text="Show Installed",
+                    default=True,
+                    enable_events=True,
+                    key="-SHOWINSTALLED-",
+                ),
+                sg.Checkbox(
+                    text="Show Uninstalled",
+                    default=True,
+                    enable_events=True,
+                    key="-SHOWUNINSTALLED-",
+                ),
+            ],
+            [
+                sg.Table(
+                    values=LATEST_TABLE_DATA,
+                    headings=table_headings,
+                    visible_column_map=col_vis,
+                    col_widths=col_width,
+                    auto_size_columns=False,
+                    num_rows=15,
+                    text_color="black",
+                    background_color="lightblue",
+                    alternating_row_color="white",
+                    justification="left",
+                    selected_row_colors="black on yellow",
+                    key="-MODTABLE-",
+                    expand_x=True,
+                    expand_y=True,
+                    enable_click_events=True,
+                )
+            ],
+        ]
+    )]
 ]
 
-window = sg.Window("OpenGOAL Mod Launcher", layout, icon=iconfile, finalize=True)
+
+
+
+window = sg.Window("OpenGOAL Mod Launcher", layout, icon=iconfile,  border_depth=0,finalize=True)
+
+# this is the main event loop where we handle user input
+
+UPDATE_UI_EVENT = "-UPDATE-UI-"
+ui_update_queue = queue.Queue()
+
 def handleModTableSelection(row):
     global LATEST_TABLE_DATA
     mod = LATEST_TABLE_DATA[row]
@@ -446,29 +498,6 @@ def handleModTableSelection(row):
     mod_image_override_url = mod[11]
     mod_game = mod[12]
     
-
-    # update text and metadata
-    window["-LAUNCH-"].update(
-        "Install" if mod_access_date == "Not Installed" else "Launch"
-    )
-    window["-SELECTEDMODNAME-"].update(mod_name)
-    window["-SELECTEDMODNAME-"].metadata["id"] = mod_id
-    window["-SELECTEDMODNAME-"].metadata["url"] = mod_url
-    window["-SELECTEDMODNAME-"].metadata["image_override_url"] = mod_image_override_url
-    window["-SELECTEDMODNAME-"].metadata["game"] = mod_game
-    window["-SELECTEDMODDESC-"].update(mod_desc)
-    window["-SELECTEDMODTAGS-"].update(f"Tags: {mod_tags}")
-    window["-SELECTEDMODCONTRIBUTORS-"].update(f"Contributors: {mod_contributors}")
-    window["-VIEWFOLDER-"].update(disabled=(mod_access_date == "Not Installed"))
-    window["-REINSTALL-"].update(disabled=(mod_access_date == "Not Installed"))
-    window["-UNINSTALL-"].update(disabled=(mod_access_date == "Not Installed"))
-    window["-WEBSITE-"].update(disabled=(mod_website_url == ""))
-    window["-WEBSITE-"].metadata["url"] = mod_website_url
-    window["-VIDEOS-"].update(disabled=(mod_videos_url == ""))
-    window["-VIDEOS-"].metadata["url"] = mod_videos_url
-    window["-PHOTOS-"].update(disabled=(mod_photos_url == ""))
-    window["-PHOTOS-"].metadata["url"] = mod_photos_url
-
     # load mod image
     try:
       mod_image_url = mod_image_override_url if mod_image_override_url != "" else githubUtils.returnModImageURL(mod_url)
@@ -496,7 +525,42 @@ def handleModTableSelection(row):
           window["-SELECTEDMODIMAGE-"].update(githubUtils.resize_image(noimagefile, 500.0, 300.0))
     except:
         window["-SELECTEDMODIMAGE-"].update(githubUtils.resize_image(noimagefile, 500.0, 300.0))
+        # Create a dictionary with the data to update
+    update_data = {
+        "mod_name": mod_name,
+        "mod_desc": mod_desc,
+        "mod_tags": mod_tags,
+        "mod_contributors": mod_contributors,
+        "mod_access_date": mod_access_date,
+        "mod_website_url": mod_website_url,
+        "mod_videos_url": mod_videos_url,
+        "mod_photos_url": mod_photos_url,
+        "mod_image_override_url": mod_image_override_url,
+        "rowidx" : row,
+        # ... Include other data you want to update ...
+    }
 
+    # Send an event to update the UI in the main thread
+    ui_update_queue.put(update_data)
+    window.write_event_value("-UPDATE-UI-", "Your update data here")
+
+        
+windowstatus = "main"
+
+
+launch_finished_event = threading.Event()
+def launch_mod(tmpModURL):
+    [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
+    
+    launcherUtils.launch(tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame)
+    launch_finished_event.set()
+    
+    
+
+
+def run_handle_mod_table_selection(row):
+    mod_selection_thread = threading.Thread(target=handleModTableSelection, args=(row,))
+    mod_selection_thread.start()
 
 def reset():
     global LATEST_TABLE_DATA
@@ -507,15 +571,93 @@ def reset():
     window["-MODTABLE-"].update(select_rows=[0])
     handleModTableSelection(0)
 
+resetThread = threading.Thread(target=reset)
+resetThread.start()
 
-# this is the main event loop where we handle user input
-reset()
+
+#reset()
+
 bootstart = time.time()
+
+
+
 while True:
+
+
+    if windowstatus == "main" and window["-LOADINGFRAME-"].visible:
+
+        # turn the button back on
+        window["-LAUNCH-"].update("Launch")
+        window["-LAUNCH-"].update(disabled=False)
+
+        #We are done installing show the main menu again
+        window["-MAINFRAME-"].update(visible=True)
+        window["-MAINFRAME-"].unhide_row()
+        window["-LOADINGFRAME-"].update(visible=False)
+        window["-LOADINGFRAME-"].hide_row()
+
+        # refresh table in case a new mod is installed
+        reset()
     event, values = window.read(timeout=100)
+
+    
 
     if event == "Exit" or event == sg.WIN_CLOSED:
         break
+    
+    try:
+        if event == UPDATE_UI_EVENT:
+        # Update the UI based on the data received from the secondary thread
+        
+            update_data = ui_update_queue.get_nowait()
+            mod = LATEST_TABLE_DATA[update_data["rowidx"]]
+            mod_id = mod[0]
+            mod_name = mod[1]
+            mod_desc = mod[2]
+            mod_tags = mod[3]
+            mod_contributors = mod[4]
+            mod_install_date = mod[5]
+            mod_access_date = mod[6]
+            mod_url = mod[7]
+            mod_website_url = mod[8]
+            mod_videos_url = mod[9]
+            mod_photos_url = mod[10]
+            mod_image_override_url = mod[11]
+            mod_game = mod[12]
+            update_data = values
+            mod_name = update_data["mod_name"]
+            mod_desc = update_data["mod_desc"]
+            mod_tags = update_data["mod_tags"]
+            mod_contributors = update_data["mod_contributors"]
+            mod_access_date = update_data["mod_access_date"]
+            mod_website_url = update_data["mod_website_url"]
+            mod_videos_url = update_data["mod_videos_url"]
+            mod_photos_url = update_data["mod_photos_url"]
+            mod_image_override_url = update_data["mod_image_override_url"]
+            
+            # Update the UI elements here...
+            window["-LAUNCH-"].update(
+                "Install" if mod_access_date == "Not Installed" else "Launch"
+            )
+            window["-SELECTEDMODNAME-"].update(mod_name)
+            window["-SELECTEDMODNAME-"].metadata["id"] = mod_id
+            window["-SELECTEDMODNAME-"].metadata["url"] = mod_url
+            window["-SELECTEDMODNAME-"].metadata["image_override_url"] = mod_image_override_url
+            
+
+            window["-SELECTEDMODNAME-"].metadata["game"] = mod_game
+        
+
+            window["-WEBSITE-"].metadata["url"] = mod_website_url
+
+            window["-VIDEOS-"].metadata["url"] = mod_videos_url
+
+            window["-PHOTOS-"].metadata["url"] = mod_photos_url
+            # ... Update other UI elements ...
+    except queue.Empty:
+        pass  # No data in the queue, continue processing other events
+    # Handle other events and user interactions as needed
+    # ...
 
     if event == "__TIMEOUT__":
       if bootstart is not None:
@@ -544,7 +686,7 @@ while True:
                   window["-MODTABLE-"].Widget.heading(i, text=sorted_table_headings[i])
             else:
                 # data row, mod selected
-                handleModTableSelection(row)
+                run_handle_mod_table_selection(row)
     elif event == "-FILTER-":
         FILTER_STR = values["-FILTER-"].lower()
         LATEST_TABLE_DATA = getRefreshedTableData(None)
@@ -559,7 +701,16 @@ while True:
         window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
     elif event == "-REFRESH-":
         reset()
+    
     elif event == "-LAUNCH-":
+        windowstatus = "launching"
+        #hide all the buttons and display a window showing that it is installing
+        window["-LOADINGFRAME-"].update(visible=True)
+        window["-LOADINGFRAME-"].unhide_row()
+        window["-MAINFRAME-"].update(visible=False)
+        window["-MAINFRAME-"].hide_row()
+        window.refresh()
+
         tmpModName = window["-SELECTEDMODNAME-"].get()
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
         tmpModURL = window["-SELECTEDMODNAME-"].metadata["url"]
@@ -570,15 +721,23 @@ while True:
         # online launch
         window["-LAUNCH-"].update(disabled=True)
         window["-LAUNCH-"].update("Updating...")
-        [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
-        launcherUtils.launch(tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame)
+        launch_thread = threading.Thread(target=launch_mod, args=(tmpModURL,))
+        launch_thread.start()
+        #launch_thread.join()
 
-        # refresh table in case new mod installed
+            # Continue processing events while the background thread runs
+        while not launch_finished_event.is_set():
+            event, values = window.read(timeout=100)
+
+            if event == "Exit" or event == sg.WIN_CLOSED:
+                break
+
+            # Handle other events here...
+
+        # Reset windowstatus back to "main"
+        windowstatus = "main"
+       
         reset()
-
-        # turn the button back on
-        window["-LAUNCH-"].update("Launch")
-        window["-LAUNCH-"].update(disabled=False)
     elif event == "-VIEWFOLDER-":
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
         subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
@@ -645,3 +804,6 @@ while True:
         print("unhandled event:", event, values)
 
 window.close()
+
+#join threads
+resetThread.join()

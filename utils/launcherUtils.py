@@ -25,6 +25,8 @@ import platform
 import stat
 from pathlib import Path
 import time
+import win32file
+import ctypes
 
 EXTRACT_ON_UPDATE = "true"
 FILE_DATE_TO_CHECK = "gk.exe"
@@ -52,8 +54,10 @@ AppdataPATH = dirs.user_data_dir
 
 pbar = None
 
-def makeDirSymlink(link, target):
-  subprocess.check_call('mklink /J "%s" "%s"' % (link, target), shell=True)
+
+
+
+
 
 
 def installedlist(PATH):
@@ -120,12 +124,23 @@ def local_mod_image(MOD_ID):
         return path
     return None
 
+
+
 def moveDirContents(src, dest):
   # moves all files from src to dest, without moving src dir itself
   for f in os.listdir(src):
       src_path = os.path.join(src, f)
       dst_path = os.path.join(dest, f)
       shutil.move(src_path, dst_path)
+
+def makeDirSymlink(link, target):
+  subprocess.check_call('mklink /J "%s" "%s"' % (link, target), shell=True)
+
+def makeFileSymlink(link, target):
+    # if ctypes.windll.shell32.IsUserAnAdmin():
+    #     subprocess.check_call('mklink "%s" "%s"' % (link, target), shell=True)
+    # else:
+    subprocess.check_call('mklink /H "%s" "%s"' % (link, target), shell=True)
 
 def link_files_by_extension(source_dir, destination_dir):
     # Ensure the source directory exists
@@ -146,9 +161,14 @@ def link_files_by_extension(source_dir, destination_dir):
             # Construct the destination path
             destination_path = os.path.join(destination_dir, filename)
 
-            # Create a symbolic link (change to shutil.copy if you want to copy instead)
-            os.symlink(file_path, destination_path)
-            print(f"Linked '{filename}' to '{destination_path}'")
+            # Check if the destination file already exists
+            if os.path.exists(destination_path):
+                # Delete the file from the destination location.
+                os.remove(destination_path)
+
+            # Create a symbolic link from the source location to the destination location.
+            #print("making " + destination_path + "<-des source ->" + file_path)
+            makeFileSymlink(destination_path, file_path)
 
 def launch_local(MOD_ID, GAME):
     try:
@@ -199,92 +219,18 @@ def openFolder(path):
 def reinstall(URL, MOD_ID, MODNAME, LINKTYPE, GAME):
     InstallDir = ModFolderPATH + MOD_ID
     AppdataPATH = os.getenv("APPDATA")
-    UniversalIsoPath = AppdataPATH + "\OpenGOAL-Mods\_iso_data"
+
     ensure_jak_folders_exist()
-    #reinstall has a lot of duplicated logic not sure if there is a reason for this yet, but for now for jak 2 we can just delte the directory then call the install/launch function
-    if GAME == "jak2":
-        path_to_remove = InstallDir
-        if os.path.exists(path_to_remove):
-            shutil.rmtree(path_to_remove)
-            print(f"Path '{path_to_remove}' removed successfully.")
-        else:
-            print(f"Path '{path_to_remove}' does not exist.")
-        
-        launch(URL, MOD_ID, MODNAME, LINKTYPE, GAME)
-        return
 
-    
-    GKCOMMANDLINElist = [
-        InstallDir + "\gk.exe",
-        "--proj-path",
-        InstallDir + "\\data",
-        "-boot",
-        "-fakeiso",
-        "-v",
-    ]
-
-    # if ISO_DATA has content, store this path to pass to the extractor
-    if exists(UniversalIsoPath + "//" + GAME + "//" + "Z6TAIL.DUP"):
-        iso_path = UniversalIsoPath + "\\" + GAME
-        
+    path_to_remove = InstallDir
+    if os.path.exists(path_to_remove):
+        shutil.rmtree(path_to_remove)
+        print(f"Path '{path_to_remove}' removed successfully.")
     else:
-        # if ISO_DATA is empty, prompt for their ISO and store its path.
-        root = tk.Tk()
-        print("Please select your iso.")
-        root.title("Select ISO")
-        root.geometry("230x1")
-        iso_path = filedialog.askopenfilename()
-        root.destroy()
-        if pathlib.Path(iso_path).is_file:
-            if not (pathlib.Path(iso_path).suffix).lower() == ".iso":
-                1 / 0
-
-    # symlink isodata for custom levels art group (goalc doesnt take -f flag)
-    if exists(UniversalIsoPath + "//" + GAME +r"\Z6TAIL.DUP"):
-      makeDirSymlink(InstallDir + "\\data\\iso_data", UniversalIsoPath)
-      link_files_by_extension( UniversalIsoPath + "//" + GAME + "//VAG",InstallDir + "//data//out//" + GAME + "//iso")
-
-    # Close Gk and goalc if they were open.
-    try_kill_process("gk.exe")
-    try_kill_process("goalc.exe")
-    print("Done update starting extractor\n")
-    if currentOS == "Windows":
-        extractor_command_list = [
-            os.path.join(InstallDir, "extractor.exe"),
-            "-f",
-            iso_path,
-        ]
-        print("os is windows using " + extractor_command_list)
-    if currentOS == "Linux":
-        # We need to give the executibles execute permissions in Linux but this doesn't work
-        # chmod_command_list = ["cd" + os.path.join(LauncherDir), "chmod +x extractor goalc gk"]
-        # subprocess.Popen(chmod_command_list)
-        os.chmod(os.path.join(LauncherDir, "extractor"), stat.S_IXOTH)
-        print("Done chmods!")
-        # Then we need to call the Linux extractor when we do the next Popen
-        extractor_command_list = [
-            os.path.join(LauncherDir),
-            "./extractor -f" + iso_path + "--proj-path" + InstallDir,
-        ]
-    print(extractor_command_list)
-
-    extractor_result = subprocess.run(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir))
-
-    # wait for extractor to finish
-    while process_exists("extractor.exe"):
-        print("extractor.exe still running, sleeping for 1s")
-        time.sleep(1)
-
-    # move the extrated contents to the universal launchers directory for next time.
-    if not (exists((UniversalIsoPath + r"" + "//" + GAME + "//" + "Z6TAIL.DUP"))):
-        os.makedirs(UniversalIsoPath, exist_ok=True)
-        print("The new directory is created!")
-        moveDirContents(InstallDir + "\\data\\iso_data", "" + UniversalIsoPath + "")
-        # replace iso_data with symlink
-        try_remove_dir(InstallDir + "\\data\\iso_data")
-        makeDirSymlink(InstallDir + "\\data\\iso_data", UniversalIsoPath)
-
-
+        print(f"Path '{path_to_remove}' does not exist.")
+    
+    launch(URL, MOD_ID, MODNAME, LINKTYPE, GAME)
+    return
 
 def replaceText(path, search_text, replace_text):
     # Check if the file exists
@@ -626,6 +572,16 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
           "/pc-settings.gc",
           r"/" + MOD_ID + "-settings.gc",
         )
+        replaceText(
+          InstallDir + r"\data\decompiler\config\jak1_ntsc_black_label.jsonc",
+          "\"process_tpages\": true,",
+          "\"process_tpages\": false,",
+        )
+        replaceText(
+          InstallDir + r"\data\decompiler\config\jak1_pal.jsonc",
+          "\"process_tpages\": true,",
+          "\"process_tpages\": false,",
+        )
 
         # symlink isodata for custom levels art group (goalc doesnt take -f flag)
         if exists(UniversalIsoPath + r"" + "//" + GAME + "//" + "Z6TAIL.DUP"):
@@ -640,13 +596,17 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
         print("Done update starting extractor This one can take a few moments! \n")
         
         #Extract and compile
+
+        
         if(GAME == "jak1"):
-            extractor_command_list = [InstallDir + "\extractor.exe", "-e", "-v", "-d", "-c"]
+            extractor_command_list = [InstallDir + "\extractor.exe", "-f", iso_path, "-e", "-v", "-d", "-c"]
             print(extractor_command_list)
-            subprocess.Popen(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir))
-            while process_exists("extractor.exe"):
-                print("extractor.exe still running, sleeping for 1s")
-                time.sleep(1)
+            extractor_result = subprocess.run(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir))
+
+            if extractor_result.returncode ==0:
+                print("done extracting!")
+            else:
+                print("Extractor error!")
         
         if(GAME == "jak2"):
             getDecompiler(InstallDir)
@@ -660,15 +620,17 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
                                        '{"decompile_code": false}'
                         ]
             #print(decompiler_command_list)
-            subprocess.Popen(decompiler_command_list, shell=True, cwd=os.path.abspath(InstallDir))
+            decompiler_result = subprocess.Popen(decompiler_command_list, shell=True, cwd=os.path.abspath(InstallDir))
             print("opened decompiler")
             
             #wait for decompiler before starting goalc
             #Decompiler
-            time.sleep(3)
-            while process_exists("decompiler.exe"):
-                print("decompiler.exe still running, sleeping for 1s")
-                time.sleep(1)
+          
+
+            if decompiler_result.returncode ==0:
+                print("done with decompiler!")
+            else:
+                print("decompiler error!")
 
             goalc_command_list = [GoalCPATH, 
                             "--proj-path",
@@ -683,27 +645,25 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
 
             #open GoalC to build jak2, for jak 1 extractor can handle this.
             print("Opening the Compiler subprocess - Sleeping for 5 seconds so it has time to initalize.")
-            subprocess.Popen(goalc_command_list, shell=True, cwd=os.path.abspath(InstallDir))
-            
-
-        time.sleep(5)
-        while process_exists("extractor.exe"):
-            print("extractor.exe still running, sleeping for 1s")
-            time.sleep(1)
-
-        #jak2hack this is only needed since extractor isnt aware of jak2
-        while process_exists("goalc.exe"):
-            print("goalc.exe still running, sleeping for 1s")
-            time.sleep(1)
+            goalc_result = subprocess.Popen(goalc_command_list, shell=True, cwd=os.path.abspath(InstallDir))
+        
+            #jak2hack this is only needed since extractor isnt aware of jak2
+            if goalc_result.returncode ==0:
+                print("done goalc!")
+            else:
+                print("goalc error!")
 
         while not (exists(InstallDir + "/data/iso_data/" + GAME + "//Z6TAIL.DUP")) and (exists(InstallDir + "/data/iso_data/" + GAME + "//")):
-            time.sleep(5)
+           shutil.copytree( InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "//" + GAME + "//")
 
-        if (exists(InstallDir + "/data/iso_data/" + GAME + "//Z6TAIL.DUP")) and not (exists(UniversalIsoPath + "//" + GAME + "//Z6TAIL.DUP")):
-            shutil.copytree( InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "//" + GAME + "//")
-       
-       
-
+        if exists(UniversalIsoPath + "//" + GAME +r"\Z6TAIL.DUP"):
+            #makeDirSymlink(InstallDir + "\\data\\iso_data", UniversalIsoPath)
+            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//VAG",InstallDir + "//data//out//" + GAME + "//iso")
+            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//SBK",InstallDir + "//data//out//" + GAME + "//iso")
+            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//MUS",InstallDir + "//data//out//" + GAME + "//iso")
+            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//STR",InstallDir + "//data//out//" + GAME + "//iso")
+            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//DRIVERS",InstallDir + "//data//out//" + GAME + "//iso")
+            link_files_by_extension( UniversalIsoPath + "//" + GAME + "//TEXT",InstallDir + "//data//out//" + GAME + "//iso")
 
         # at this point we should be good to launch, these are just sanity checks that should never be reached
 
