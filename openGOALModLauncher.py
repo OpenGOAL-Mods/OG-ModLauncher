@@ -310,12 +310,23 @@ LATEST_TABLE_DATA = []
 
 # ----- Full layout -----
 layout = [
-    [sg.Frame(title="", key='-SPLASHFRAME-', border_width=0, size=(972, 609), visible=True, element_justification="center", vertical_alignment="center", 
-      layout=
-      [
-        [sg.Image(key='-SPLASHIMAGE-', source=githubUtils.resize_image(splashfile, 970, 607), expand_y=True)]
-      ])
-    ],
+[sg.Frame(
+    title="",
+    key='-SPLASHFRAME-',
+    border_width=0,  # Set border_width to 0
+    visible=True,
+    element_justification="center",
+    vertical_alignment="center",
+    layout=[
+        [sg.Image(
+            key='-SPLASHIMAGE-',
+            source=githubUtils.resize_image(splashfile, 970, 607),
+            pad=(0, 0),  # Set padding to 0
+            expand_x=True,
+            expand_y=True
+        )]
+    ]
+)],
     [sg.Frame(
     title="",
     key='-LOADINGFRAME-',
@@ -435,7 +446,7 @@ layout = [
     ]
 ]
 
-window = sg.Window("OpenGOAL Mod Launcher", layout, icon=iconfile, finalize=True)
+window = sg.Window("OpenGOAL Mod Launcher", layout, icon=iconfile,  border_depth=0,finalize=True)
 def handleModTableSelection(row):
     global LATEST_TABLE_DATA
     mod = LATEST_TABLE_DATA[row]
