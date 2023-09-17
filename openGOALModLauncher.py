@@ -4,7 +4,6 @@ Created on Thu Aug 25 18:33:45 2022
 
 @author: Zed
 """
-
 # we will clean these up later but for now leave even unused imports
 import threading
 
@@ -199,9 +198,20 @@ INCLUDE_UNINSTALLED = True
 LATEST_TABLE_SORT = [6, False] # wakeup sorted by last launch date
 
 def getRefreshedTableData(sort_col_idx):
-    # uncomment/comment the next two lines if you want to test with a local file
-    #mod_dict = requests.get("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/jak1_mods.json").json()
-    mod_dict = json.loads(open("resources/jak1_mods.json", "r").read())
+ # Load data from the local file if it exists
+    local_file_path = "resources/jak1_mods.json"
+    if os.path.exists(local_file_path):
+        local_mods = json.loads(open(local_file_path, "r").read())
+    # Load data from the remote URL
+    remote_url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/jak1_mods.json"
+    remote_mods = requests.get(remote_url).json()
+
+    # Initialize an empty dictionary to store the combined data
+    mod_dict = {}
+
+    if os.path.exists(local_file_path):
+        # Merge the remote and local data while removing duplicates
+        mod_dict = {**remote_mods, **local_mods}
     
     mod_dict = dict(sorted(mod_dict.items(), key=lambda x: x[1]["release_date"], reverse=True))
 
