@@ -7,4 +7,3 @@ Pillow
 progressbar
 cloudscraper
 appdirs
-
