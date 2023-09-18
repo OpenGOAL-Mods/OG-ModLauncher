@@ -25,7 +25,6 @@ import platform
 import stat
 from pathlib import Path
 import time
-
 import ctypes
 
 EXTRACT_ON_UPDATE = "true"
@@ -200,8 +199,7 @@ def launch_local(MOD_ID, GAME):
             "jak2",
             "--",
             "-boot",
-            "-fakeiso",
-            "-debug",
+            "-fakeiso"
         ]
         print(GKCOMMANDLINElist)
         subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir) )
@@ -216,7 +214,6 @@ def openFolder(path):
     print(path)
     subprocess.run([FILEBROWSER_PATH, path])
 
-#tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame
 def reinstall(URL, MOD_ID, MODNAME, LINKTYPE, GAME):
     InstallDir = ModFolderPATH + MOD_ID
     AppdataPATH = os.getenv("APPDATA")
@@ -295,8 +292,6 @@ def ensure_jak_folders_exist():
 
 #check if we have decompiler in the path, if not check if we have a backup, if so use it, if not download a backup then use it
 def getDecompiler(path):
-    # print("AHHHHHHHH")
-    # time.sleep(15)
     decompiler_exe = "decompiler.exe"
     decompiler_url = "https://github.com/OpenGOAL-Mods/OG-Mod-Base/raw/main/out/build/Release/bin/decompiler.exe"  
 
@@ -359,7 +354,6 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
         "--",
         "-boot",
         "-fakeiso",
-        "-debug",
     ]
 
     # store Latest Release and check our local date too.
@@ -505,7 +499,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
                 print("Please select your iso.")
                 root.title("Select ISO")
                 root.geometry("230x1")
-                iso_path = filedialog.askopenfilename()
+                iso_path = filedialog.askopenfilename(title="Please select your ISO")
                 root.destroy()
                 if pathlib.Path(iso_path).is_file:
                     if not (pathlib.Path(iso_path).suffix).lower() == ".iso":
@@ -672,8 +666,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
 
         if(GAME == "jak2"):    
             #open GoalC to build jak2, for jak 1 extractor can handle this.
-            print("Opening the Compiler subprocess - Sleeping for 5 seconds so it has time to initalize.")
-            time.sleep(17)
+            print("Opening the Compiler subprocess.")
             goalc_result = subprocess.run(goalc_command_list, shell=True, cwd=os.path.abspath(InstallDir) )
         
             #jak2hack this is only needed since extractor isnt aware of jak2
@@ -706,7 +699,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
             print("Is newest posted update older than what we have installed? " + str((LastWrite < LatestRel)))
 
         #ok launch game :D
-        subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir),)
+        subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir))
 
     else:
         # if we dont need to update, then close any open instances of the game and just launch it

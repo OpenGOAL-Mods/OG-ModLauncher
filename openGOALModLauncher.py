@@ -30,7 +30,7 @@ import stat
 from datetime import datetime
 from pathlib import Path
 
-
+OPEN_SESAME = {"i understand this is a test and will report any bugs to jak-project on github or in the opengoal discord", "lbood"}
 
 sg.theme("DarkBlue3")
 
@@ -46,7 +46,7 @@ if getattr(sys, "frozen", False):
     LauncherDir = os.path.dirname(os.path.realpath(sys.executable))
 
     # Detect if a user has downloaded a release directly, if so point them to the autoupdater
-    if LauncherDir != os.getenv("APPDATA") + "\\OpenGOAL-UnofficalModLauncher" and os.getlogin() != "NinjaPC":
+    if LauncherDir != os.getenv("APPDATA") + "\\OpenGOAL-UnofficalModLauncher" and os.getlogin() != "NinjaPC" and os.environ['COMPUTERNAME'] != 'DESKTOP-BBN1CMN':
         # Creating the tkinter window
         root = tkinter.Tk()
         root.winfo_toplevel().title("Error")
@@ -198,10 +198,11 @@ INCLUDE_UNINSTALLED = True
 LATEST_TABLE_SORT = [6, False] # wakeup sorted by last launch date
 
 def getRefreshedTableData(sort_col_idx):
- # Load data from the local file if it exists
+    # Load data from the local file if it exists
     local_file_path = "resources/jak1_mods.json"
     if os.path.exists(local_file_path):
         local_mods = json.loads(open(local_file_path, "r").read())
+    
     # Load data from the remote URL
     remote_url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/jak1_mods.json"
     remote_mods = requests.get(remote_url).json()
@@ -212,6 +213,8 @@ def getRefreshedTableData(sort_col_idx):
     if os.path.exists(local_file_path):
         # Merge the remote and local data while removing duplicates
         mod_dict = {**remote_mods, **local_mods}
+    else:
+        mod_dict = {**remote_mods}
     
     mod_dict = dict(sorted(mod_dict.items(), key=lambda x: x[1]["release_date"], reverse=True))
 
@@ -257,15 +260,14 @@ def getRefreshedTableData(sort_col_idx):
         #   mod["latest_available_update_date"] = f"{update_date:%Y-%m-%d %H:%M}"
         
         # only add to data if passes filter (if any)
-        if (
-            FILTER_STR is None
-            or FILTER_STR == "" and mod["game"] != "jak2"
-            or FILTER_STR in mod_name.lower() and mod["game"] != "jak2"
-            or FILTER_STR in mod["contributors"].lower() and mod["game"] != "jak2"
-            or FILTER_STR in mod["tags"].lower() and mod["game"] != "jak2"
-            or FILTER_STR == "i understand this is a test and will report any bugs to jak-project on github or in the opengoal discord" and  mod["game"] == "jak2"
-            #or mod["access_date"] != "Not Installed" and mod["game"] == "jak2" show up after installing or require pw each time.
-        ):
+        matches_filter = (FILTER_STR is None
+                        or FILTER_STR == ""
+                        or FILTER_STR in mod_name.lower()
+                        or FILTER_STR in mod["contributors"].lower()
+                        or FILTER_STR in mod["tags"].lower())
+
+        if ((mod["game"] != "jak2" and matches_filter)
+          or (mod["game"] == "jak2" and FILTER_STR in OPEN_SESAME)):
             if (INCLUDE_INSTALLED and mod["access_date"] != "Not Installed") or (
                 INCLUDE_UNINSTALLED and mod["access_date"] == "Not Installed"
             ):
@@ -284,7 +286,7 @@ def getRefreshedTableData(sort_col_idx):
                         (mod["videos_url"] if "videos_url" in mod else ""),
                         (mod["photos_url"] if "photos_url" in mod else ""),
                         (mod["image_override_url"] if "image_override_url" in mod else ""),
-                        (mod["game"] if "game" in mod else "")
+                        (mod["game"] if "game" in mod else "jak1")
                     ]
                 )
     if sort_col_idx is None:
@@ -631,7 +633,7 @@ while True:
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
         tmpModURL = window["-SELECTEDMODNAME-"].metadata["url"]
         tmpGame = window["-SELECTEDMODNAME-"].metadata["game"]
-        if FILTER_STR == "i understand this is a test and will report any bugs to jak-project on github or in the opengoal discord":
+        if FILTER_STR in OPEN_SESAME:
             tmpGame = "jak2"
 
         # online launch
@@ -675,7 +677,6 @@ while True:
         tmpGame = window["-SELECTEDMODNAME-"].metadata["game"]
         [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
         subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
-#I understand this is a test and will report any bugs to jak-project on github or in the opengoal discord
         if tmpModSelected in subfolders:
             dir = dirs.user_data_dir + "\\OpenGOAL-Mods\\" + tmpModSelected
             ans = sg.popup_ok_cancel(
