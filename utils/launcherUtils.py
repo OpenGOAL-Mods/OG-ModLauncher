@@ -204,10 +204,7 @@ def launch_local(MOD_ID, GAME):
             "-debug",
         ]
         print(GKCOMMANDLINElist)
-        subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir), stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT,
-                            stdin=subprocess.PIPE,
-                            env=os.environ)
+        subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir) )
     except Exception as e:  # Catch all exceptions and print the error message.
         return str(e)
 
@@ -605,10 +602,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
         if(GAME == "jak1"):
             extractor_command_list = [InstallDir + "\extractor.exe", "-f", iso_path, "-e", "-v", "-d", "-c"]
             print(extractor_command_list)
-            extractor_result = subprocess.run(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir), stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT,
-                            stdin=subprocess.PIPE,
-                            env=os.environ)
+            extractor_result = subprocess.run(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir) )
 
             if extractor_result.returncode ==0:
                 print("done extracting!")
@@ -629,10 +623,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
                                        '{"decompile_code": false}'
                         ]
             #print(decompiler_command_list)
-            decompiler_result = subprocess.run(decompiler_command_list, shell=True, cwd=os.path.abspath(InstallDir), stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT,
-                            stdin=subprocess.PIPE,
-                            env=os.environ)
+            decompiler_result = subprocess.run(decompiler_command_list, shell=True, cwd=os.path.abspath(InstallDir) )
             print("opened decompiler")
             
             #wait for decompiler before starting goalc
@@ -683,10 +674,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
             #open GoalC to build jak2, for jak 1 extractor can handle this.
             print("Opening the Compiler subprocess - Sleeping for 5 seconds so it has time to initalize.")
             time.sleep(17)
-            goalc_result = subprocess.run(goalc_command_list, shell=True, cwd=os.path.abspath(InstallDir), stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT,
-                            stdin=subprocess.PIPE,
-                            env=os.environ)
+            goalc_result = subprocess.run(goalc_command_list, shell=True, cwd=os.path.abspath(InstallDir) )
         
             #jak2hack this is only needed since extractor isnt aware of jak2
             if goalc_result.returncode == 0:
@@ -718,10 +706,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
             print("Is newest posted update older than what we have installed? " + str((LastWrite < LatestRel)))
 
         #ok launch game :D
-        subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir),stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT,
-                            stdin=subprocess.PIPE,
-                            env=os.environ)
+        subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir),)
 
     else:
         # if we dont need to update, then close any open instances of the game and just launch it
