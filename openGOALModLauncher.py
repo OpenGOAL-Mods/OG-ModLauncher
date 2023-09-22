@@ -4,8 +4,8 @@ Created on Thu Aug 25 18:33:45 2022
 
 @author: Zed
 """
-
 # we will clean these up later but for now leave even unused imports
+import threading
 
 from PIL import Image
 from utils import launcherUtils, githubUtils
@@ -16,15 +16,21 @@ import json
 import os.path
 import requests
 import time
-import datetime
+from datetime import datetime
 import sys
 import webbrowser
 import os
 from os.path import exists
-import urllib.request
 import shutil
 import tkinter
 from appdirs import AppDirs
+from appdirs import AppDirs
+import platform
+import stat
+from datetime import datetime
+from pathlib import Path
+
+OPEN_SESAME = {"i understand this is a test and will report any bugs to jak-project on github or in the opengoal discord", "lbood"}
 
 sg.theme("DarkBlue3")
 
@@ -40,7 +46,7 @@ if getattr(sys, "frozen", False):
     LauncherDir = os.path.dirname(os.path.realpath(sys.executable))
 
     # Detect if a user has downloaded a release directly, if so point them to the autoupdater
-    if LauncherDir != os.getenv("APPDATA") + "\\OpenGOAL-UnofficalModLauncher" and os.getlogin() != "NinjaPC":
+    if LauncherDir != os.getenv("APPDATA") + "\\OpenGOAL-UnofficalModLauncher" and os.getlogin() != "NinjaPC" and os.environ['COMPUTERNAME'] != 'DESKTOP-BBN1CMN':
         # Creating the tkinter window
         root = tkinter.Tk()
         root.winfo_toplevel().title("Error")
@@ -69,12 +75,9 @@ elif __file__:
 installpath = str(LauncherDir + "\\resources\\")
 
 # intialize default variables so they are never null
-currentModderSelected = None
-currentModSelected = None
-currentModURL = None
-currentModImage = None
-steamDIR = None
+
 dirs = AppDirs(roaming=True)
+
 # C:\Users\USERNAME\AppData\Roaming\OPENGOAL-UnofficalModLauncher\
 AppdataPATH = os.path.join(dirs.user_data_dir, "OPENGOAL-UnofficalModLauncher", "")
 
@@ -84,49 +87,40 @@ ModFolderPATH = os.path.join(dirs.user_data_dir, "OpenGOAL-Mods", "")
 # grab images from web
 
 # url to splash screen image
-url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlaunchersplash.png"
-jpg_data = (
-    cloudscraper.create_scraper(
-        browser={"browser": "firefox", "platform": "windows", "mobile": False}
-    )
-    .get(url)
-    .content
-)
 
-pil_image = Image.open(io.BytesIO(jpg_data))
-png_bio = io.BytesIO()
-pil_image.save(png_bio, format="PNG")
-splashfile = png_bio.getvalue()
+def getPNGFromURL(URL):
+    result = None  # Initialize the result variable
+
+    def fetch_image(url):  # Accept the URL parameter
+        nonlocal result  # Access the result variable in the outer scope
+        jpg_data = (
+            cloudscraper.create_scraper(
+                browser={"browser": "firefox", "platform": "windows", "mobile": False}
+            )
+            .get(url)  # Use the provided URL parameter
+            .content
+        )
+
+        pil_image = Image.open(io.BytesIO(jpg_data))
+        png_bio = io.BytesIO()
+        pil_image.save(png_bio, format="PNG")
+        result = png_bio.getvalue()  # Store the fetched image in the result variable
+
+    thread = threading.Thread(target=fetch_image, args=(URL,))  # Pass the URL as an argument
+    thread.start()
+    thread.join()  # Wait for the thread to finish
+
+    return result  # Return the fetched image data
 
 # url to icon for the window
-url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/appicon.ico"
-jpg_data = (
-    cloudscraper.create_scraper(
-        browser={"browser": "firefox", "platform": "windows", "mobile": False}
-    )
-    .get(url)
-    .content
-)
 
-pil_image = Image.open(io.BytesIO(jpg_data))
-png_bio = io.BytesIO()
-pil_image.save(png_bio, format="PNG")
-iconfile = png_bio.getvalue()
+splashfile = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlaunchersplash.png")
 
-# url to use if we have no image
-url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/noRepoImageERROR.png"
-jpg_data = (
-    cloudscraper.create_scraper(
-        browser={"browser": "firefox", "platform": "windows", "mobile": False}
-    )
-    .get(url)
-    .content
-)
+noimagefile = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/noRepoImageERROR.png")
 
-pil_image = Image.open(io.BytesIO(jpg_data))
-png_bio = io.BytesIO()
-pil_image.save(png_bio, format="PNG")
-noimagefile = png_bio.getvalue()
+iconfile = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/appicon.ico")
+
+loadingimage = getPNGFromURL("https://cdn.discordapp.com/attachments/1012837220664750172/1151746308000989184/image.png")
 
 #make the modfolderpath if first install
 if not os.path.exists(ModFolderPATH):
@@ -203,11 +197,25 @@ INCLUDE_INSTALLED = True
 INCLUDE_UNINSTALLED = True
 LATEST_TABLE_SORT = [6, False] # wakeup sorted by last launch date
 
-
 def getRefreshedTableData(sort_col_idx):
-    # uncomment/comment the next two lines if you want to test with a local file
-    mod_dict = requests.get("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/jak1_mods.json").json()
-    # mod_dict = json.loads(open("resources/jak1_mods.json", "r").read())
+    # Load data from the local file if it exists
+    local_file_path = "resources/jak1_mods.json"
+    if os.path.exists(local_file_path):
+        local_mods = json.loads(open(local_file_path, "r").read())
+    
+    # Load data from the remote URL
+    remote_url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/jak1_mods.json"
+    remote_mods = requests.get(remote_url).json()
+
+    # Initialize an empty dictionary to store the combined data
+    mod_dict = {}
+
+    if os.path.exists(local_file_path):
+        # Merge the remote and local data while removing duplicates
+        mod_dict = {**remote_mods, **local_mods}
+    else:
+        mod_dict = {**remote_mods}
+    
     mod_dict = dict(sorted(mod_dict.items(), key=lambda x: x[1]["release_date"], reverse=True))
 
     mod_table_data = []
@@ -216,47 +224,50 @@ def getRefreshedTableData(sort_col_idx):
     }
 
     for mod_id in mod_dict:
+
         mod = mod_dict[mod_id]
         mod_name = mod["name"]
+        
 
         mod["install_date"] = "Not Installed"
         mod["access_date"] = "Not Installed"
 
         # determine local install/access datetime
         if mod_id in installed_mod_subfolders:
-            mod["install_date"] = f"{datetime.datetime.fromtimestamp(installed_mod_subfolders[mod_id]):%Y-%m-%d %H:%M}"
+            mod["install_date"] = f"{datetime.fromtimestamp(installed_mod_subfolders[mod_id]):%Y-%m-%d %H:%M}"
 
             if exists(f"{ModFolderPATH}/{mod_id}/gk.exe"):
               gk_stat = os.stat(f"{ModFolderPATH}/{mod_id}/gk.exe")
-              mod["access_date"] = f"{datetime.datetime.fromtimestamp(gk_stat.st_atime):%Y-%m-%d %H:%M}"
+              mod["access_date"] = f"{datetime.fromtimestamp(gk_stat.st_atime):%Y-%m-%d %H:%M}"
         elif mod_name in installed_mod_subfolders:
             # previous installation using mod_name (will migrate after this step)
-            mod["install_date"] = f"{datetime.datetime.fromtimestamp(installed_mod_subfolders[mod_name]):%Y-%m-%d %H:%M}"
+            mod["install_date"] = f"{datetime.fromtimestamp(installed_mod_subfolders[mod_name]):%Y-%m-%d %H:%M}"
             # migrate folder to use mod_id instead of mod_name
             shutil.move(ModFolderPATH + "/" + mod_name, ModFolderPATH + "/" + mod_id)
 
             if exists(f"{ModFolderPATH}/{mod_id}/gk.exe"):
               gk_stat = os.stat(f"{ModFolderPATH}/{mod_id}/gk.exe")
-              mod["access_date"] = f"{datetime.datetime.fromtimestamp(gk_stat.st_atime):%Y-%m-%d %H:%M}"
+              mod["access_date"] = f"{datetime.fromtimestamp(gk_stat.st_atime):%Y-%m-%d %H:%M}"
 
         mod["contributors"] = ", ".join(mod["contributors"])
         mod["tags"].sort()
         mod["tags"] = ", ".join(mod["tags"])
-
+        
         # determine latest available update datetime - disabled as too easy to get rate-limited by github (can we do in bulk maybe?)
         # mod["latest_available_update_date"] = "1900-01-01 00:00"
         # update_date = githubUtils.getLatestAvailableUpdateDatetime(mod["URL"])
         # if update_date:
         #   mod["latest_available_update_date"] = f"{update_date:%Y-%m-%d %H:%M}"
-
+        
         # only add to data if passes filter (if any)
-        if (
-            FILTER_STR is None
-            or FILTER_STR == ""
-            or FILTER_STR in mod_name.lower()
-            or FILTER_STR in mod["contributors"].lower()
-            or FILTER_STR in mod["tags"].lower()
-        ):
+        matches_filter = (FILTER_STR is None
+                        or FILTER_STR == ""
+                        or FILTER_STR in mod_name.lower()
+                        or FILTER_STR in mod["contributors"].lower()
+                        or FILTER_STR in mod["tags"].lower())
+
+        if ((mod["game"] != "jak2" and matches_filter)
+          or (mod["game"] == "jak2" and FILTER_STR in OPEN_SESAME)):
             if (INCLUDE_INSTALLED and mod["access_date"] != "Not Installed") or (
                 INCLUDE_UNINSTALLED and mod["access_date"] == "Not Installed"
             ):
@@ -275,9 +286,9 @@ def getRefreshedTableData(sort_col_idx):
                         (mod["videos_url"] if "videos_url" in mod else ""),
                         (mod["photos_url"] if "photos_url" in mod else ""),
                         (mod["image_override_url"] if "image_override_url" in mod else ""),
+                        (mod["game"] if "game" in mod else "jak1")
                     ]
                 )
-
     if sort_col_idx is None:
         # not from a heading click, retain sorting
         remapped_col_idx = LATEST_TABLE_SORT[0]
@@ -311,12 +322,40 @@ LATEST_TABLE_DATA = []
 
 # ----- Full layout -----
 layout = [
-    [sg.Frame(title="", key='-SPLASHFRAME-', border_width=0, size=(972, 609), visible=True, element_justification="center", vertical_alignment="center", 
-      layout=
-      [
-        [sg.Image(key='-SPLASHIMAGE-', source=githubUtils.resize_image(splashfile, 970, 607), expand_y=True)]
-      ])
-    ],
+[sg.Frame(
+    title="",
+    key='-SPLASHFRAME-',
+    border_width=0,  # Set border_width to 0
+    visible=True,
+    element_justification="center",
+    vertical_alignment="center",
+    layout=[
+        [sg.Image(
+            key='-SPLASHIMAGE-',
+            source=githubUtils.resize_image(splashfile, 970, 607),
+            pad=(0, 0),  # Set padding to 0
+            expand_x=True,
+            expand_y=True
+        )]
+    ]
+)],
+    [sg.Frame(
+    title="",
+    key='-LOADINGFRAME-',
+    border_width=0,  # Set border_width to 0
+    visible=False,
+    element_justification="center",
+    vertical_alignment="center",
+    layout=[
+        [sg.Image(
+            key='-LOADINGIMAGE-',
+            source=githubUtils.resize_image(loadingimage, 970, 607),
+            pad=(0, 0),  # Set padding to 0
+            expand_x=True,
+            expand_y=True,
+        )]
+    ]
+)],
     [sg.Frame(title="", key='-MAINFRAME-', border_width=0, visible=False, layout=
       [
         [
@@ -336,6 +375,9 @@ layout = [
                   [sg.Text("")],
                   [
                       sg.Btn(button_text="Launch", key="-LAUNCH-", expand_x=True),
+                      sg.Btn(
+                          button_text="View ISO Folder", key="-VIEWISOFOLDER-", expand_x=True
+                      ),
                       sg.Btn(
                           button_text="View Folder", key="-VIEWFOLDER-", expand_x=True
                       ),
@@ -416,12 +458,11 @@ layout = [
     ]
 ]
 
-window = sg.Window("OpenGOAL Mod Launcher", layout, icon=iconfile, finalize=True)
-
+window = sg.Window("OpenGOAL Mod Launcher", layout, icon=iconfile,  border_depth=0,finalize=True)
 def handleModTableSelection(row):
     global LATEST_TABLE_DATA
     mod = LATEST_TABLE_DATA[row]
-    # print(mod)
+    #print(mod)
 
     mod_id = mod[0]
     mod_name = mod[1]
@@ -435,6 +476,8 @@ def handleModTableSelection(row):
     mod_videos_url = mod[9]
     mod_photos_url = mod[10]
     mod_image_override_url = mod[11]
+    mod_game = mod[12]
+    
 
     # update text and metadata
     window["-LAUNCH-"].update(
@@ -444,6 +487,7 @@ def handleModTableSelection(row):
     window["-SELECTEDMODNAME-"].metadata["id"] = mod_id
     window["-SELECTEDMODNAME-"].metadata["url"] = mod_url
     window["-SELECTEDMODNAME-"].metadata["image_override_url"] = mod_image_override_url
+    window["-SELECTEDMODNAME-"].metadata["game"] = mod_game
     window["-SELECTEDMODDESC-"].update(mod_desc)
     window["-SELECTEDMODTAGS-"].update(f"Tags: {mod_tags}")
     window["-SELECTEDMODCONTRIBUTORS-"].update(f"Contributors: {mod_contributors}")
@@ -485,21 +529,49 @@ def handleModTableSelection(row):
     except:
         window["-SELECTEDMODIMAGE-"].update(githubUtils.resize_image(noimagefile, 500.0, 300.0))
 
+windowstatus = "main"
+
+launch_finished_event = threading.Event()
+def launch_mod(tmpModURL):
+    [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
+    
+    launcherUtils.launch(tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame)
+    launch_finished_event.set()
 
 def reset():
     global LATEST_TABLE_DATA
-    LATEST_TABLE_DATA = getRefreshedTableData(None)
-    window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
-    for i in range(len(sorted_table_headings)):
-      window["-MODTABLE-"].Widget.heading(i, text=sorted_table_headings[i])
-    window["-MODTABLE-"].update(select_rows=[0])
-    handleModTableSelection(0)
+    if window is not None:
+        LATEST_TABLE_DATA = getRefreshedTableData(None)
+        window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
+        for i in range(len(sorted_table_headings)):
+            window["-MODTABLE-"].Widget.heading(i, text=sorted_table_headings[i])
+            window["-MODTABLE-"].update(select_rows=[0])
+        handleModTableSelection(0)
+    else:
+        print("Window is closed. Cannot reset.")
+
 
 
 # this is the main event loop where we handle user input
 reset()
 bootstart = time.time()
 while True:
+
+    if windowstatus == "main" and window["-LOADINGFRAME-"].visible:
+
+        # turn the button back on
+        window["-LAUNCH-"].update("Launch")
+        window["-LAUNCH-"].update(disabled=False)
+
+        #We are done installing show the main menu again
+        window["-MAINFRAME-"].update(visible=True)
+        window["-MAINFRAME-"].unhide_row()
+        window["-LOADINGFRAME-"].update(visible=False)
+        window["-LOADINGFRAME-"].hide_row()
+
+        # refresh table in case a new mod is installed
+        reset()
+
     event, values = window.read(timeout=100)
 
     if event == "Exit" or event == sg.WIN_CLOSED:
@@ -548,22 +620,43 @@ while True:
     elif event == "-REFRESH-":
         reset()
     elif event == "-LAUNCH-":
+
+        windowstatus = "launching"
+        #hide all the buttons and display a window showing that it is installing
+        window["-LOADINGFRAME-"].update(visible=True)
+        window["-LOADINGFRAME-"].unhide_row()
+        window["-MAINFRAME-"].update(visible=False)
+        window["-MAINFRAME-"].hide_row()
+        window.refresh()
+
         tmpModName = window["-SELECTEDMODNAME-"].get()
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
         tmpModURL = window["-SELECTEDMODNAME-"].metadata["url"]
+        tmpGame = window["-SELECTEDMODNAME-"].metadata["game"]
+        if FILTER_STR in OPEN_SESAME:
+            tmpGame = "jak2"
 
         # online launch
         window["-LAUNCH-"].update(disabled=True)
         window["-LAUNCH-"].update("Updating...")
-        [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
-        launcherUtils.launch(tmpModURL, tmpModSelected, tmpModName, linkType)
+        launch_thread = threading.Thread(target=launch_mod, args=(tmpModURL,))
+        launch_thread.start()
+        #launch_thread.join()
 
-        # refresh table in case new mod installed
+        # Continue processing events while the background thread runs
+        while not launch_finished_event.is_set():
+            event, values = window.read(timeout=100)
+
+            if event == "Exit" or event == sg.WIN_CLOSED:
+                break
+
+            # Handle other events here...
+
+        # Reset windowstatus back to "main"
+        windowstatus = "main"
+        launch_finished_event.clear()
+       
         reset()
-
-        # turn the button back on
-        window["-LAUNCH-"].update("Launch")
-        window["-LAUNCH-"].update(disabled=False)
     elif event == "-VIEWFOLDER-":
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
         subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
@@ -573,10 +666,17 @@ while True:
             launcherUtils.openFolder(dir)
         else:
             sg.Popup("Selected mod is not installed", keep_on_top=True, icon=iconfile)
+    elif event == "-VIEWISOFOLDER-":
+        dir = dirs.user_data_dir + "\OpenGOAL-Mods\_iso_data"
+        launcherUtils.ensure_jak_folders_exist()
+        launcherUtils.openFolder(dir)
     elif event == "-REINSTALL-":
+        tmpModName = window["-SELECTEDMODNAME-"].get()
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
+        tmpModURL = window["-SELECTEDMODNAME-"].metadata["url"]
+        tmpGame = window["-SELECTEDMODNAME-"].metadata["game"]
+        [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
         subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
-
         if tmpModSelected in subfolders:
             dir = dirs.user_data_dir + "\\OpenGOAL-Mods\\" + tmpModSelected
             ans = sg.popup_ok_cancel(
@@ -586,7 +686,7 @@ while True:
                 icon=iconfile,
             )
             if ans == "OK":
-                launcherUtils.reinstall(tmpModSelected)
+                launcherUtils.reinstall(tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame)
                 reset()
         else:
             sg.Popup("Selected mod is not installed", keep_on_top=True, icon=iconfile)

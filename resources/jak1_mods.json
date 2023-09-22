@@ -15,7 +15,8 @@
     "release_date": "2022-08-28",
     "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main",
     "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack",
-    "videos_url": "https://www.youtube.com/watch?v=B5mEhVt0v68"
+    "videos_url": "https://www.youtube.com/watch?v=B5mEhVt0v68",
+    "game": "jak1"
   },
   "random_actor_scale": {
     "name": "Fricked up",
@@ -31,7 +32,8 @@
     ],
     "release_date": "2023-01-19",
     "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-mod-base/tree/fucked",
-    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-mod-base"
+    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-mod-base",
+    "game": "jak1"
   },
   "local_multi": {
     "name": "Shared Screen Multiplayer! (beta) ",
@@ -49,7 +51,8 @@
     "release_date": "2022-09-05",
     "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-multiplayer-rando-mod-pack/tree/main",
     "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-multiplayer-rando-mod-pack/blob/main/README.md#opengoal-multiplayer--randomizer-mod-pack",
-    "videos_url": "https://www.youtube.com/watch?v=BeVl4x6gjC0"
+    "videos_url": "https://www.youtube.com/watch?v=BeVl4x6gjC0",
+    "game": "jak1"
   },
   "random_cell_order": {
     "name": "Random Cell Order",
@@ -66,7 +69,8 @@
     ],
     "release_date": "2023-02-02",
     "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-rco",
-    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-rco/blob/main/README.md"    
+    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-rco/blob/main/README.md",
+    "game": "jak1"    
   },
   "speedrun_practice": {
     "name": "Speedrun practice mod",
@@ -82,7 +86,8 @@
     "release_date": "2022-10-23",
     "URL": "https://github.com/OpenGOAL-Unofficial-Mods/Jakspeedrunningpractice",
     "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/Jakspeedrunningpractice/blob/main/README.md#jak-speedrunning-practice-opengoal",
-    "videos_url": "https://www.youtube.com/watch?v=a_SIccmgpj4"
+    "videos_url": "https://www.youtube.com/watch?v=a_SIccmgpj4",
+    "game": "jak1"
   },
   "microtransactions": {
     "name": "MicroTransactions",
@@ -97,7 +102,8 @@
     "release_date": "2022-08-28",
     "URL": "https://github.com/himham-jak/Jak1-but-Microtransactions/releases",
     "website_url": "https://github.com/himham-jak/Jak1-but-Microtransactions/blob/microtransactions/README.md",
-    "videos_url": "https://www.youtube.com/watch?v=q5TZ9U399J8"  
+    "videos_url": "https://www.youtube.com/watch?v=q5TZ9U399J8",
+    "game": "jak1"  
   },
   "jak_go_fast": {
     "name": "Jak1 but every power cell he gets faster",
@@ -110,7 +116,8 @@
       "challenge"
     ],
     "release_date": "2022-08-30",
-    "URL": "https://github.com/himham-jak/Jak-1-Movement-Mod/releases"
+    "URL": "https://github.com/himham-jak/Jak-1-Movement-Mod/releases",
+    "game":"jak1"
   },
   "first_person": {
     "name": "First Person Mode",
@@ -125,7 +132,8 @@
     "release_date": "2022-09-30",
     "URL": "https://github.com/OpenGOAL-Unofficial-Mods/First-person-jak",
     "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/First-person-jak",
-    "videos_url": "https://www.youtube.com/watch?v=2RhxWSSaNlM"
+    "videos_url": "https://www.youtube.com/watch?v=2RhxWSSaNlM",
+    "game": "jak1"
   },
   "classic_plus": {
     "name": "Classic+",
@@ -138,7 +146,8 @@
     ],
     "release_date": "2022-08-30",
     "URL": "https://github.com/Zedb0T/Zed-Mods/tree/Classic+-Release",
-    "website_url": "https://github.com/Zedb0T/Zed-Mods/tree/Classic+-Release"
+    "website_url": "https://github.com/Zedb0T/Zed-Mods/tree/Classic+-Release",
+    "game": "jak1"
   },
   "flutflut_legacy": {
     "name": "The FlutFlut Legacy",
@@ -154,7 +163,8 @@
     "release_date": "2022-09-10",
     "URL": "https://github.com/OpenGOAL-Mods/OG-FlutFlut-Legacy/releases",
     "website_url": "https://github.com/Zedb0T/TheFlutFlutLegacy",
-    "videos_url": "https://www.youtube.com/watch?v=_z8GhVWFYfI"
+    "videos_url": "https://www.youtube.com/watch?v=_z8GhVWFYfI",
+    "game": "jak1"
   },
   "ice_everywhere": {
     "name": "Ice Everywhere",
@@ -168,7 +178,8 @@
     ],
     "release_date": "2022-08-28",
     "URL": "https://github.com/Zedb0T/iceverywhere/releases",
-    "website_url": "https://github.com/Zedb0T/iceverywhere"
+    "website_url": "https://github.com/Zedb0T/iceverywhere",
+    "game": "jak1"
   },
   "orb_hunt": {
     "name": "Orb Hunt",
@@ -183,7 +194,8 @@
     "release_date": "2023-01-05",
     "URL": "https://github.com/dallmeyer/opengoal-orbhunt",
     "website_url": "https://github.com/dallmeyer/opengoal-orbhunt/blob/main/README.md#opengoal---the-precursor-orb-hunt",
-    "videos_url": "https://www.youtube.com/playlist?list=PLcFimep6cyLekygymgefmPqusnFYETuyb"
+    "videos_url": "https://www.youtube.com/playlist?list=PLcFimep6cyLekygymgefmPqusnFYETuyb",
+    "game": "jak1"
   },
   "super_mario_64": {
     "name": "The SM64 Legacy",
@@ -199,7 +211,8 @@
     "release_date": "2022-10-28",
     "URL": "https://github.com/dallmeyer/opengoal-sm64",
     "website_url": "https://github.com/dallmeyer/opengoal-sm64/blob/main/README.md#opengoal-jak-1---super-mario-64-style",
-    "videos_url": "https://www.youtube.com/watch?v=xNpsAzsPBTQ"
+    "videos_url": "https://www.youtube.com/watch?v=xNpsAzsPBTQ",
+    "game": "jak1"
   },
   "zoomer_legacy": {
     "name": "The Zoomer Legacy",
@@ -215,7 +228,8 @@
     "release_date": "2022-09-20",
     "URL": "https://github.com/dallmeyer/The-Zoomer-Legacy",
     "website_url": "https://github.com/dallmeyer/The-Zoomer-Legacy",
-    "videos_url": "https://www.youtube.com/watch?v=BDvvCY8gFDQ"
+    "videos_url": "https://www.youtube.com/watch?v=BDvvCY8gFDQ",
+    "game": "jak1"
   },
   "inirdin_textures": {
     "name": "Texture Showcase",
@@ -228,7 +242,8 @@
     ],
     "release_date": "2022-08-31",
     "URL": "https://github.com/Inirdin/opengoal-inirdin-texture-showcase/tree/main",
-    "website_url": "https://github.com/Inirdin/opengoal-inirdin-texture-showcase/blob/main/README.md#opengoal-inirdin-texture-showcase"
+    "website_url": "https://github.com/Inirdin/opengoal-inirdin-texture-showcase/blob/main/README.md#opengoal-inirdin-texture-showcase",
+    "game": "jak1"
   },
   "Ng_minus": {
     "name": "NG-",
@@ -242,7 +257,8 @@
     ],
     "release_date": "2023-04-16",
     "URL": "https://github.com/OpenGOAL-Unofficial-Mods/ng-",
-    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/ng-"
+    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/ng-",
+    "game": "jak1"
   },
   "jak_grows": {
     "name": "Jak and Daxter But Every Time He Grabs An Orb He Grows",
@@ -257,7 +273,8 @@
     "release_date": "2022-11-01",
     "URL": "https://github.com/Xyphles/X-mod-base/tree/Jak-and-Daxter-But-Every-Time-He-Grabs-An-Orb-He-Grows",
     "website_url": "https://github.com/Xyphles/X-mod-base/tree/Jak-and-Daxter-But-Every-Time-He-Grabs-An-Orb-He-Grows",
-    "videos_url": "https://www.youtube.com/watch?v=dBP_25yT5YU"
+    "videos_url": "https://www.youtube.com/watch?v=dBP_25yT5YU",
+    "game": "jak1"
   },
   "snowy_legacy": {
     "name": "Snowy Legacy",
@@ -271,7 +288,8 @@
     "release_date": "2022-09-08",
     "URL": "https://github.com/kekdeveloper/opengoal-mod-snowy-legacy/tree/main",
     "website_url": "https://github.com/kekdeveloper/opengoal-mod-snowy-legacy/blob/main/README.md#opengoal-mod-snowy-legacy",
-    "videos_url": "https://www.youtube.com/watch?v=djoAMJMre6U"
+    "videos_url": "https://www.youtube.com/watch?v=djoAMJMre6U",
+    "game": "jak1"
   },
   "mystery_word": {
     "name": "Mystery Word V2",
@@ -286,7 +304,8 @@
     "release_date": "2022-11-03",
     "URL": "https://github.com/MortisDG/MysteryWordV2",
     "website_url": "https://github.com/MortisDG/MysteryWordV2",
-    "videos_url": "https://www.youtube.com/watch?v=dlXkd6FhjyY"
+    "videos_url": "https://www.youtube.com/watch?v=dlXkd6FhjyY",
+    "game": "jak1"
   },
   "random_actors": {
     "name": "Random Actors/entities",
@@ -302,7 +321,8 @@
     ],
     "release_date": "2022-11-04",
     "URL": "https://github.com/Zedb0T/Zed-Mods/tree/Random-Actor-dev",
-    "website_url": "https://github.com/Zedb0T/Zed-Mods/tree/Random-Actor-dev"
+    "website_url": "https://github.com/Zedb0T/Zed-Mods/tree/Random-Actor-dev",
+    "game": "jak1"
   },
   "mikeeee": {
     "name": "Random Enemies",
@@ -318,7 +338,8 @@
     ],
     "release_date": "2022-12-05",
     "URL": "https://github.com/Zedb0T/Zed-Mods/tree/Random-enemies",
-    "website_url": "https://github.com/Zedb0T/Zed-Mods/tree/Random-enemies"
+    "website_url": "https://github.com/Zedb0T/Zed-Mods/tree/Random-enemies",
+    "game": "jak1"
   },
   "mirror_mode_every_cell": {
     "name": "Mirror mode every cell",
@@ -333,7 +354,8 @@
     ],
     "release_date": "2022-11-08",
     "URL": "https://github.com/Zedb0T/Zed-Mods/tree/mirrormodeeverycell-",
-    "website_url": "https://github.com/Zedb0T/Zed-Mods/tree/mirrormodeeverycell-"
+    "website_url": "https://github.com/Zedb0T/Zed-Mods/tree/mirrormodeeverycell-",
+    "game": "jak1"
   },
   "new_eco": {
     "name": "New Eco type",
@@ -347,7 +369,8 @@
     ],
     "release_date": "2022-11-04",
     "URL": "https://github.com/OpenGOAL-Unofficial-Mods/New-Eco-types/tree/w-pink",
-    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/New-Eco-types/tree/w-pink"
+    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/New-Eco-types/tree/w-pink",
+    "game": "jak1"
   },
   "open_ghosts": {
     "name": "OpenGhosts",
@@ -361,7 +384,8 @@
     ],
     "release_date": "2022-12-22",
     "URL": "https://github.com/dryice10/openghosts",
-    "website_url": "https://github.com/dryice10/openghosts/blob/main/README.md#openghosts"
+    "website_url": "https://github.com/dryice10/openghosts/blob/main/README.md#openghosts",
+    "game": "jak1"
   },
   "forgotten_lands": {
     "name": "The Forgotten Lands",
@@ -377,7 +401,8 @@
     "release_date": "2023-01-08",
     "URL": "https://github.com/Kuitar5/the-forgotten-lands/releases",
     "website_url": "https://github.com/Kuitar5/the-forgotten-lands/blob/main/README.md#the-forgotten-lands",
-    "videos_url": "https://youtube.com/playlist?list=PLUvfXyvZk2SC0A8TtqYV8ap97aVGu9rRP"
+    "videos_url": "https://youtube.com/playlist?list=PLUvfXyvZk2SC0A8TtqYV8ap97aVGu9rRP",
+    "game": "jak1"
   },
   "blindfold_assist": {
     "name": "Blindfold Assist Mod",
@@ -391,7 +416,8 @@
     ],
     "release_date": "2023-01-22",
     "URL": "https://github.com/OpenGOAL-Unofficial-Mods/blindfold-assist",
-    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/blindfold-assist/blob/main/README.md"
+    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/blindfold-assist/blob/main/README.md",
+    "game": "jak1"
   },
   "its_ogre_now": {
     "name": "ShrekAdventures",
@@ -407,7 +433,8 @@
     "release_date": "2023-04-05",
     "URL": "https://github.com/Zedb0T/shrekadventures/releases",
     "website_url": "https://github.com/Zedb0T/shrekadventures",
-    "videos_url": "https://twitter.com/JakSpeedruns/status/1645693475277668354"
+    "videos_url": "https://twitter.com/JakSpeedruns/status/1645693475277668354",
+    "game": "jak1"
   },
   "invisible_Legacy": {
     "name": "The Invisible Legacy",
@@ -422,12 +449,13 @@
     ],
     "release_date": "2023-07-05",
     "URL": "https://github.com/OpenGOAL-Mods/OG-Invisible-Legacy/releases",
-    "website_url": "https://github.com/OpenGOAL-Mods/OG-Invisible-Legacy"
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-Invisible-Legacy",
+    "game": "jak1"
   },
   "orange_demon": {
     "name": "Orange Demon Challenge",
     "desc": "Play through the entire game while being chased by Daxter!",
-    "contributors": ["Hat Kid"],
+    "contributors": ["Hat-Kid"],
     "tags": [
       "gameplay-mod",
       "custom-enemy",
@@ -436,7 +464,8 @@
     "release_date": "2023-07-09",
     "URL": "https://github.com/Hat-Kid/jak-project/releases",
     "image_override_url": "https://cdn.discordapp.com/attachments/1124072608548266105/1127708472394391653/orange-demon-thumb.png",
-    "website_url": "https://gist.github.com/Hat-Kid/ede85d11ecf98f89f1e857160cdf82c7"
+    "website_url": "https://gist.github.com/Hat-Kid/ede85d11ecf98f89f1e857160cdf82c7",
+    "game": "jak1"
   },
   "wood_crate_break_alot": {
     "name": "Break wood creates!",
@@ -450,7 +479,8 @@
     "release_date": "2023-07-19",
     "URL": "https://github.com/OpenGOAL-Mods/OG-All-Wooden-Boxes/releases",
     "image_override_url": "https://media.discordapp.net/attachments/183621467659960321/1131419019543576626/image.png",
-    "website_url": "https://github.com/OpenGOAL-Mods/OG-All-Wooden-Boxes"
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-All-Wooden-Boxes",
+    "game": "jak1"
   },
   "casual_legacy": {
     "name": "Casual Legacy!",
@@ -464,7 +494,8 @@
     "release_date": "2023-07-29",
     "URL": "https://github.com/OpenGOAL-Mods/OG-Casual-Legacy/releases",
     "image_override_url": "https://s3.amazonaws.com/ebaumsworld.prod/uploads1608065784494-hed.jpg",
-    "website_url": "https://github.com/OpenGOAL-Mods/OG-Casual-Legacy"
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-Casual-Legacy",
+    "game":"jak1"
   },
   "super_jak_bros": {
     "name": "Super Jak bros!",
@@ -478,7 +509,8 @@
     "release_date": "2023-07-31",
     "URL": "https://github.com/Zed-Mod-School/OG-2D/releases",
     "image_override_url": "https://cdn.discordapp.com/attachments/994297625585139834/1135434268714213376/jakbros.png",
-    "website_url": "https://github.com/Zed-Mod-School/OG-2D"
+    "website_url": "https://github.com/Zed-Mod-School/OG-2D",
+    "game": "jak1"
   },
   "up": {
     "name": "Jak Up",
@@ -494,9 +526,9 @@
     "release_date": "2023-08-10",
     "URL": "https://github.com/dallmeyer/jak-up/releases",
     "image_override_url": "https://cdn.discordapp.com/attachments/1007077732032721037/1139110276273287239/image.png",
-    "website_url": "https://github.com/dallmeyer/jak-up/blob/main/README.md"
+    "website_url": "https://github.com/dallmeyer/jak-up/blob/main/README.md",
+    "game": "jak1"
   },
-
   "candy_pop_keira": {
     "name": "Candy Pop Keira",
     "desc": "Keira's original outfit, but with a candy pop color scheme.",
@@ -507,6 +539,21 @@
     "release_date": "2023-08-27",
     "URL": "https://github.com/Jak-Mods/candy-pop-keira/releases",
     "image_override_url": "https://i.imgur.com/83xZThN.png",
-    "website_url": "https://github.com/Jak-Mods/candy-pop-keira"
+    "website_url": "https://github.com/Jak-Mods/candy-pop-keira",
+    "game": "jak1"
+  },
+  "mod_base_2": {
+    "name": "Jak II",
+    "desc": "NOTE: this is a test, please report any bugs to jak-project on github or in the OpenGOAL discord",
+    "contributors": ["water111, XTVaser, ManDude, Hat-Kid, Ziemas"],
+    "tags": [
+      "beta",
+      "speedrunning"
+    ],
+    "release_date": "2023-09-18",
+    "URL": "https://github.com/OpenGOAL-Mods/OG-Mod-Base/releases",
+    "image_override_url": "https://opengoal.dev/gallery/jak2/dev/demo-1.png",
+    "website_url": "https://github.com/open-goal/jak-project/issues",
+    "game": "jak2"
   }
 }
