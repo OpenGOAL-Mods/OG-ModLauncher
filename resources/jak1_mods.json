@@ -558,7 +558,7 @@
   },
   "down_under": {
     "name": "The Down Under Legacy",
-    "desc": "Vertical mirror mode. That's it, that's the whole mod.",
+    "desc": "Vertical mirror mode. That's it, that's the whole mod. Bonus horizontal mirror mode toggle in the Misc menu if you want it.",
     "contributors": ["barg034"],
     "tags": [
       "challenge"
