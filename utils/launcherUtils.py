@@ -114,7 +114,10 @@ def try_remove_file(file):
 
 def try_remove_dir(dir):
     if exists(dir):
+        print(f"found dir {dir}, attempting to remove")
         shutil.rmtree(dir)
+    else:
+        print(f"didnt find dir {dir}")
 
 
 def local_mod_image(MOD_ID):
@@ -201,8 +204,8 @@ def launch_local(MOD_ID, GAME):
             "-boot",
             "-fakeiso"
         ]
-        print(GKCOMMANDLINElist)
-        subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir) )
+        print("running: ", GKCOMMANDLINElist)
+        subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir))
     except Exception as e:  # Catch all exceptions and print the error message.
         return str(e)
 
@@ -651,7 +654,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
             moveDirContents(InstallDir + "\\data\\iso_data/" + GAME, UniversalIsoPath + "//" + GAME)
             # replace iso_data with symlink
             try_remove_dir(InstallDir + "\\data\\iso_data/")
-            makeDirSymlink(InstallDir + "\\data\\iso_data/" + GAME, UniversalIsoPath + "\\" + GAME)
+            makeDirSymlink(InstallDir + "\\data\\iso_data", UniversalIsoPath)
 
 
         if exists(UniversalIsoPath + "//" + GAME +r"\Z6TAIL.DUP") and not exists(InstallDir + "/data/iso_data/" + GAME + "//Z6TAIL.DUP"):

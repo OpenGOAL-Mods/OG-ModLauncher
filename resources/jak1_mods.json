@@ -555,5 +555,18 @@
     "image_override_url": "https://opengoal.dev/gallery/jak2/dev/demo-1.png",
     "website_url": "https://github.com/open-goal/jak-project/issues",
     "game": "jak2"
+  },
+  "down_under": {
+    "name": "The Down Under Legacy",
+    "desc": "Vertical mirror mode. That's it, that's the whole mod.",
+    "contributors": ["barg034"],
+    "tags": [
+      "challenge"
+    ],
+    "release_date": "2023-10-15",
+    "URL": "https://github.com/OpenGOAL-Mods/OG-DownUnder/releases",
+    "image_override_url": "https://raw.githubusercontent.com/OpenGOAL-Mods/OG-DownUnder/main/downunda.png",
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-DownUnder",
+    "game": "jak1"
   }
 }
