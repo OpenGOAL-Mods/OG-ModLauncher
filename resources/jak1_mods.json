@@ -582,5 +582,23 @@
     "image_override_url": "https://opengoal-unofficial-mods.github.io/bugged/bugged_logo.png",
     "website_url": "https://opengoal-unofficial-mods.github.io/bugged/buglist.html",
     "game": "jak1"
+  },  
+  "fartin-time": {
+    "name": "???",
+    "desc": "Misty sure is alot mistier than I remember...",
+    "contributors": [
+      "ZedB0T"
+    ],
+    "tags": [
+      "gameplay-mod",
+      "rng",
+      "challenge"
+    ],
+    "release_date": "2023-10-21",
+    "URL": "https://github.com/my-opengoal-mods/OG-Jak-The-Chicken-Reborn/releases",
+    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack",
+    "videos_url": "https://www.youtube.com/watch?v=B5mEhVt0v68",
+    "image_override_url": "https://nypost.com/wp-content/uploads/sites/2/2021/09/fart-73.jpg?quality=75&strip=all",
+    "game": "jak1"
   }
 }
