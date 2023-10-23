@@ -476,19 +476,15 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
         try_remove_file(InstallDir + "/decompiler.exe")
         print("Looking for some ISO data in " + UniversalIsoPath + "//" + GAME + "//")
             
-            
+        found_universal_iso = exists(UniversalIsoPath +"//" + GAME + "//" + "Z6TAIL.DUP")
+
         #if ISO_DATA has content, store this path to pass to the extractor
-        if (exists(UniversalIsoPath +"//" + GAME + "//" + "Z6TAIL.DUP")):
-            
+        if found_universal_iso:
             print("We found ISO data from a previous mod installation! Lets use it!")
             print("Found in " + UniversalIsoPath +"//" + GAME + "//" + "Z6TAIL.DUP")
             iso_path = UniversalIsoPath + "\\" + GAME
-
-
-            while not (exists(InstallDir + "/data/iso_data/" + GAME + "//Z6TAIL.DUP")) and (exists(InstallDir + "/data/iso_data/" + GAME + "//")):
-                shutil.copytree( InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "//" + GAME + "//")
         else:
-            print("We did not find "+ GAME + "ISO data from a previous mod, lets ask for some!") 
+            print("We did not find "+ GAME + " ISO data from a previous mod, lets ask for some!") 
                #cleanup and remove a corrupted iso
             if os.path.exists(UniversalIsoPath + "//" + GAME) and os.path.isdir(UniversalIsoPath) and not (exists((UniversalIsoPath + "//" + GAME + "//" + "Z6TAIL.DUP"))):
                 print("Removing corrupted iso destination...")
@@ -583,8 +579,10 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
           "\"process_tpages\": false,",
         )
 
-
-
+        # if we have iso extracted to universal folder already, just symlink it. otherwise we'll copy it there and symlink after extractor closes
+        if found_universal_iso and exists(UniversalIsoPath + "//" + GAME +r"\Z6TAIL.DUP"):
+            try_remove_dir(InstallDir + "\\data\\iso_data/")
+            makeDirSymlink(InstallDir + "\\data\\iso_data\\", UniversalIsoPath)
 
         # if extractOnUpdate is True, check their ISO_DATA folder
 
@@ -605,9 +603,8 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
                 print("done extracting!")
             else:
                 print("Extractor error!")
+                return
             
-
-        
         if(GAME == "jak2"):
             getDecompiler(InstallDir)
             decompiler_command_list = [DecompilerPATH, 
@@ -626,11 +623,11 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
             #wait for decompiler before starting goalc
             #Decompiler
           
-
             if decompiler_result.returncode ==0:
                 print("done with decompiler!")
             else:
                 print("decompiler error!")
+                return
 
             goalc_command_list = [GoalCPATH, 
                             "--proj-path",
@@ -649,23 +646,12 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
         #     makeDirSymlink(InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "//" + GAME)
 
         # move the extrated contents to the universal launchers directory for next time.
-        if not (exists((UniversalIsoPath + r"\\" + GAME + "\Z6TAIL.DUP"))):
+        if not found_universal_iso:
             ensure_jak_folders_exist()
             moveDirContents(InstallDir + "\\data\\iso_data/" + GAME, UniversalIsoPath + "//" + GAME)
             # replace iso_data with symlink
             try_remove_dir(InstallDir + "\\data\\iso_data/")
             makeDirSymlink(InstallDir + "\\data\\iso_data", UniversalIsoPath)
-
-
-        if exists(UniversalIsoPath + "//" + GAME +r"\Z6TAIL.DUP") and not exists(InstallDir + "/data/iso_data/" + GAME + "//Z6TAIL.DUP"):
-            try_remove_dir(InstallDir + "\\data\\iso_data/")
-            makeDirSymlink(InstallDir + "\\data\\iso_data\\", UniversalIsoPath)
-            # link_files_by_extension( UniversalIsoPath + "//" + GAME + "//VAG",InstallDir + "//data//out//" + GAME + "//iso")
-            # link_files_by_extension( UniversalIsoPath + "//" + GAME + "//SBK",InstallDir + "//data//out//" + GAME + "//iso")
-            # link_files_by_extension( UniversalIsoPath + "//" + GAME + "//MUS",InstallDir + "//data//out//" + GAME + "//iso")
-            # link_files_by_extension( UniversalIsoPath + "//" + GAME + "//STR",InstallDir + "//data//out//" + GAME + "//iso")
-            # link_files_by_extension( UniversalIsoPath + "//" + GAME + "//DRIVERS",InstallDir + "//data//out//" + GAME + "//iso")
-            # link_files_by_extension( UniversalIsoPath + "//" + GAME + "//TEXT",InstallDir + "//data//out//" + GAME + "//iso")
 
         if(GAME == "jak2"):    
             #open GoalC to build jak2, for jak 1 extractor can handle this.
@@ -677,9 +663,8 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
                 print("done goalc!")
             else:
                 print("goalc error!")
-
+                return
         
-
         # at this point we should be good to launch, these are just sanity checks that should never be reached
 
         #update the timestamp of the local exe
@@ -702,7 +687,9 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
             print("Is newest posted update older than what we have installed? " + str((LastWrite < LatestRel)))
 
         #ok launch game :D
-        subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir))
+        gk_result = subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir))
+        if gk_result.returncode == 0:
+          print("gk error!")
 
     else:
         # if we dont need to update, then close any open instances of the game and just launch it
