@@ -600,5 +600,23 @@
     "videos_url": "https://www.youtube.com/watch?v=B5mEhVt0v68",
     "image_override_url": "https://nypost.com/wp-content/uploads/sites/2/2021/09/fart-73.jpg?quality=75&strip=all",
     "game": "jak1"
+  },
+  "MORTIN-time": {
+    "name": "Jak The CHICKEN",
+    "desc": "Adds over 18 levels and 900+ collectibles to the game and new powerups and adventures! Note -> Currently it is disguesed as a fart mod. It is not. You can click the video URL to see the actual mod.",
+    "contributors": [
+      "ZedB0T"
+    ],
+    "tags": [
+      "gameplay-mod",
+      "rng",
+      "challenge"
+    ],
+    "release_date": "2023-10-21",
+    "URL": "https://github.com/my-opengoal-mods/OG-Jak-The-Chicken-Reborn/releases",
+    "website_url": "https://github.com/my-opengoal-mods/OG-Jak-The-Chicken-Reborn",
+    "videos_url": "https://www.twitch.tv/videos/1958535721?t=06h36m46s",
+    "image_override_url": "https://www.speedrun.com/static/game/j1lnnwz6/cover.png?v=47fd2cf",
+    "game": "jak1"
   }
 }
