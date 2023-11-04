@@ -542,20 +542,6 @@
     "website_url": "https://github.com/Jak-Mods/candy-pop-keira",
     "game": "jak1"
   },
-  "mod_base_2": {
-    "name": "Jak II",
-    "desc": "NOTE: this is a test, please report any bugs to jak-project on github or in the OpenGOAL discord",
-    "contributors": ["water111, XTVaser, ManDude, Hat-Kid, Ziemas"],
-    "tags": [
-      "beta",
-      "speedrunning"
-    ],
-    "release_date": "2023-09-18",
-    "URL": "https://github.com/OpenGOAL-Mods/OG-Mod-Base/releases",
-    "image_override_url": "https://opengoal.dev/gallery/jak2/dev/demo-1.png",
-    "website_url": "https://github.com/orgs/open-goal/projects/3/views/8",
-    "game": "jak2"
-  },
   "down_under": {
     "name": "The Down Under Legacy",
     "desc": "Vertical mirror mode. That's it, that's the whole mod. Bonus horizontal mirror mode toggle in the Misc menu if you want it.",
@@ -618,5 +604,20 @@
     "videos_url": "https://www.twitch.tv/videos/1958535721?t=06h36m46s",
     "image_override_url": "https://www.speedrun.com/static/game/j1lnnwz6/cover.png?v=47fd2cf",
     "game": "jak1"
+  },
+  "dax2": {
+    "name": "Daxter II",
+    "desc": "Daxter finally gets his sequel! (Still in Alpha, I'd like to support on-foot guns and Dark Daxter eventually)",
+    "contributors": ["barg034"],
+    "tags": [
+      "beta",
+      "challenge",
+      "speedrunning"
+    ],
+    "release_date": "2023-11-04",
+    "URL": "https://github.com/OpenGOAL-Mods/OG-Daxter2/releases",
+    "image_override_url": "https://raw.githubusercontent.com/OpenGOAL-Mods/OG-Daxter2/main/daxter2.png",
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-Daxter2/blob/main/README.md",
+    "game": "jak2"
   }
 }

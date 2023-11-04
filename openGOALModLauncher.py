@@ -30,8 +30,6 @@ import stat
 from datetime import datetime
 from pathlib import Path
 
-OPEN_SESAME = {"i understand this is a test and will report any bugs to jak-project on github or in the opengoal discord", "lbood"}
-
 sg.theme("DarkBlue3")
 
 def openLauncherWebsite():
@@ -265,30 +263,29 @@ def getRefreshedTableData(sort_col_idx):
                         or FILTER_STR in mod_name.lower()
                         or FILTER_STR in mod["contributors"].lower()
                         or FILTER_STR in mod["tags"].lower())
-
-        if ((mod["game"] != "jak2" and matches_filter)
-          or (mod["game"] == "jak2" and FILTER_STR in OPEN_SESAME)):
-            if (INCLUDE_INSTALLED and mod["access_date"] != "Not Installed") or (
-                INCLUDE_UNINSTALLED and mod["access_date"] == "Not Installed"
-            ):
-                mod_table_data.append(
-                    [
-                        mod_id,
-                        mod_name,
-                        mod["desc"],
-                        mod["tags"],
-                        mod["contributors"],
-                        mod["install_date"],
-                        mod["access_date"],
-                        # mod["latest_available_update_date"],
-                        mod["URL"],
-                        (mod["website_url"] if "website_url" in mod else ""),
-                        (mod["videos_url"] if "videos_url" in mod else ""),
-                        (mod["photos_url"] if "photos_url" in mod else ""),
-                        (mod["image_override_url"] if "image_override_url" in mod else ""),
-                        (mod["game"] if "game" in mod else "jak1")
-                    ]
-                )
+        
+        if matches_filter:
+          if (INCLUDE_INSTALLED and mod["access_date"] != "Not Installed") or (
+              INCLUDE_UNINSTALLED and mod["access_date"] == "Not Installed"
+          ):
+              mod_table_data.append(
+                  [
+                      mod_id,
+                      mod_name,
+                      mod["desc"],
+                      mod["tags"],
+                      mod["contributors"],
+                      mod["install_date"],
+                      mod["access_date"],
+                      # mod["latest_available_update_date"],
+                      mod["URL"],
+                      (mod["website_url"] if "website_url" in mod else ""),
+                      (mod["videos_url"] if "videos_url" in mod else ""),
+                      (mod["photos_url"] if "photos_url" in mod else ""),
+                      (mod["image_override_url"] if "image_override_url" in mod else ""),
+                      (mod["game"] if "game" in mod else "jak1")
+                  ]
+              )
     if sort_col_idx is None:
         # not from a heading click, retain sorting
         remapped_col_idx = LATEST_TABLE_SORT[0]
@@ -633,8 +630,6 @@ while True:
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
         tmpModURL = window["-SELECTEDMODNAME-"].metadata["url"]
         tmpGame = window["-SELECTEDMODNAME-"].metadata["game"]
-        if FILTER_STR in OPEN_SESAME:
-            tmpGame = "jak2"
 
         # online launch
         window["-LAUNCH-"].update(disabled=True)

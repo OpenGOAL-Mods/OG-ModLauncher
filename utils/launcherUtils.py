@@ -499,8 +499,12 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
                 print("Please select your iso.")
                 root.title("Select ISO")
                 root.geometry("230x1")
-                iso_path = filedialog.askopenfilename(title="Please select your ISO")
+                root.wm_attributes('-topmost', 1)
+                iso_path = filedialog.askopenfilename(parent=root, title="Please select your ISO")
                 root.destroy()
+                if iso_path == "":
+                  print("user closed popup")
+                  return
                 if pathlib.Path(iso_path).is_file:
                     if not (pathlib.Path(iso_path).suffix).lower() == ".iso":
                         print((pathlib.Path(iso_path).suffix).lower())
