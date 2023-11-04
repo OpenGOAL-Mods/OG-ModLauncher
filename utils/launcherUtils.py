@@ -493,7 +493,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
                 ensure_jak_folders_exist()
                 #jak2hack
             #if ISO_DATA is empty, prompt for their ISO and store its path.
-            if GAME == "jak1":
+            if 1 == 1:
                 # if ISO_DATA is empty, prompt for their ISO and store its path.
                 root = tk.Tk()
                 print("Please select your iso.")
@@ -505,28 +505,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
                     if not (pathlib.Path(iso_path).suffix).lower() == ".iso":
                         print((pathlib.Path(iso_path).suffix).lower())
                         print("error code: 23984h")
-                        1 / 0
-            if GAME == "jak2":
-                #since extractor currently doesnt know about jak 2, we need to manually place the iso contents into the folder we expect
-                if not exists(UniversalIsoPath + "//" + GAME):
-                    os.makedirs(UniversalIsoPath + "//" + GAME)
-                while not (exists((UniversalIsoPath + "//" + GAME + "//" + "Z6TAIL.DUP"))):
-                    print("Didnt find iso in " + UniversalIsoPath + "//" + GAME + "//" + " sleeping for 5 seconds, then checking again.")
-                    time.sleep(5)
-                    if (exists((UniversalIsoPath + "//" + GAME + "//" + "Z6TAIL.DUP"))):
-                        print("ok we found the iso data! waiting 45 seconds to make sure the copy has time to finish")
-                        print("dont touch anything! This will take a moment!")
-                        start_time = time.time()
-                        elapsed_time = 0
-                        remaining_time = 45
-
-                        while elapsed_time < 45:
-                            time.sleep(1)  # Sleep for 1 second
-                            elapsed_time = time.time() - start_time
-                            remaining_time = max(0, 45 - elapsed_time)
-                            print(f"Time remaining: {remaining_time:.1f} seconds", end='\r')
-
-            
+                        1 / 0            
         # extract mod zipped update
         print("Extracting update")
         TempDir = InstallDir + "/temp"
@@ -607,27 +586,14 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
                 return
             
         if(GAME == "jak2"):
-            getDecompiler(InstallDir)
-            decompiler_command_list = [DecompilerPATH, 
-                                       "./data/decompiler/config/jak2/jak2_config.jsonc", 
-                                       UniversalIsoPath, 
-                                       "./data/decompiler_out", 
-                                       "--version",
-                                       "ntsc_v1",
-                                       "--config-override",
-                                       '{"decompile_code": false}'
-                        ]
-            #print(decompiler_command_list)
-            decompiler_result = subprocess.run(decompiler_command_list, shell=True, cwd=os.path.abspath(InstallDir) )
-            print("opened decompiler")
-            
-            #wait for decompiler before starting goalc
-            #Decompiler
-          
-            if decompiler_result.returncode ==0:
-                print("done with decompiler!")
+            extractor_command_list = [InstallDir + "\extractor.exe", "-f", iso_path, "-e", "-v", "-d", "-c", "-g", "jak2"]
+            print(extractor_command_list)
+            extractor_result = subprocess.run(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir))
+
+            if extractor_result.returncode ==0:
+                print("done extracting!")
             else:
-                print("decompiler error!")
+                print("Extractor error!")
                 return
 
             goalc_command_list = [GoalCPATH, 
