@@ -500,7 +500,7 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
                 root.title("Select ISO")
                 root.geometry("230x1")
                 root.wm_attributes('-topmost', 1)
-                iso_path = filedialog.askopenfilename(title="Please select your ISO")
+                iso_path = filedialog.askopenfilename(parent=root, title="Please select your ISO")
                 root.destroy()
                 if iso_path == "":
                   print("user closed popup")
