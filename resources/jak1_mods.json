@@ -74,7 +74,7 @@
   },
   "speedrun_practice": {
     "name": "Speedrun practice mod",
-    "desc": "Pseudo-save states: L2+down (or C on keyboard) to save / L2+up (or V on keyboard) to load. Extra checkpoints in speedrun menu (while holding L1+R1+X, press Select or Start)",
+    "desc": "Pseudo-save states: L2+Down (or Ctrl+C on keyboard) to save / L2+Up (or Ctrl+V on keyboard) to load. Extra checkpoints in speedrun menu (while holding L1+R1+X, press Select or Start)",
     "contributors": [
       "ZedB0T",
       "barg034"
@@ -84,8 +84,8 @@
       "practice"
     ],
     "release_date": "2022-10-23",
-    "URL": "https://github.com/OpenGOAL-Unofficial-Mods/Jakspeedrunningpractice",
-    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/Jakspeedrunningpractice/blob/main/README.md#jak-speedrunning-practice-opengoal",
+    "URL": "https://github.com/OpenGOAL-Mods/OG-Speedrun-Practice/releases",
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-Speedrun-Practice/blob/main/README.md",
     "videos_url": "https://www.youtube.com/watch?v=a_SIccmgpj4",
     "game": "jak1"
   },
@@ -514,7 +514,7 @@
   },
   "up": {
     "name": "Jak Up",
-    "desc": "Early test build. WARNING: the levels take up ~400MB, and will take a couple minutes to install.",
+    "desc": "Hub 1+2 so far. WARNING: the custom levels take up ~700MB, and will take a couple minutes to install.",
     "contributors": ["barg034"],
     "tags": [
       "beta",
