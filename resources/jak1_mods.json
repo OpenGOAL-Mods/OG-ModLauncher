@@ -619,8 +619,7 @@
     "image_override_url": "https://raw.githubusercontent.com/OpenGOAL-Mods/OG-Daxter2/main/daxter2.png",
     "website_url": "https://github.com/OpenGOAL-Mods/OG-Daxter2/blob/main/README.md",
     "game": "jak2"
-  }
-  ,
+  },
   "ogtest": {
     "name": "OpenGOAL test",
     "desc": "Testingstuff",
@@ -631,6 +630,20 @@
     "URL": "https://github.com/zedb0t/jak-project/releases",
     "image_override_url": "https://opengoal.dev/img/logo.png",
     "website_url": "https://github.com/OpenGOAL-Mods/OG-Daxter2/blob/main/README.md",
+    "game": "jak2"
+  },
+  "heromode-plus": {
+    "name": "Jak II - Hero Mode Plus",
+    "desc": "Overhauls Jak II's difficulty, but with a twist! Adds weapon mods, custom modifiers, hero mode changes, and various other things to find! Are you up for the challenge?",
+    "contributors": ["Kraken"],
+    "tags": [
+      "gameplay-mod",
+      "challenge"
+    ],
+    "release_date": "2023-11-07",
+    "URL": "https://github.com/RealOfficialKraken/OG-HeroMode-Plus/releases",
+    "image_override_url": "https://i.imgur.com/UDlY6ep.png",
+    "website_url": "https://github.com/RealOfficialKraken/OG-HeroMode-Plus/README.md",
     "game": "jak2"
   }
 }
