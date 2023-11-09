@@ -31,7 +31,7 @@
       "rng"
     ],
     "release_date": "2023-01-19",
-    "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-mod-base/tree/fucked",
+    "URL": "https://github.com/OpenGOAL-Mods/OG-Fricked/releases",
     "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-mod-base",
     "game": "jak1"
   },
@@ -645,6 +645,24 @@
     "image_override_url": "https://i.imgur.com/UDlY6ep.png",
     "website_url": "https://github.com/RealOfficialKraken/OG-HeroMode-Plus/README.md",
     "game": "jak2"
+  },
+  "random_actor_scale_2": {
+    "name": "Fricked up II",
+    "desc": "Can you take on this jak 2 challenge? (beta)",
+    "contributors": [
+      "ZedB0T"
+    ],
+    "tags": [
+      "beta",
+      "gameplay-mod",
+      "challenge",
+      "rng"
+    ],
+    "release_date": "2023-11-09",
+    "URL": "https://github.com/OpenGOAL-Mods/OG-Fricked/releases",
+    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-mod-base",
+    "game": "jak2",
+    "image_override_url": "https://i.imgur.com/nELVUMs.png"
   },
   "funki-showcase": {
     "name": "FUNKI DELIRE Jak 1 Custom Levels",
