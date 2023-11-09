@@ -193,8 +193,8 @@ col_width = [
 FILTER_STR = ""
 INCLUDE_INSTALLED = True
 INCLUDE_UNINSTALLED = True
-HIDE_JAK1 = False
-HIDE_JAK2 = False
+INCLUDE_JAK1 = True
+INCLUDE_JAK2 = True
 LATEST_TABLE_SORT = [6, False] # wakeup sorted by last launch date
 
 def getRefreshedTableData(sort_col_idx):
@@ -267,7 +267,7 @@ def getRefreshedTableData(sort_col_idx):
                         or FILTER_STR in mod["tags"].lower())
         
         if matches_filter:
-            if ((not HIDE_JAK1) and mod["game"] == "jak1") or ((not HIDE_JAK2) and mod["game"] == "jak2"):
+            if (INCLUDE_JAK1 and mod["game"] == "jak1") or (INCLUDE_JAK2 and mod["game"] == "jak2"):
 
               if (INCLUDE_INSTALLED and mod["access_date"] != "Not Installed") or (
               INCLUDE_UNINSTALLED and mod["access_date"] == "Not Installed"
@@ -424,16 +424,16 @@ layout = [
             sg.Text("Search"),
             sg.Input(expand_x=True, enable_events=True, key="-FILTER-"),
             sg.Checkbox(
-                text="Hide Jak 1",
-                default=False,
+                text="Jak 1",
+                default=True,
                 enable_events=True,
-                key="-HIDEJAK1-",
+                key="-INCLUDEJAK1-",
             ),
             sg.Checkbox(
-                text="Hide Jak 2",
-                default=False,
+                text="Jak 2",
+                default=True,
                 enable_events=True,
-                key="-HIDEJAK2-",
+                key="-INCLUDEJAK2-",
             ),
             sg.Checkbox(
                 text="Show Installed",
@@ -630,12 +630,12 @@ while True:
         INCLUDE_UNINSTALLED = window["-SHOWUNINSTALLED-"].get()
         LATEST_TABLE_DATA = getRefreshedTableData(None)
         window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
-    elif event == "-HIDEJAK1-":
-        HIDE_JAK1 = window["-HIDEJAK1-"].get()
+    elif event == "-INCLUDEJAK1-":
+        INCLUDE_JAK1 = window["-INCLUDEJAK1-"].get()
         LATEST_TABLE_DATA = getRefreshedTableData(None)
         window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
-    elif event == "-HIDEJAK2-":
-        HIDE_JAK2 = window["-HIDEJAK2-"].get()
+    elif event == "-INCLUDEJAK2-":
+        INCLUDE_JAK2 = window["-INCLUDEJAK2-"].get()
         LATEST_TABLE_DATA = getRefreshedTableData(None)
         window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
     elif event == "-REFRESH-":
