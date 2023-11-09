@@ -663,5 +663,37 @@
     "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-mod-base",
     "game": "jak2",
     "image_override_url": "https://i.imgur.com/nELVUMs.png"
+  },
+  "funki-showcase": {
+    "name": "FUNKI DELIRE Jak 1 Custom Levels",
+    "desc": "There are several maps. Parkour, Minecraft, Keira land, etc... Plenty of fun in the magnificent world of Jak and Daxter!",
+    "contributors": [
+      "FUNKI DELIRE (LEON GAGIN)"
+    ],
+    "tags": [
+      "custom-level"
+    ],
+    "release_date": "2023-11-08",
+    "URL": "https://github.com/OpenGOAL-Mods/OG-Funki-Showcase/releases",
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-Funki-Showcase",
+    "videos_url": "https://www.youtube.com/watch?v=8DmsSZMH9Do",
+    "image_override_url": "https://i.imgur.com/wzyqmMB.png",
+    "game": "jak1"
+  },
+  "funki-showcase-2": {
+    "name": "FUNKI DELIRE Jak 2 Custom Levels",
+    "desc": "There are several maps. Parkour, Minecraft, etc... Plenty of fun in the magnificent world of Jak and Daxter!",
+    "contributors": [
+      "FUNKI DELIRE (LEON GAGIN)"
+    ],
+    "tags": [
+      "custom-level"
+    ],
+    "release_date": "2023-11-08",
+    "URL": "https://github.com/OpenGOAL-Mods/OG-Funki-Showcase/releases",
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-Funki-Showcase",
+    "videos_url": "https://www.youtube.com/watch?v=8DmsSZMH9Do",
+    "image_override_url": "https://i.imgur.com/wzyqmMB.png",
+    "game": "jak2"
   }
 }
