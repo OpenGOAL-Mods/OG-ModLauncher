@@ -695,5 +695,21 @@
     "videos_url": "https://www.youtube.com/watch?v=8DmsSZMH9Do",
     "image_override_url": "https://i.imgur.com/wzyqmMB.png",
     "game": "jak2"
+  },
+  "ruh-hot-rod": {
+    "name": "Jak II Hot Rod",
+    "desc": "Changes one of the overworld zoomers to always spawn as a hot rod variant. Max speed has been increased from 40 to 200.",
+    "contributors": [
+      "Ruh"
+    ],
+    "tags": [
+      "gameplay-mod",
+      "texture-mod"
+    ],
+    "release_date": "2023-11-09",
+    "URL": "https://github.com/rileyfort/jak-2-hot-rod/releases",
+    "website_url": "https://github.com/rileyfort/jak-2-hot-rod",
+    "image_override_url": "https://i.imgur.com/mKSxIVu.png",
+    "game": "jak2"
   }
 }
