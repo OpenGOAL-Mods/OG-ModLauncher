@@ -193,6 +193,8 @@ col_width = [
 FILTER_STR = ""
 INCLUDE_INSTALLED = True
 INCLUDE_UNINSTALLED = True
+INCLUDE_JAK1 = True
+INCLUDE_JAK2 = True
 LATEST_TABLE_SORT = [6, False] # wakeup sorted by last launch date
 
 def getRefreshedTableData(sort_col_idx):
@@ -265,27 +267,29 @@ def getRefreshedTableData(sort_col_idx):
                         or FILTER_STR in mod["tags"].lower())
         
         if matches_filter:
-          if (INCLUDE_INSTALLED and mod["access_date"] != "Not Installed") or (
+            if (INCLUDE_JAK1 and mod["game"] == "jak1") or (INCLUDE_JAK2 and mod["game"] == "jak2"):
+
+              if (INCLUDE_INSTALLED and mod["access_date"] != "Not Installed") or (
               INCLUDE_UNINSTALLED and mod["access_date"] == "Not Installed"
           ):
-              mod_table_data.append(
-                  [
-                      mod_id,
-                      mod_name,
-                      mod["desc"],
-                      mod["tags"],
-                      mod["contributors"],
-                      mod["install_date"],
-                      mod["access_date"],
-                      # mod["latest_available_update_date"],
-                      mod["URL"],
-                      (mod["website_url"] if "website_url" in mod else ""),
-                      (mod["videos_url"] if "videos_url" in mod else ""),
-                      (mod["photos_url"] if "photos_url" in mod else ""),
-                      (mod["image_override_url"] if "image_override_url" in mod else ""),
-                      (mod["game"] if "game" in mod else "jak1")
-                  ]
-              )
+                mod_table_data.append(
+                    [
+                        mod_id,
+                        mod_name,
+                        mod["desc"],
+                        mod["tags"],
+                        mod["contributors"],
+                        mod["install_date"],
+                        mod["access_date"],
+                        # mod["latest_available_update_date"],
+                        mod["URL"],
+                        (mod["website_url"] if "website_url" in mod else ""),
+                        (mod["videos_url"] if "videos_url" in mod else ""),
+                        (mod["photos_url"] if "photos_url" in mod else ""),
+                        (mod["image_override_url"] if "image_override_url" in mod else ""),
+                        (mod["game"] if "game" in mod else "jak1")
+                    ]
+                )
     if sort_col_idx is None:
         # not from a heading click, retain sorting
         remapped_col_idx = LATEST_TABLE_SORT[0]
@@ -419,6 +423,18 @@ layout = [
         [
             sg.Text("Search"),
             sg.Input(expand_x=True, enable_events=True, key="-FILTER-"),
+            sg.Checkbox(
+                text="Jak 1",
+                default=True,
+                enable_events=True,
+                key="-INCLUDEJAK1-",
+            ),
+            sg.Checkbox(
+                text="Jak 2",
+                default=True,
+                enable_events=True,
+                key="-INCLUDEJAK2-",
+            ),
             sg.Checkbox(
                 text="Show Installed",
                 default=True,
@@ -612,6 +628,14 @@ while True:
         window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
     elif event == "-SHOWUNINSTALLED-":
         INCLUDE_UNINSTALLED = window["-SHOWUNINSTALLED-"].get()
+        LATEST_TABLE_DATA = getRefreshedTableData(None)
+        window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
+    elif event == "-INCLUDEJAK1-":
+        INCLUDE_JAK1 = window["-INCLUDEJAK1-"].get()
+        LATEST_TABLE_DATA = getRefreshedTableData(None)
+        window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
+    elif event == "-INCLUDEJAK2-":
+        INCLUDE_JAK2 = window["-INCLUDEJAK2-"].get()
         LATEST_TABLE_DATA = getRefreshedTableData(None)
         window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
     elif event == "-REFRESH-":
