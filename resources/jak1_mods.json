@@ -715,7 +715,7 @@
   },
   "dark-jak-renegade": {
     "name": "Dark Jak Renegade",
-    "desc": "Proof of concept. Lets you stay in Dark Jak after special attacks and with no timer. Also lets you use guns and jetboard as Dark Jak.",
+    "desc": "Proof of concept. Lets you stay in Dark Jak after special attacks and with no timer. Hold L2 to exit Dark Jak. Also lets you use guns and jetboard as Dark Jak.",
     "contributors": [
       "barg034"
     ],
