@@ -712,5 +712,21 @@
     "videos_url": "https://twitter.com/RuhPhorte/status/1722762492223611292",
     "image_override_url": "https://i.imgur.com/mKSxIVu.png",
     "game": "jak2"
+  },
+  "dark-jak-renegade": {
+    "name": "Dark Jak Renegade",
+    "desc": "Proof of concept. Lets you stay in Dark Jak after special attacks and with no timer. Also lets you use guns and jetboard as Dark Jak.",
+    "contributors": [
+      "barg034"
+    ],
+    "tags": [
+      "beta",
+      "gameplay-mod"
+    ],
+    "release_date": "2023-11-11",
+    "URL": "https://github.com/OpenGOAL-Mods/OG-Dark-Jak/releases",
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-Dark-Jak",
+    "image_override_url": "https://i.imgur.com/FWHdwbk.png",
+    "game": "jak2"
   }
 }
