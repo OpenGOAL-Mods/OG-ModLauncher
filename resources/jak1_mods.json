@@ -728,5 +728,23 @@
     "website_url": "https://github.com/OpenGOAL-Mods/OG-Dark-Jak",
     "image_override_url": "https://i.imgur.com/FWHdwbk.png",
     "game": "jak2"
+  },
+  "Jak1HNS": {
+    "name": "Online hide in seek for Jak and Daxter!",
+    "desc": "Click website button for setup instructions.",
+    "contributors": [
+      "barg034",
+      "ZedB0T"
+    ],
+    "tags": [
+      "beta",
+      "gameplay-mod",
+      "multiplayer"
+    ],
+    "release_date": "2023-11-11",
+    "URL": "https://github.com/OpenGOAL-Unofficial-Mods/jak-project/releases",
+    "website_url": "https://jakmods.dev/HNS",
+    "image_override_url": "https://i.imgur.com/A6YoQDG.png",
+    "game": "jak1"
   }
 }
