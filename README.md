@@ -14,4 +14,4 @@ DM @Zed#9719 or @barg034#8029 if you want help hosting your mods in a way the la
 You can audit it, build your own, and view the json here:
 <https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev>
 
-https://opengoal-unofficial-mods.github.io/
+https://jakmods.dev

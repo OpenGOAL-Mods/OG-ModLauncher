@@ -711,5 +711,18 @@
     "website_url": "https://github.com/rileyfort/jak-2-hot-rod",
     "image_override_url": "https://i.imgur.com/mKSxIVu.png",
     "game": "jak2"
+  },
+  "babak-variants": {
+    "name": "Babak Lurker Variants",
+    "desc": "Babak Lurkers with regional variations",
+    "contributors": ["AG1k"],
+    "tags": [
+      "texture-mod"
+    ],
+    "release_date": "2023-11-23",
+    "URL": "https://github.com/AG1k-s-Mods/Babak-Lurker-Variants/releases",
+    "image_override_url": "https://i.imgur.com/gfMrzmr.jpg",
+    "website_url": "https://github.com/AG1k-s-Mods/Babak-Lurker-Variants",
+    "game": "jak1"
   }
 }
