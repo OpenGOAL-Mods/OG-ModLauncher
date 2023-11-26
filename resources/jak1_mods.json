@@ -643,7 +643,7 @@
     "release_date": "2023-11-07",
     "URL": "https://github.com/RealOfficialKraken/OG-HeroMode-Plus/releases",
     "image_override_url": "https://i.imgur.com/UDlY6ep.png",
-    "website_url": "https://github.com/RealOfficialKraken/OG-HeroMode-Plus/README.md",
+    "website_url": "https://raw.githubusercontent.com/RealOfficialKraken/OG-HeroMode-Plus/main/README.md",
     "game": "jak2"
   },
   "random_actor_scale_2": {
@@ -682,7 +682,7 @@
   },
   "funki-showcase-2": {
     "name": "FUNKI DELIRE Jak 2 Custom Levels",
-    "desc": "There are several maps. Parkour, Minecraft, etc... Plenty of fun in the magnificent world of Jak and Daxter!",
+    "desc": "There are several maps. Parkour, Minecraft, etc... Plenty of fun in the magnificent world of Jak and Daxter! Recommended to change Time of Day to Palette 7 from the debug menu to see the maps clearly.",
     "contributors": [
       "FUNKI DELIRE (LEON GAGIN)"
     ],
@@ -693,7 +693,7 @@
     "URL": "https://github.com/OpenGOAL-Mods/OG-Funki-Showcase/releases",
     "website_url": "https://github.com/OpenGOAL-Mods/OG-Funki-Showcase",
     "videos_url": "https://www.youtube.com/watch?v=8DmsSZMH9Do",
-    "image_override_url": "https://i.imgur.com/wzyqmMB.png",
+    "image_override_url": "https://i.imgur.com/HYxK9yq.png",
     "game": "jak2"
   },
   "ruh-hot-rod": {
@@ -709,8 +709,43 @@
     "release_date": "2023-11-09",
     "URL": "https://github.com/rileyfort/jak-2-hot-rod/releases",
     "website_url": "https://github.com/rileyfort/jak-2-hot-rod",
+    "videos_url": "https://twitter.com/RuhPhorte/status/1722762492223611292",
     "image_override_url": "https://i.imgur.com/mKSxIVu.png",
     "game": "jak2"
+  },
+  "dark-jak-renegade": {
+    "name": "Dark Jak Renegade",
+    "desc": "Infinite Dark Jak, plus you can rolljump, use guns, vehicles, jetboard, etc. Reboot in debug mode to unlock everything at the start.",
+    "contributors": [
+      "barg034"
+    ],
+    "tags": [
+      "beta",
+      "gameplay-mod"
+    ],
+    "release_date": "2023-11-11",
+    "URL": "https://github.com/OpenGOAL-Mods/OG-Dark-Jak/releases",
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-Dark-Jak",
+    "image_override_url": "https://i.imgur.com/FWHdwbk.png",
+    "game": "jak2"
+  },
+  "Jak1HNS": {
+    "name": "Online hide in seek for Jak and Daxter!",
+    "desc": "Click website button for setup instructions.",
+    "contributors": [
+      "barg034",
+      "ZedB0T"
+    ],
+    "tags": [
+      "beta",
+      "gameplay-mod",
+      "multiplayer"
+    ],
+    "release_date": "2023-11-11",
+    "URL": "https://github.com/OpenGOAL-Unofficial-Mods/jak-project/releases",
+    "website_url": "https://jakmods.dev/HNS",
+    "image_override_url": "https://i.imgur.com/A6YoQDG.png",
+    "game": "jak1"
   },
   "babak-variants": {
     "name": "Babak Lurker Variants",
