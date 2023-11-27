@@ -291,22 +291,6 @@
     "videos_url": "https://www.youtube.com/watch?v=djoAMJMre6U",
     "game": "jak1"
   },
-  "mystery_word": {
-    "name": "Mystery Word V2",
-    "desc": "If you say a certain word the game resets itself (requires 'VoiceAttack')",
-    "contributors": [
-      "MortisDG"
-    ],
-    "tags": [
-      "gameplay-mod",
-      "challenge"
-    ],
-    "release_date": "2022-11-03",
-    "URL": "https://github.com/MortisDG/MysteryWordV2",
-    "website_url": "https://github.com/MortisDG/MysteryWordV2",
-    "videos_url": "https://www.youtube.com/watch?v=dlXkd6FhjyY",
-    "game": "jak1"
-  },
   "random_actors": {
     "name": "Random Actors/entities",
     "desc": "Frong beach",
