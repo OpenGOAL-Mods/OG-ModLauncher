@@ -715,7 +715,7 @@
   },
   "dark-jak-renegade": {
     "name": "Dark Jak Renegade",
-    "desc": "Infinite Dark Jak, plus you can rolljump, use guns, vehicles, jetboard, etc. Reboot in debug mode to unlock everything at the start.",
+    "desc": "Infinite Dark Jak, plus you can rolljump, use guns, vehicles, jetboard, etc. Hold L2 to use Dark Bomb/Dark Blast, or to undo Dark Giant. Reboot in debug mode to unlock everything at the start.",
     "contributors": [
       "barg034"
     ],
