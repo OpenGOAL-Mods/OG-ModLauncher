@@ -721,10 +721,7 @@ def reset():
         for i in range(len(sorted_table_headings)):
             window["-MODTABLE-"].Widget.heading(i, text=sorted_table_headings[i])
 
-        if len(LATEST_TABLE_DATA) > 0 and (
-            window["-SELECTEDMODNAME-"] is None
-            or window["-SELECTEDMODNAME-"].get() == ""
-        ):
+        if len(LATEST_TABLE_DATA) > 0:
             window["-MODTABLE-"].update(select_rows=[0])
             handleModTableSelection(0)
     else:
