@@ -607,7 +607,7 @@
   },
   "dax2": {
     "name": "Daxter II",
-    "desc": "Daxter finally gets his sequel! (Still in Alpha, may be impossible to complete atm. Eventually I'd like to support on-foot guns, Dark Daxter, etc)",
+    "desc": "Daxter finally gets his sequel!",
     "contributors": ["barg034"],
     "tags": [
       "beta",
