@@ -759,5 +759,18 @@
     "image_override_url": "https://i.imgur.com/gfMrzmr.jpg",
     "website_url": "https://github.com/AG1k-s-Mods/Babak-Lurker-Variants",
     "game": "jak1"
+  },
+  "cyberjak-2077": {
+    "name": "Cyberjak 2077",
+    "desc": "This mod replaces some of the textures with \"Cyberpunk\" themed ones. (Mild NSFW)",
+    "contributors": ["AG1k"],
+    "tags": [
+      "texture-mod"
+    ],
+    "release_date": "2023-11-26",
+    "URL": "https://github.com/AG1k/Cyberjak-2077/releases",
+    "image_override_url": "https://media.discordapp.net/attachments/1176811811379630150/1178514804655263844/Base_Profile_Screenshot_2023.11.12_-_03.39.21.152.png",
+    "website_url": "https://github.com/AG1k/Cyberjak-2077",
+    "game": "jak2"
   }
 }
