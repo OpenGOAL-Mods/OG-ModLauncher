@@ -1,7 +1,7 @@
 {
-  "randomizer_test": {
-    "name": "Checkpoint Randomizer (test)",
-    "desc": "TEST Warp to a random checkpoint on various triggers (cells, flies, orbs, eco, death).",
+  "randomizer": {
+    "name": "Checkpoint Randomizer",
+    "desc": "Warp to a random checkpoint on various triggers (cells, flies, orbs, eco, death).",
     "contributors": [
       "ZedB0T",
       "MikeGamePro",
@@ -19,8 +19,8 @@
     "videos_url": "https://www.youtube.com/watch?v=B5mEhVt0v68",
     "game": "jak1"
   },
-  "randomizer": {
-    "name": "Checkpoint Randomizer",
+  "randomizer_test": {
+    "name": "Checkpoint Randomizer (old)",
     "desc": "Warp to a random checkpoint on various triggers (cells, flies, orbs, eco, death).",
     "contributors": [
       "ZedB0T",
