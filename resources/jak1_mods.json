@@ -393,18 +393,21 @@
   },
   "forgotten_lands": {
     "name": "The Forgotten Lands",
-    "desc": "Kuitar's first level. Just start a normal game at Geyser Rock. This is a work in progress and not fully finished yet.",
+    "desc": "Experience a new story and levels. Start a new game and beat Geyser Rock to access the custom levels.",
     "contributors": [
-      "Kuitar"
+      "Kuitar",
+      "Hat-Kid"
     ],
     "tags": [
       "custom-level",
+      "gameplay-mod",
       "texture-mod",
       "beta"
     ],
     "release_date": "2023-01-08",
     "URL": "https://github.com/Kuitar5/the-forgotten-lands/releases",
     "website_url": "https://github.com/Kuitar5/the-forgotten-lands/blob/main/README.md#the-forgotten-lands",
+    "image_override_url": "https://i.imgur.com/tKIqG14.png",
     "videos_url": "https://youtube.com/playlist?list=PLUvfXyvZk2SC0A8TtqYV8ap97aVGu9rRP",
     "game": "jak1"
   },
