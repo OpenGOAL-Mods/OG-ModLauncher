@@ -93,7 +93,7 @@
     "game": "jak1"    
   },
   "speedrun_practice": {
-    "name": "Speedrun practice mod",
+    "name": "Speedrun Practice (Jak 1)",
     "desc": "Pseudo-save states: L2+Down (or Ctrl+C on keyboard) to save / L2+Up (or Ctrl+V on keyboard) to load. Extra checkpoints in speedrun menu (while holding L1+R1+X, press Select or Start)",
     "contributors": [
       "ZedB0T",
@@ -108,6 +108,22 @@
     "website_url": "https://github.com/OpenGOAL-Mods/OG-Speedrun-Practice/blob/main/README.md",
     "videos_url": "https://www.youtube.com/watch?v=a_SIccmgpj4",
     "game": "jak1"
+  },
+  "speedrun_practice_2": {
+    "name": "Speedrun Practice (Jak 2)",
+    "desc": "Pseudo-save states: R3+Down to save / R3+Up to load.",
+    "contributors": [
+      "barg034",
+      "ZedB0T"
+    ],
+    "tags": [
+      "speedrunning",
+      "practice"
+    ],
+    "release_date": "2023-12-11",
+    "URL": "https://github.com/OpenGOAL-Mods/OG-Speedrun-Practice/releases",
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-Speedrun-Practice/blob/main/README.md",
+    "game": "jak2"
   },
   "microtransactions": {
     "name": "MicroTransactions",
