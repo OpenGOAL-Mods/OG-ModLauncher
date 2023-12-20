@@ -40,15 +40,9 @@ jobs:
       - name: Upload Assets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          TAG_VAL=${{ steps.tag_version.outputs.new_tag }}
-          echo $TAG_VAL
-          gh release upload "${TAG_VAL}" ${{ github.WORKSPACE }}/openGOALModLauncher.exe --repo ${{ github.repository }} --clobber
+        run: gh release upload "${{ steps.tag_version.outputs.new_tag }}" ${{ github.WORKSPACE }}/openGOALModLauncher.exe --repo ${{ github.repository }} --clobber
 
       - name: Publish Release
         env:
           GITHUB_TOKEN: ${{ secrets.token }}
-        run: |
-          TAG_VAL=${{ steps.tag_version.outputs.new_tag }}
-          echo $TAG_VAL
-          gh release edit ${TAG_VAL} --draft=false --repo ${{ github.repository }}
+        run: gh release edit ${{ steps.tag_version.outputs.new_tag }}} --draft=false --repo ${{ github.repository }}
