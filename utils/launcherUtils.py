@@ -20,6 +20,7 @@ import time
 import tkinter as tk
 import urllib.request
 import zipfile
+from zipfile import BadZipFile
 from appdirs import AppDirs
 import platform
 import stat
@@ -378,7 +379,11 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
       )
       assets = json.loads(json.dumps(requests.get(url=r[0].get("assets_url"), params=PARAMS).json()))
       for asset in assets:
-        if "linux" not in asset.get("name") and "macos" not in asset.get("name") and "json" not in asset.get("name"):
+        # TODO: fork here based on sys.platform
+        if "linux" in asset.get("name") or "macos" in asset.get("name") or "json" in asset.get("name"):
+          print("Release asset " + asset.get("name") + " is not for windows - SKIPPING!")
+        else:
+          print("USING: Release asset " + asset.get("name") + "! Downloading from " + asset.get("browser_download_url"))
           LatestRelAssetsURL = asset.get("browser_download_url")
           break
       
@@ -513,8 +518,12 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
         # extract mod zipped update
         print("Extracting update")
         TempDir = InstallDir + "/temp"
-        with zipfile.ZipFile(TempDir + "/updateDATA.zip", "r") as zip_ref:
-          zip_ref.extractall(TempDir)
+        try:
+          with zipfile.ZipFile(TempDir + "/updateDATA.zip", "r") as zip_ref:
+            zip_ref.extractall(TempDir)
+        except BadZipFile as e:
+          print("Error while extracting from zip: ", e)
+          return
 
         # delete the mod zipped update archive
         try_remove_file(TempDir + "/updateDATA.zip")
