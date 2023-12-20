@@ -54,5 +54,5 @@ jobs:
 
       - name: Publish Release
         env:
-          GITHUB_TOKEN: ${{ secrets.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release edit ${{ steps.tag_version.outputs.new_tag }} --draft=false --repo ${{ github.repository }}
