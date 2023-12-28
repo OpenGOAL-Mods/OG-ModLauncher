@@ -715,7 +715,7 @@ def loading_screen_with_thread(thread):
     windowstatus = "loading"
 
     # hide all the buttons and display a window showing that it is installing
-    match random.randint(0, 6):
+    match random.randint(0, 8):
         case 0:
             loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-0.png")
         case 1:
@@ -730,6 +730,10 @@ def loading_screen_with_thread(thread):
             loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-5.png")
         case 6:
             loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-6.png")
+        case 7:
+            loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-7.png")
+        case 8:
+            loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-8.png")
         case _:
             loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-0.png")
     window["-LOADINGIMAGE-"].update(source=githubUtils.resize_image(loadingimage, 970, 607))
