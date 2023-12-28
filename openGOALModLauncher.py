@@ -85,9 +85,6 @@ installpath = str(LauncherDir + "\\resources\\")
 
 dirs = AppDirs(roaming=True)
 
-# C:\Users\USERNAME\AppData\Roaming\OPENGOAL-UnofficalModLauncher\
-AppdataPATH = os.path.join(dirs.user_data_dir, "OPENGOAL-UnofficalModLauncher", "")
-
 # C:\Users\USERNAME\AppData\Roaming\OpenGOAL-Mods\
 ModFolderPATH = os.path.join(dirs.user_data_dir, "OpenGOAL-Mods", "")
 
@@ -515,8 +512,8 @@ layout = [
                                                 expand_x=True,
                                             ),
                                             sg.Btn(
-                                                button_text="Reinstall",
-                                                key="-REINSTALL-",
+                                                button_text="Rebuild",
+                                                key="-REBUILD-",
                                                 expand_x=True,
                                             ),
                                             sg.Btn(
@@ -567,7 +564,7 @@ layout = [
                                             )
                                         ]
                                     ],
-                                    size=(500, 300),
+                                    size=(450, 300),
                                 ),
                             ],
                             [sg.HorizontalSeparator()],
@@ -653,7 +650,7 @@ def handleModTableSelection(row):
     window["-SELECTEDMODTAGS-"].update(f"Tags: {mod_tags}")
     window["-SELECTEDMODCONTRIBUTORS-"].update(f"Contributors: {mod_contributors}")
     window["-VIEWFOLDER-"].update(disabled=(mod_access_date == "Not Installed"))
-    window["-REINSTALL-"].update(disabled=(mod_access_date == "Not Installed"))
+    window["-REBUILD-"].update(disabled=(mod_access_date == "Not Installed"))
     window["-UNINSTALL-"].update(disabled=(mod_access_date == "Not Installed"))
     window["-WEBSITE-"].update(disabled=(mod_website_url == ""))
     window["-WEBSITE-"].metadata["url"] = mod_website_url
@@ -709,7 +706,7 @@ launch_finished_event = threading.Event()
 def launch_mod(tmpModURL):
     [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
 
-    launcherUtils.launch(tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame)
+    launcherUtils.update_and_launch(tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame)
     launch_finished_event.set()
 
 
@@ -839,7 +836,7 @@ while True:
             launcherUtils.openFolder(dir)
         else:
             sg.Popup("Selected mod is not installed", keep_on_top=True, icon=iconfile)
-    elif event == "-REINSTALL-":
+    elif event == "-REBUILD-":
         tmpModName = window["-SELECTEDMODNAME-"].get()
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
         tmpModURL = window["-SELECTEDMODNAME-"].metadata["url"]
@@ -849,13 +846,13 @@ while True:
         if tmpModSelected in subfolders:
             dir = dirs.user_data_dir + "\\OpenGOAL-Mods\\" + tmpModSelected
             ans = sg.popup_ok_cancel(
-                "Confirm: reinstalling "
+                "Confirm: rebuilding "
                 + dir
                 + " \n\nNote: this will re-extract texture_replacements too",
                 icon=iconfile,
             )
             if ans == "OK":
-                launcherUtils.reinstall(
+                launcherUtils.rebuild(
                     tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame
                 )
                 reset()
