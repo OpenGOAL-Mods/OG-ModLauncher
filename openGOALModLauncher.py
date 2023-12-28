@@ -711,31 +711,23 @@ def reset():
     else:
         print("Window is closed. Cannot reset.")
 
+LOADING_IMAGE_URLS = [
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-0.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-1.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-2.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-3.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-4.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-5.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-6.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-7.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-8.png"
+]
+
 def loading_screen_with_thread(thread):
     windowstatus = "loading"
 
     # hide all the buttons and display a window showing that it is installing
-    match random.randint(0, 8):
-        case 0:
-            loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-0.png")
-        case 1:
-            loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-1.png")
-        case 2:
-            loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-2.png")
-        case 3:
-            loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-3.png")
-        case 4:
-            loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-4.png")
-        case 5:
-            loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-5.png")
-        case 6:
-            loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-6.png")
-        case 7:
-            loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-7.png")
-        case 8:
-            loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-8.png")
-        case _:
-            loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-0.png")
+    loadingimage = getPNGFromURL(LOADING_IMAGE_URLS[random.randint(0, len(LOADING_IMAGE_URLS)-1)])
     window["-LOADINGIMAGE-"].update(source=githubUtils.resize_image(loadingimage, 970, 607))
     window["-LOADINGFRAME-"].update(visible=True)
     window["-LOADINGFRAME-"].unhide_row()
