@@ -29,6 +29,7 @@ import platform
 import stat
 from datetime import datetime
 from pathlib import Path
+import random
 
 sg.theme("DarkBlue3")
 
@@ -85,9 +86,6 @@ installpath = str(LauncherDir + "\\resources\\")
 
 dirs = AppDirs(roaming=True)
 
-# C:\Users\USERNAME\AppData\Roaming\OPENGOAL-UnofficalModLauncher\
-AppdataPATH = os.path.join(dirs.user_data_dir, "OPENGOAL-UnofficalModLauncher", "")
-
 # C:\Users\USERNAME\AppData\Roaming\OpenGOAL-Mods\
 ModFolderPATH = os.path.join(dirs.user_data_dir, "OpenGOAL-Mods", "")
 
@@ -124,22 +122,13 @@ def getPNGFromURL(URL):
 
 # url to icon for the window
 
+splashfile = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlaunchersplash.png")
 
-splashfile = getPNGFromURL(
-    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlaunchersplash.png"
-)
+noimagefile = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/noRepoImageERROR.png")
 
-noimagefile = getPNGFromURL(
-    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/noRepoImageERROR.png"
-)
+iconfile = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/appicon.ico")
 
-iconfile = getPNGFromURL(
-    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/appicon.ico"
-)
-
-loadingimage = getPNGFromURL(
-    "https://cdn.discordapp.com/attachments/1012837220664750172/1151746308000989184/image.png"
-)
+loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-0.png")
 
 # make the modfolderpath if first install
 if not os.path.exists(ModFolderPATH):
@@ -515,8 +504,8 @@ layout = [
                                                 expand_x=True,
                                             ),
                                             sg.Btn(
-                                                button_text="Reinstall",
-                                                key="-REINSTALL-",
+                                                button_text="Rebuild",
+                                                key="-REBUILD-",
                                                 expand_x=True,
                                             ),
                                             sg.Btn(
@@ -567,7 +556,7 @@ layout = [
                                             )
                                         ]
                                     ],
-                                    size=(500, 300),
+                                    size=(450, 300),
                                 ),
                             ],
                             [sg.HorizontalSeparator()],
@@ -653,7 +642,7 @@ def handleModTableSelection(row):
     window["-SELECTEDMODTAGS-"].update(f"Tags: {mod_tags}")
     window["-SELECTEDMODCONTRIBUTORS-"].update(f"Contributors: {mod_contributors}")
     window["-VIEWFOLDER-"].update(disabled=(mod_access_date == "Not Installed"))
-    window["-REINSTALL-"].update(disabled=(mod_access_date == "Not Installed"))
+    window["-REBUILD-"].update(disabled=(mod_access_date == "Not Installed"))
     window["-UNINSTALL-"].update(disabled=(mod_access_date == "Not Installed"))
     window["-WEBSITE-"].update(disabled=(mod_website_url == ""))
     window["-WEBSITE-"].metadata["url"] = mod_website_url
@@ -703,15 +692,10 @@ def handleModTableSelection(row):
 
 windowstatus = "main"
 
-launch_finished_event = threading.Event()
-
-
 def launch_mod(tmpModURL):
     [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
 
-    launcherUtils.launch(tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame)
-    launch_finished_event.set()
-
+    launcherUtils.update_and_launch(tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame)
 
 def reset():
     global LATEST_TABLE_DATA
@@ -727,6 +711,48 @@ def reset():
     else:
         print("Window is closed. Cannot reset.")
 
+LOADING_IMAGE_URLS = [
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-0.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-1.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-2.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-3.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-4.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-5.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-6.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-7.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-8.png"
+]
+
+def loading_screen_with_thread(thread):
+    windowstatus = "loading"
+
+    # hide all the buttons and display a window showing that it is installing
+    loadingimage = getPNGFromURL(LOADING_IMAGE_URLS[random.randint(0, len(LOADING_IMAGE_URLS)-1)])
+    window["-LOADINGIMAGE-"].update(source=githubUtils.resize_image(loadingimage, 970, 607))
+    window["-LOADINGFRAME-"].update(visible=True)
+    window["-LOADINGFRAME-"].unhide_row()
+    window["-MAINFRAME-"].update(visible=False)
+    window["-MAINFRAME-"].hide_row()
+    window.refresh()
+
+    # online launch
+    window["-LAUNCH-"].update(disabled=True)
+    window["-LAUNCH-"].update("Updating...")
+    thread.start()
+
+    # Continue processing events while the background thread runs
+    while thread.is_alive():
+        event, values = window.read(timeout=100)
+
+        if event == "Exit" or event == sg.WIN_CLOSED:
+            break
+
+        # Handle other events here...
+
+    # Reset windowstatus back to "main"
+    windowstatus = "main"
+
+    reset()
 
 # this is the main event loop where we handle user input
 reset()
@@ -796,40 +822,14 @@ while True:
     elif event == "-REFRESH-":
         reset()
     elif event == "-LAUNCH-":
-        windowstatus = "launching"
-        # hide all the buttons and display a window showing that it is installing
-        window["-LOADINGFRAME-"].update(visible=True)
-        window["-LOADINGFRAME-"].unhide_row()
-        window["-MAINFRAME-"].update(visible=False)
-        window["-MAINFRAME-"].hide_row()
-        window.refresh()
-
         tmpModName = window["-SELECTEDMODNAME-"].get()
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
         tmpModURL = window["-SELECTEDMODNAME-"].metadata["url"]
         tmpGame = window["-SELECTEDMODNAME-"].metadata["game"]
 
-        # online launch
-        window["-LAUNCH-"].update(disabled=True)
-        window["-LAUNCH-"].update("Updating...")
         launch_thread = threading.Thread(target=launch_mod, args=(tmpModURL,))
-        launch_thread.start()
-        # launch_thread.join()
 
-        # Continue processing events while the background thread runs
-        while not launch_finished_event.is_set():
-            event, values = window.read(timeout=100)
-
-            if event == "Exit" or event == sg.WIN_CLOSED:
-                break
-
-            # Handle other events here...
-
-        # Reset windowstatus back to "main"
-        windowstatus = "main"
-        launch_finished_event.clear()
-
-        reset()
+        loading_screen_with_thread(launch_thread)
     elif event == "-VIEWFOLDER-":
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
         subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
@@ -839,7 +839,7 @@ while True:
             launcherUtils.openFolder(dir)
         else:
             sg.Popup("Selected mod is not installed", keep_on_top=True, icon=iconfile)
-    elif event == "-REINSTALL-":
+    elif event == "-REBUILD-":
         tmpModName = window["-SELECTEDMODNAME-"].get()
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
         tmpModURL = window["-SELECTEDMODNAME-"].metadata["url"]
@@ -849,16 +849,15 @@ while True:
         if tmpModSelected in subfolders:
             dir = dirs.user_data_dir + "\\OpenGOAL-Mods\\" + tmpModSelected
             ans = sg.popup_ok_cancel(
-                "Confirm: reinstalling "
+                "Confirm: rebuilding "
                 + dir
                 + " \n\nNote: this will re-extract texture_replacements too",
                 icon=iconfile,
             )
             if ans == "OK":
-                launcherUtils.reinstall(
-                    tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame
-                )
-                reset()
+                rebuild_thread = threading.Thread(target=launcherUtils.rebuild, args=(tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame))
+
+                loading_screen_with_thread(rebuild_thread)
         else:
             sg.Popup("Selected mod is not installed", keep_on_top=True, icon=iconfile)
     elif event == "-UNINSTALL-":
