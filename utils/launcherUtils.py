@@ -28,7 +28,6 @@ from pathlib import Path
 import time
 import ctypes
 
-EXTRACT_ON_UPDATE = "true"
 FILE_DATE_TO_CHECK = "gk.exe"
 UPDATE_FILE_EXTENTION = ".zip"
 
@@ -38,7 +37,6 @@ if getattr(sys, "frozen", False):
 elif __file__:
     LauncherDir = os.path.dirname(__file__)
 
-extractOnUpdate = bool(str(EXTRACT_ON_UPDATE).replace("t", "T").replace("f", "F"))
 ExecutableName = str(
     FILE_DATE_TO_CHECK
 )  # Executable we're checking the 'modified' time of
@@ -112,6 +110,11 @@ def try_remove_file(file):
     if exists(file):
         os.remove(file)
 
+def is_junction(path: str) -> bool:
+    try:
+        return bool(os.readlink(path))
+    except OSError:
+        return False
 
 def try_remove_dir(dir):
     if exists(dir):
@@ -174,65 +177,12 @@ def link_files_by_extension(source_dir, destination_dir):
             #print("making " + destination_path + "<-des source ->" + file_path)
             makeFileSymlink(destination_path, file_path)
 
-def launch_local(MOD_ID, GAME):
-    try:
-        # Close Gk and goalc if they were open.
-        try_kill_process("gk.exe")
-        try_kill_process("goalc.exe")
-
-        time.sleep(1)
-        InstallDir = ModFolderPATH + MOD_ID
-
-        UniversalIsoPath = AppdataPATH + "\OpenGOAL-Mods\_iso_data"
-        
-        GKCOMMANDLINElist = [
-            os.path.abspath(InstallDir + "\gk.exe"),  # Using os.path.abspath to get the absolute path.
-            "--proj-path",
-            os.path.abspath(InstallDir + "\\data"),  # Using absolute path for data folder too.
-            "-boot",
-            "-fakeiso",
-            "-v",
-        ]
-        if (GAME == "jak2"):
-            GKCOMMANDLINElist = [
-            InstallDir + "\gk.exe",
-            "--proj-path",
-            InstallDir + "\\data",
-            "-v",
-            "--game",
-            "jak2",
-            "--",
-            "-boot",
-            "-fakeiso"
-        ]
-        print("running: ", GKCOMMANDLINElist)
-        subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir))
-    except Exception as e:  # Catch all exceptions and print the error message.
-        return str(e)
-
-
 def openFolder(path):
     if not exists(dirs.user_data_dir + "\\OpenGOAL\\" + "mods\\data\\iso_data\\jak2"):
         os.makedirs(dirs.user_data_dir + "\\OpenGOAL\\" + "mods\\data\\iso_data\\jak2")
     FILEBROWSER_PATH = os.path.join(os.getenv("WINDIR"), "explorer.exe")
     print(path)
     subprocess.run([FILEBROWSER_PATH, path])
-
-def reinstall(URL, MOD_ID, MODNAME, LINKTYPE, GAME):
-    InstallDir = ModFolderPATH + MOD_ID
-    AppdataPATH = os.getenv("APPDATA")
-
-    ensure_jak_folders_exist()
-
-    path_to_remove = InstallDir
-    if os.path.exists(path_to_remove):
-        shutil.rmtree(path_to_remove)
-        print(f"Path '{path_to_remove}' removed successfully.")
-    else:
-        print(f"Path '{path_to_remove}' does not exist.")
-    
-    launch(URL, MOD_ID, MODNAME, LINKTYPE, GAME)
-    return
 
 def replaceText(path, search_text, replace_text):
     # Check if the file exists
@@ -313,7 +263,235 @@ def getDecompiler(path):
 
     return
 
-def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
+def launch_local(MOD_ID, GAME):
+    try:
+        # Close Gk and goalc if they were open.
+        try_kill_process("gk.exe")
+        try_kill_process("goalc.exe")
+
+        time.sleep(1)
+        InstallDir = ModFolderPATH + MOD_ID
+        
+        if GAME == "jak2":
+          GKCOMMANDLINElist = [
+            InstallDir + "\gk.exe",
+            "--proj-path",
+            InstallDir + "\\data",
+            "-v",
+            "--game",
+            "jak2",
+            "--",
+            "-boot",
+            "-fakeiso"
+          ]
+        else: # if GAME == "jak1":
+          GKCOMMANDLINElist = [
+              os.path.abspath(InstallDir + "\gk.exe"),  # Using os.path.abspath to get the absolute path.
+              "--proj-path",
+              os.path.abspath(InstallDir + "\\data"),  # Using absolute path for data folder too.
+              "-boot",
+              "-fakeiso",
+              "-v",
+          ]
+        
+        print("running: ", GKCOMMANDLINElist)
+        subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir))
+    except Exception as e:  # Catch all exceptions and print the error message.
+        return str(e)
+    
+def download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, LatestRelAssetsURL):
+    #start the actual update method if needUpdate is true
+    print("\nNeed to update")
+    print("Starting Update...")
+    # Close Gk and goalc if they were open.
+    try_kill_process("gk.exe")
+    try_kill_process("goalc.exe")
+
+    # download update from github
+    # Create a new directory because it does not exist
+    try_remove_dir(InstallDir + "/temp")
+    if not os.path.exists(InstallDir + "/temp"):
+        print("Creating install dir: " + InstallDir)
+        os.makedirs(InstallDir + "/temp", exist_ok=True)
+        
+    response = requests.get(LatestRelAssetsURL)
+    if response.history:
+        print("Request was redirected")
+        for resp in response.history:
+            print(resp.status_code, resp.url)
+            print("Final destination:")
+            print(response.status_code, response.url)
+            LatestRelAssetsURL = response.url
+
+    else:
+        print("Request was not redirected")
+
+    print("Downloading update from " + LatestRelAssetsURL)
+    file = urllib.request.urlopen(LatestRelAssetsURL)
+    print()
+    print(str("File size is ") + str(file.length))
+    urllib.request.urlretrieve(
+        LatestRelAssetsURL, InstallDir + "/temp/updateDATA.zip", show_progress
+    )
+    print("Done downloading")
+    r = requests.head(LatestRelAssetsURL, allow_redirects=True)
+
+    # delete any previous installation
+    print("Removing previous installation " + InstallDir)
+    try_remove_dir(InstallDir + "/data")
+    try_remove_dir(InstallDir + "/.github")
+    try_remove_dir(InstallDir + "/SND")
+    try_remove_file(InstallDir + "/gk.exe")
+    try_remove_file(InstallDir + "/goalc.exe")
+    try_remove_file(InstallDir + "/extractor.exe")
+    #jak2hack
+    try_remove_file(InstallDir + "/decompiler.exe")
+
+    # extract mod zipped update
+    print("Extracting update")
+    TempDir = InstallDir + "/temp"
+    try:
+      with zipfile.ZipFile(TempDir + "/updateDATA.zip", "r") as zip_ref:
+        zip_ref.extractall(TempDir)
+    except BadZipFile as e:
+      print("Error while extracting from zip: ", e)
+      return
+
+    # delete the mod zipped update archive
+    try_remove_file(TempDir + "/updateDATA.zip")
+
+    SubDir = TempDir
+    if LINK_TYPE == githubUtils.LinkTypes.BRANCH or len(os.listdir(SubDir)) == 1:
+      # for branches, the downloaded zip puts all files one directory down
+      SubDir = SubDir + "/" + os.listdir(SubDir)[0]
+
+    print("Moving files from " + SubDir + " up to " + InstallDir)
+    allfiles = os.listdir(SubDir)
+    for f in allfiles:
+      shutil.move(SubDir + "/" + f, InstallDir + "/" + f)
+    try_remove_dir(TempDir)
+
+    #replace the settings and discord RPC texts automatically before we build the game.
+    replaceText(
+      InstallDir + r"\data\goal_src\jak1\pc\pckernel.gc",
+      "Playing Jak and Daxter: The Precursor Legacy",
+      "Playing " + MOD_NAME,
+    )
+    replaceText(
+      InstallDir + r"\data\goal_src\jak1\pc\pckernel.gc",
+      "/pc-settings.gc",
+      r"/" + MOD_ID + "-settings.gc",
+    )
+    replaceText(
+      InstallDir + r"\data\goal_src\jak1\pc\pckernel-common.gc",
+      "/pc-settings.gc",
+      r"/" + MOD_ID + "-settings.gc",
+    )
+    replaceText(
+      InstallDir + r"\data\goal_src\jak1\pc\pckernel-common.gc",
+      "/pc-settings.gc",
+      r"/" + MOD_ID + "-settings.gc",
+    )
+    replaceText(
+      InstallDir + r"\data\decompiler\config\jak1_ntsc_black_label.jsonc",
+      "\"process_tpages\": true,",
+      "\"process_tpages\": false,",
+    )
+    replaceText(
+      InstallDir + r"\data\decompiler\config\jak1_pal.jsonc",
+      "\"process_tpages\": true,",
+
+      "\"process_tpages\": false,",
+    )
+
+def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME):
+    InstallDir = ModFolderPATH + MOD_ID
+    UniversalIsoPath = AppdataPATH + "\OpenGOAL-Mods\_iso_data"
+
+    print("Looking for some ISO data in " + UniversalIsoPath + "//" + GAME + "//")
+    found_universal_iso = exists(UniversalIsoPath +"//" + GAME + "//" + "Z6TAIL.DUP")
+
+    #if ISO_DATA has content, store this path to pass to the extractor
+    if found_universal_iso:
+        print("We found ISO data from a previous mod installation! Lets use it!")
+        print("Found in " + UniversalIsoPath +"//" + GAME + "//" + "Z6TAIL.DUP")
+        iso_path = UniversalIsoPath + "\\" + GAME
+        
+        if not is_junction(InstallDir + "\\data\\iso_data"):
+          # we have iso extracted to universal folder already, just symlink it. otherwise we'll copy it there and symlink after extractor closes
+          try_remove_dir(InstallDir + "\\data\\iso_data/")
+          makeDirSymlink(InstallDir + "\\data\\iso_data\\", UniversalIsoPath)
+    else:
+        print("We did not find " + GAME + " ISO data from a previous mod, lets ask for some!") 
+        
+        # cleanup and remove a corrupted iso
+        if os.path.exists(UniversalIsoPath + "//" + GAME) and os.path.isdir(UniversalIsoPath) and not (exists((UniversalIsoPath + "//" + GAME + "//" + "Z6TAIL.DUP"))):
+            print("Removing corrupted iso destination...")
+            shutil.rmtree(UniversalIsoPath + "//" + GAME)
+            ensure_jak_folders_exist()
+            
+        # prompt for their ISO and store its path
+        root = tk.Tk()
+        prompt = "Please select your " + GAME + " ISO"
+        print(prompt)
+        root.title(prompt)
+        root.geometry("230x1")
+        root.wm_attributes('-topmost', 1)
+        iso_path = filedialog.askopenfilename(parent=root, title=prompt)
+        root.destroy()
+        if iso_path == "":
+          print("user closed popup")
+          return
+        if pathlib.Path(iso_path).is_file:
+            if not (pathlib.Path(iso_path).suffix).lower() == ".iso":
+                print("yo, this is not an ISO: " + (pathlib.Path(iso_path).suffix).lower())
+                return
+
+    # Close Gk and goalc if they were open.
+    try_kill_process("gk.exe")
+    try_kill_process("goalc.exe")
+    print("Done update starting extractor This one can take a few moments! \n")
+    
+    #Extract and compile
+    if GAME == "jak1":
+        extractor_command_list = [InstallDir + "\extractor.exe", "-f", iso_path, "-e", "-v", "-d", "-c"]
+        print(extractor_command_list)
+        extractor_result = subprocess.run(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir) )
+
+        if extractor_result.returncode == 0:
+            print("done extracting!")
+        else:
+            print("Extractor error!")
+            return
+        
+    elif GAME == "jak2":
+        extractor_command_list = [InstallDir + "\extractor.exe", "-f", iso_path, "-e", "-v", "-d", "-c", "-g", "jak2"]
+        print(extractor_command_list)
+        extractor_result = subprocess.run(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir))
+
+        if extractor_result.returncode == 0:
+            print("done extracting!")
+        else:
+            print("Extractor error!")
+            return
+
+    # symlink isodata for custom levels art group (goalc doesnt take -f flag)
+    # if exists(UniversalIsoPath + r"" + "//" + GAME + "//" + "Z6TAIL.DUP") and GAME == "jak1":
+    #     ensure_jak_folders_exist();
+    #     makeDirSymlink(InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "//" + GAME)
+
+    # move the extrated contents to the universal launchers directory for next time.
+    if not found_universal_iso:
+        ensure_jak_folders_exist()
+        moveDirContents(InstallDir + "\\data\\iso_data/" + GAME, UniversalIsoPath + "//" + GAME)
+        # replace iso_data with symlink
+        try_remove_dir(InstallDir + "\\data\\iso_data/")
+        makeDirSymlink(InstallDir + "\\data\\iso_data", UniversalIsoPath)
+    
+    launch_local(MOD_ID, GAME)
+    return
+
+def update_and_launch(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME):
     if URL is None:
         return
 
@@ -330,35 +508,8 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
 
     # paths
     InstallDir = ModFolderPATH + MOD_ID
-    AppdataPATH = os.getenv("APPDATA")
     UniversalIsoPath = AppdataPATH + "\OpenGOAL-Mods\_iso_data"
     ensure_jak_folders_exist()
-    DataFolder = InstallDir + "\\data"
-    GkPATH = InstallDir + "\gk.exe"
-    GoalCPATH = InstallDir + "\goalc.exe"
-    DecompilerPATH = InstallDir + "\decompiler.exe"
-    
-    GKCOMMANDLINElist = [
-        GkPATH,
-        "--proj-path",
-        DataFolder,
-        "-boot",
-        "-fakeiso",
-        "-v",
-    ]
-
-    if (GAME == "jak2"):
-        GKCOMMANDLINElist = [
-        GkPATH,
-        "--proj-path",
-        DataFolder,
-        "-v",
-        "--game",
-        "jak2",
-        "--",
-        "-boot",
-        "-fakeiso",
-    ]
 
     # store Latest Release and check our local date too.
     if LINK_TYPE == githubUtils.LinkTypes.BRANCH:
@@ -397,10 +548,10 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
         )
 
     # update checks
+    Outdated = bool(LastWrite < LatestRel)
     NotExtracted = bool(not (exists(UniversalIsoPath + "//" + GAME + "//" + "Z6TAIL.DUP")))
-
     NotCompiled = bool(not (exists(InstallDir + r"\data\out" + "//" + GAME + "//" + "fr3\GAME.fr3")))
-    needUpdate = bool((LastWrite < LatestRel) or (NotExtracted) or NotCompiled)
+    needUpdate = bool(Outdated or NotExtracted or NotCompiled)
 
     print("Currently installed version created on: " + LastWrite.strftime('%Y-%m-%d %H:%M:%S'))
     print("Newest version created on: " + LatestRel.strftime('%Y-%m-%d %H:%M:%S'))
@@ -432,247 +583,11 @@ def launch(URL, MOD_ID, MOD_NAME, LINK_TYPE,GAME):
         # force update to ensure we recompile with adjusted settings filename in pckernel.gc
         needUpdate = True
         
-    if (needUpdate):
-        
-        #start the actual update method if needUpdate is true
-        print("\nNeed to update")
-        print("Starting Update...")
-        # Close Gk and goalc if they were open.
-        try_kill_process("gk.exe")
-        try_kill_process("goalc.exe")
-
-        # download update from github
-        # Create a new directory because it does not exist
-        try_remove_dir(InstallDir + "/temp")
-        if not os.path.exists(InstallDir + "/temp"):
-            print("Creating install dir: " + InstallDir)
-            os.makedirs(InstallDir + "/temp", exist_ok=True)
-            
-        response = requests.get(LatestRelAssetsURL)
-        if response.history:
-            print("Request was redirected")
-            for resp in response.history:
-                print(resp.status_code, resp.url)
-                print("Final destination:")
-                print(response.status_code, response.url)
-                LatestRelAssetsURL = response.url
-
-        else:
-            print("Request was not redirected")
-
-        print("Downloading update from " + LatestRelAssetsURL)
-        file = urllib.request.urlopen(LatestRelAssetsURL)
-        print()
-        print(str("File size is ") + str(file.length))
-        urllib.request.urlretrieve(
-            LatestRelAssetsURL, InstallDir + "/temp/updateDATA.zip", show_progress
-        )
-        print("Done downloading")
-        r = requests.head(LatestRelAssetsURL, allow_redirects=True)
-
-        # delete any previous installation
-        print("Removing previous installation " + InstallDir)
-        try_remove_dir(InstallDir + "/data")
-        try_remove_dir(InstallDir + "/.github")
-        try_remove_dir(InstallDir + "/SND")
-        try_remove_file(InstallDir + "/gk.exe")
-        try_remove_file(InstallDir + "/goalc.exe")
-        try_remove_file(InstallDir + "/extractor.exe")
-        #jak2hack
-        try_remove_file(InstallDir + "/decompiler.exe")
-        print("Looking for some ISO data in " + UniversalIsoPath + "//" + GAME + "//")
-            
-        found_universal_iso = exists(UniversalIsoPath +"//" + GAME + "//" + "Z6TAIL.DUP")
-
-        #if ISO_DATA has content, store this path to pass to the extractor
-        if found_universal_iso:
-            print("We found ISO data from a previous mod installation! Lets use it!")
-            print("Found in " + UniversalIsoPath +"//" + GAME + "//" + "Z6TAIL.DUP")
-            iso_path = UniversalIsoPath + "\\" + GAME
-        else:
-            print("We did not find "+ GAME + " ISO data from a previous mod, lets ask for some!") 
-               #cleanup and remove a corrupted iso
-            if os.path.exists(UniversalIsoPath + "//" + GAME) and os.path.isdir(UniversalIsoPath) and not (exists((UniversalIsoPath + "//" + GAME + "//" + "Z6TAIL.DUP"))):
-                print("Removing corrupted iso destination...")
-                shutil.rmtree(UniversalIsoPath + "//" + GAME)
-                ensure_jak_folders_exist()
-                #jak2hack
-            #if ISO_DATA is empty, prompt for their ISO and store its path.
-            if 1 == 1:
-                # if ISO_DATA is empty, prompt for their ISO and store its path.
-                root = tk.Tk()
-                print("Please select your iso.")
-                root.title("Select ISO")
-                root.geometry("230x1")
-                root.wm_attributes('-topmost', 1)
-                iso_path = filedialog.askopenfilename(parent=root, title="Please select your ISO")
-                root.destroy()
-                if iso_path == "":
-                  print("user closed popup")
-                  return
-                if pathlib.Path(iso_path).is_file:
-                    if not (pathlib.Path(iso_path).suffix).lower() == ".iso":
-                        print((pathlib.Path(iso_path).suffix).lower())
-                        print("error code: 23984h")
-                        1 / 0            
-        # extract mod zipped update
-        print("Extracting update")
-        TempDir = InstallDir + "/temp"
-        try:
-          with zipfile.ZipFile(TempDir + "/updateDATA.zip", "r") as zip_ref:
-            zip_ref.extractall(TempDir)
-        except BadZipFile as e:
-          print("Error while extracting from zip: ", e)
-          return
-
-        # delete the mod zipped update archive
-        try_remove_file(TempDir + "/updateDATA.zip")
-
-        SubDir = TempDir
-        if LINK_TYPE == githubUtils.LinkTypes.BRANCH or len(os.listdir(SubDir)) == 1:
-          # for branches, the downloaded zip puts all files one directory down
-          SubDir = SubDir + "/" + os.listdir(SubDir)[0]
-
-        print("Moving files from " + SubDir + " up to " + InstallDir)
-        allfiles = os.listdir(SubDir)
-        for f in allfiles:
-          shutil.move(SubDir + "/" + f, InstallDir + "/" + f)
-        try_remove_dir(TempDir)
-
-        #replace the settings and discord RPC texts automatically before we build the game.
-        replaceText(
-          InstallDir + r"\data\goal_src\jak1\pc\pckernel.gc",
-          "Playing Jak and Daxter: The Precursor Legacy",
-          "Playing " + MOD_NAME,
-        )
-        replaceText(
-          InstallDir + r"\data\goal_src\jak1\pc\pckernel.gc",
-          "/pc-settings.gc",
-          r"/" + MOD_ID + "-settings.gc",
-        )
-        replaceText(
-          InstallDir + r"\data\goal_src\jak1\pc\pckernel-common.gc",
-          "/pc-settings.gc",
-          r"/" + MOD_ID + "-settings.gc",
-        )
-        replaceText(
-          InstallDir + r"\data\goal_src\jak1\pc\pckernel-common.gc",
-          "/pc-settings.gc",
-          r"/" + MOD_ID + "-settings.gc",
-        )
-        replaceText(
-          InstallDir + r"\data\decompiler\config\jak1_ntsc_black_label.jsonc",
-          "\"process_tpages\": true,",
-          "\"process_tpages\": false,",
-        )
-        replaceText(
-          InstallDir + r"\data\decompiler\config\jak1_pal.jsonc",
-          "\"process_tpages\": true,",
-
-          "\"process_tpages\": false,",
-        )
-
-        # if we have iso extracted to universal folder already, just symlink it. otherwise we'll copy it there and symlink after extractor closes
-        if found_universal_iso and exists(UniversalIsoPath + "//" + GAME +r"\Z6TAIL.DUP"):
-            try_remove_dir(InstallDir + "\\data\\iso_data/")
-            makeDirSymlink(InstallDir + "\\data\\iso_data\\", UniversalIsoPath)
-
-        # if extractOnUpdate is True, check their ISO_DATA folder
-
-        # Close Gk and goalc if they were open.
-        try_kill_process("gk.exe")
-        try_kill_process("goalc.exe")
-        print("Done update starting extractor This one can take a few moments! \n")
-        
-        #Extract and compile
-
-        
-        if(GAME == "jak1"):
-            extractor_command_list = [InstallDir + "\extractor.exe", "-f", iso_path, "-e", "-v", "-d", "-c"]
-            print(extractor_command_list)
-            extractor_result = subprocess.run(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir) )
-
-            if extractor_result.returncode ==0:
-                print("done extracting!")
-            else:
-                print("Extractor error!")
-                return
-            
-        if(GAME == "jak2"):
-            extractor_command_list = [InstallDir + "\extractor.exe", "-f", iso_path, "-e", "-v", "-d", "-c", "-g", "jak2"]
-            print(extractor_command_list)
-            extractor_result = subprocess.run(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir))
-
-            if extractor_result.returncode ==0:
-                print("done extracting!")
-            else:
-                print("Extractor error!")
-                return
-
-            goalc_command_list = [GoalCPATH, 
-                            "--proj-path",
-                            DataFolder,
-                            "--game",
-                            "jak2",
-                            "-c",
-                            "(mi) (e)"
-            ]
-
-        #print(goalc_command_list)
-
-        # symlink isodata for custom levels art group (goalc doesnt take -f flag)
-        # if exists(UniversalIsoPath + r"" + "//" + GAME + "//" + "Z6TAIL.DUP") and GAME == "jak1":
-        #     ensure_jak_folders_exist();
-        #     makeDirSymlink(InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "//" + GAME)
-
-        # move the extrated contents to the universal launchers directory for next time.
-        if not found_universal_iso:
-            ensure_jak_folders_exist()
-            moveDirContents(InstallDir + "\\data\\iso_data/" + GAME, UniversalIsoPath + "//" + GAME)
-            # replace iso_data with symlink
-            try_remove_dir(InstallDir + "\\data\\iso_data/")
-            makeDirSymlink(InstallDir + "\\data\\iso_data", UniversalIsoPath)
-
-        if(GAME == "jak2"):    
-            #open GoalC to build jak2, for jak 1 extractor can handle this.
-            print("Opening the Compiler subprocess.")
-            goalc_result = subprocess.run(goalc_command_list, shell=True, cwd=os.path.abspath(InstallDir) )
-        
-            #jak2hack this is only needed since extractor isnt aware of jak2
-            if goalc_result.returncode == 0:
-                print("done goalc!")
-            else:
-                print("goalc error!")
-                return
-        
-        # at this point we should be good to launch, these are just sanity checks that should never be reached
-
-        #update the timestamp of the local exe
-        if exists(InstallDir + "/" + ExecutableName):
-            LastWrite = datetime.utcfromtimestamp(
-            pathlib.Path(InstallDir + "/" + ExecutableName).stat().st_mtime
-        )
-        NotExtracted = bool(not (exists(UniversalIsoPath + "//" + GAME + "//" + "Z6TAIL.DUP")))
-        NotCompiled = bool(not (exists(InstallDir + r"\data\out" + "//" + GAME + "//" + "fr3\GAME.fr3")))
-        needUpdate = bool((LastWrite < LatestRel) or (NotExtracted) or NotCompiled)
-        if(NotExtracted):
-            print("Error! Iso data does not appear to be extracted to " + UniversalIsoPath +"//" + GAME + "//" + "Z6TAIL.DUP")
-            print("Will ask user to provide ISO")
-        if(NotCompiled):
-            print("Error! The game is not compiled")
-        if((LastWrite < LatestRel)):
-            print("Looks like we need to download a new update!")
-            print(LastWrite)
-            print(LatestRel)
-            print("Is newest posted update older than what we have installed? " + str((LastWrite < LatestRel)))
-
-        #ok launch game :D
-        gk_result = subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir))
-        if gk_result.returncode == 0:
-          print("gk error!")
-
+    if needUpdate:
+        download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, LatestRelAssetsURL)
+        rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME)
     else:
-        # if we dont need to update, then close any open instances of the game and just launch it
-        print("Game is up to date!")
-        print("Launching now!")
-        launch_local(MOD_ID, GAME)
+      # dont need to update, close any open instances of the game and just launch it
+      print("Game is up to date!")
+      print("Launching now!")
+      launch_local(MOD_ID, GAME)
