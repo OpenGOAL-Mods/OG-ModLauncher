@@ -28,6 +28,7 @@
       "barg034"
     ],
     "tags": [
+      "hidden",
       "gameplay-mod",
       "rng",
       "challenge"
@@ -649,6 +650,7 @@
     "desc": "Testingstuff",
     "contributors": ["OpenGOAL"],
     "tags": [
+      "hidden"
     ],
     "release_date": "2023-11-04",
     "URL": "https://github.com/zedb0t/jak-project/releases",
