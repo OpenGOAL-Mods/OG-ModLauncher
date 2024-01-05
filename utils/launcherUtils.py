@@ -404,7 +404,7 @@ def download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, Latest
       "\"process_tpages\": false,",
     )
 
-def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME):
+def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
     InstallDir = ModFolderPATH + MOD_ID
     UniversalIsoPath = AppdataPATH + "\OpenGOAL-Mods\_iso_data"
 
@@ -454,7 +454,10 @@ def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME):
     
     #Extract and compile
     if GAME == "jak1":
-        extractor_command_list = [InstallDir + "\extractor.exe", "-f", iso_path, "-e", "-v", "-d", "-c"]
+        extractor_command_list = [InstallDir + "\extractor.exe", "-f", iso_path, "-v", "-c"]
+        if should_extract:
+            extractor_command_list.append("-e")
+            extractor_command_list.append("-d")
         print(extractor_command_list)
         extractor_result = subprocess.run(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir) )
 
@@ -465,7 +468,10 @@ def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME):
             return
         
     elif GAME == "jak2":
-        extractor_command_list = [InstallDir + "\extractor.exe", "-f", iso_path, "-e", "-v", "-d", "-c", "-g", "jak2"]
+        extractor_command_list = [InstallDir + "\extractor.exe", "-f", iso_path, "-v", "-c", "-g", "jak2"]
+        if should_extract:
+            extractor_command_list.append("-e")
+            extractor_command_list.append("-d")
         print(extractor_command_list)
         extractor_result = subprocess.run(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir))
 
@@ -585,7 +591,7 @@ def update_and_launch(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME):
         
     if needUpdate:
         download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, LatestRelAssetsURL)
-        rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME)
+        rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, True)
     else:
       # dont need to update, close any open instances of the game and just launch it
       print("Game is up to date!")

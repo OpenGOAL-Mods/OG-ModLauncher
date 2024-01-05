@@ -285,9 +285,14 @@ def getRefreshedTableData(sort_col_idx):
             or FILTER_STR in mod_name.lower()
             or FILTER_STR in mod["contributors"].lower()
             or FILTER_STR in mod["tags"].lower()
+        ) and "hidden" not in mod["tags"].lower()
+        
+        secret_check = (
+            "hidden" in mod["tags"].lower()
+            and FILTER_STR == "lbood"
         )
 
-        if matches_filter:
+        if matches_filter or secret_check:
             if mod["game"] == FILTER_GAME:  # filter jak1 vs jak2
                 # filter mods vs texture packs
                 if (FILTER_CAT == "tex") == (mod["tags"] == "texture-mod"):
@@ -504,8 +509,13 @@ layout = [
                                                 expand_x=True,
                                             ),
                                             sg.Btn(
-                                                button_text="Rebuild",
-                                                key="-REBUILD-",
+                                                button_text="Re-extract",
+                                                key="-REEXTRACT-",
+                                                expand_x=True,
+                                            ),
+                                            sg.Btn(
+                                                button_text="Recompile",
+                                                key="-RECOMPILE-",
                                                 expand_x=True,
                                             ),
                                             sg.Btn(
@@ -642,7 +652,8 @@ def handleModTableSelection(row):
     window["-SELECTEDMODTAGS-"].update(f"Tags: {mod_tags}")
     window["-SELECTEDMODCONTRIBUTORS-"].update(f"Contributors: {mod_contributors}")
     window["-VIEWFOLDER-"].update(disabled=(mod_access_date == "Not Installed"))
-    window["-REBUILD-"].update(disabled=(mod_access_date == "Not Installed"))
+    window["-REEXTRACT-"].update(disabled=(mod_access_date == "Not Installed"))
+    window["-RECOMPILE-"].update(disabled=(mod_access_date == "Not Installed"))
     window["-UNINSTALL-"].update(disabled=(mod_access_date == "Not Installed"))
     window["-WEBSITE-"].update(disabled=(mod_website_url == ""))
     window["-WEBSITE-"].metadata["url"] = mod_website_url
@@ -839,7 +850,7 @@ while True:
             launcherUtils.openFolder(dir)
         else:
             sg.Popup("Selected mod is not installed", keep_on_top=True, icon=iconfile)
-    elif event == "-REBUILD-":
+    elif event == "-REEXTRACT-":
         tmpModName = window["-SELECTEDMODNAME-"].get()
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
         tmpModURL = window["-SELECTEDMODNAME-"].metadata["url"]
@@ -849,13 +860,32 @@ while True:
         if tmpModSelected in subfolders:
             dir = dirs.user_data_dir + "\\OpenGOAL-Mods\\" + tmpModSelected
             ans = sg.popup_ok_cancel(
-                "Confirm: rebuilding "
-                + dir
-                + " \n\nNote: this will re-extract texture_replacements too",
+                "Confirm: re-extracting "
+                + dir,
                 icon=iconfile,
             )
             if ans == "OK":
-                rebuild_thread = threading.Thread(target=launcherUtils.rebuild, args=(tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame))
+                rebuild_thread = threading.Thread(target=launcherUtils.rebuild, args=(tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame, True))
+
+                loading_screen_with_thread(rebuild_thread)
+        else:
+            sg.Popup("Selected mod is not installed", keep_on_top=True, icon=iconfile)
+    elif event == "-RECOMPILE-":
+        tmpModName = window["-SELECTEDMODNAME-"].get()
+        tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
+        tmpModURL = window["-SELECTEDMODNAME-"].metadata["url"]
+        tmpGame = window["-SELECTEDMODNAME-"].metadata["game"]
+        [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
+        subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
+        if tmpModSelected in subfolders:
+            dir = dirs.user_data_dir + "\\OpenGOAL-Mods\\" + tmpModSelected
+            ans = sg.popup_ok_cancel(
+                "Confirm: recompiling "
+                + dir,
+                icon=iconfile,
+            )
+            if ans == "OK":
+                rebuild_thread = threading.Thread(target=launcherUtils.rebuild, args=(tmpModURL, tmpModSelected, tmpModName, linkType, tmpGame, False))
 
                 loading_screen_with_thread(rebuild_thread)
         else:
@@ -910,7 +940,7 @@ while True:
         LATEST_TABLE_DATA = getRefreshedTableData(None)
         window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
     elif event == "-VIEWISOFOLDER-":
-        dir = dirs.user_data_dir + "\OpenGOAL-Mods\_iso_data"
+        dir = dirs.user_data_dir + "\\OpenGOAL-Mods\\_iso_data"
         launcherUtils.ensure_jak_folders_exist()
         launcherUtils.openFolder(dir)
     elif event == "-JAKMODSWEB-":
