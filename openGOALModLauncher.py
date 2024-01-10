@@ -31,6 +31,12 @@ from datetime import datetime
 from pathlib import Path
 import random
 
+
+dirs = AppDirs(roaming=True)
+
+# C:\Users\USERNAME\AppData\Roaming\OpenGOAL-Mods\
+ModFolderPATH = Path(dirs.user_data_dir) / "OpenGOAL-Mods"
+
 sg.theme("DarkBlue3")
 
 
@@ -45,11 +51,11 @@ def exitWithError():
 # Folder where script is placed, It looks in this for the Exectuable
 if getattr(sys, "frozen", False):
     # If we are a pyinstaller exe get the path of this file, not python
-    LauncherDir = os.path.dirname(os.path.realpath(sys.executable))
+    LauncherDir = Path(sys.executable).resolve().parent
 
     # Detect if a user has downloaded a release directly, if so point them to the autoupdater
     if (
-        LauncherDir != os.getenv("APPDATA") + "\\OpenGOAL-UnofficalModLauncher"
+        LauncherDir != Path(dirs.user_data_dir) / "OpenGOAL-UnofficalModLauncher"
         and os.getlogin() != "NinjaPC"
         and os.environ["COMPUTERNAME"] != "DESKTOP-BBN1CMN"
     ):
@@ -80,14 +86,9 @@ elif __file__:
     # if we are running the .py directly use this path
     LauncherDir = os.path.dirname(__file__)
 
-installpath = str(LauncherDir + "\\resources\\")
+installpath = Path(LauncherDir) / "resources"
 
 # intialize default variables so they are never null
-
-dirs = AppDirs(roaming=True)
-
-# C:\Users\USERNAME\AppData\Roaming\OpenGOAL-Mods\
-ModFolderPATH = os.path.join(dirs.user_data_dir, "OpenGOAL-Mods", "")
 
 # grab images from web
 
@@ -131,8 +132,8 @@ iconfile = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-
 loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-0.png")
 
 # make the modfolderpath if first install
-if not os.path.exists(ModFolderPATH):
-    os.makedirs(ModFolderPATH)
+if not ModFolderPATH.exists():
+    ModFolderPATH.mkdir()
 
 table_headings = [
     "id",
@@ -210,8 +211,9 @@ LATEST_TABLE_SORT = [6, False]  # wakeup sorted by last launch date
 
 def getRefreshedTableData(sort_col_idx):
     # Load data from the local file if it exists
-    local_file_path = "resources/jak1_mods.json"
-    if os.path.exists(local_file_path):
+    local_file_path = Path("resources") / "jak1_mods.json"
+    if local_file_path.exists():
+        # TODO: don't leak fd
         local_mods = json.loads(open(local_file_path, "r").read())
 
     # Load data from the remote URL
@@ -221,7 +223,7 @@ def getRefreshedTableData(sort_col_idx):
     # Initialize an empty dictionary to store the combined data
     mod_dict = {}
 
-    if os.path.exists(local_file_path):
+    if local_file_path.exists():
         # Merge the remote and local data while removing duplicates
         mod_dict = {**remote_mods, **local_mods}
     else:
@@ -243,30 +245,25 @@ def getRefreshedTableData(sort_col_idx):
         mod["install_date"] = "Not Installed"
         mod["access_date"] = "Not Installed"
 
+        mod_path = ModFolderPATH/mod_id
+        mod_gk_path = mod_path/"gk.exe"
         # determine local install/access datetime
         if mod_id in installed_mod_subfolders:
             mod[
                 "install_date"
             ] = f"{datetime.fromtimestamp(installed_mod_subfolders[mod_id]):%Y-%m-%d %H:%M}"
-
-            if exists(f"{ModFolderPATH}/{mod_id}/gk.exe"):
-                gk_stat = os.stat(f"{ModFolderPATH}/{mod_id}/gk.exe")
-                mod[
-                    "access_date"
-                ] = f"{datetime.fromtimestamp(gk_stat.st_atime):%Y-%m-%d %H:%M}"
         elif mod_name in installed_mod_subfolders:
             # previous installation using mod_name (will migrate after this step)
             mod[
                 "install_date"
             ] = f"{datetime.fromtimestamp(installed_mod_subfolders[mod_name]):%Y-%m-%d %H:%M}"
             # migrate folder to use mod_id instead of mod_name
-            shutil.move(ModFolderPATH + "/" + mod_name, ModFolderPATH + "/" + mod_id)
+            (ModFolderPATH/mod_name).rename(mod_path)
 
-            if exists(f"{ModFolderPATH}/{mod_id}/gk.exe"):
-                gk_stat = os.stat(f"{ModFolderPATH}/{mod_id}/gk.exe")
-                mod[
-                    "access_date"
-                ] = f"{datetime.fromtimestamp(gk_stat.st_atime):%Y-%m-%d %H:%M}"
+        if mod_gk_path.exists():
+            mod[
+                "access_date"
+            ] = f"{datetime.fromtimestamp(mod_gk_path.stat().st_atime):%Y-%m-%d %H:%M}"
 
         mod["contributors"] = ", ".join(mod["contributors"])
         mod["tags"].sort()
@@ -846,7 +843,7 @@ while True:
         subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
 
         if tmpModSelected in subfolders:
-            dir = dirs.user_data_dir + "\\OpenGOAL-Mods\\" + tmpModSelected
+            dir = ModFolderPATH/tmpModSelected
             launcherUtils.openFolder(dir)
         else:
             sg.Popup("Selected mod is not installed", keep_on_top=True, icon=iconfile)
@@ -858,10 +855,9 @@ while True:
         [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
         subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
         if tmpModSelected in subfolders:
-            dir = dirs.user_data_dir + "\\OpenGOAL-Mods\\" + tmpModSelected
+            dir = ModFolderPATH/tmpModSelected
             ans = sg.popup_ok_cancel(
-                "Confirm: re-extracting "
-                + dir,
+                f"Confirm: re-extracting {dir}",
                 icon=iconfile,
             )
             if ans == "OK":
@@ -878,10 +874,9 @@ while True:
         [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
         subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
         if tmpModSelected in subfolders:
-            dir = dirs.user_data_dir + "\\OpenGOAL-Mods\\" + tmpModSelected
+            dir = ModFolderPATH/tmpModSelected
             ans = sg.popup_ok_cancel(
-                "Confirm: recompiling "
-                + dir,
+                f"Confirm: recompiling {dir}",
                 icon=iconfile,
             )
             if ans == "OK":
@@ -895,8 +890,8 @@ while True:
         subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
 
         if tmpModSelected in subfolders:
-            dir = dirs.user_data_dir + "\\OpenGOAL-Mods\\" + tmpModSelected
-            ans = sg.popup_ok_cancel("Confirm: uninstalling " + dir, icon=iconfile)
+            dir = ModFolderPATH/tmpModSelected
+            ans = sg.popup_ok_cancel(f"Confirm: uninstalling {dir}", icon=iconfile)
             if ans == "OK":
                 launcherUtils.try_remove_dir(dir)
                 reset()
@@ -940,7 +935,7 @@ while True:
         LATEST_TABLE_DATA = getRefreshedTableData(None)
         window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
     elif event == "-VIEWISOFOLDER-":
-        dir = dirs.user_data_dir + "\\OpenGOAL-Mods\\_iso_data"
+        dir = ModFolderPATH/"_iso_data"
         launcherUtils.ensure_jak_folders_exist()
         launcherUtils.openFolder(dir)
     elif event == "-JAKMODSWEB-":
