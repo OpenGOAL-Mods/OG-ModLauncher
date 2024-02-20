@@ -52,7 +52,7 @@ def check_for_updates():
     else:
         print("WARNING: Failed to query GitHub API, you might be rate-limited. Using default fallback release instead.")
         latest_release = datetime(2023, 7, 23)
-        latest_release_assets_url = "https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases/download/v1.10fixoldpckernel/"+ OpengoalModLauncher_exe
+        latest_release_assets_url = "https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases/download/latest/"+ OpengoalModLauncher_exe
 
     last_write = datetime(2020, 5, 17)
     if (AppdataPATH/OpengoalModLauncher_exe).exists():
@@ -86,7 +86,7 @@ def download_newest_mod():
     else:
         print("WARNING: Failed to query GitHub API, you might be rate-limited. Using default fallback release instead.")
         latest_release = datetime(2023, 7, 23)
-        latest_release_assets_url = "https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases/download/v1.10fixoldpckernel/"+ OpengoalModLauncher_exe
+        latest_release_assets_url = "https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases/download/latest/"+ OpengoalModLauncher_exe
 
     last_write = datetime(2020, 5, 17)
     if (AppdataPATH/OpengoalModLauncher_exe).exists():
