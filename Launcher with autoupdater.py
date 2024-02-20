@@ -95,7 +95,7 @@ def download_newest_mod():
 
         window['update_status'].update("Downloading update from " + latest_release_assets_url)
         file = urllib.request.urlopen(latest_release_assets_url)
-        urllib.request.urlretrieve(latest_release_assets_url, AppdataPATH/"/temp/OpengoalModLauncher.exe", show_progress)
+        urllib.request.urlretrieve(latest_release_assets_url, AppdataPATH/"temp"/"OpengoalModLauncher.exe", show_progress)
         window['update_status'].update("Done downloading")
 
         window['update_status'].update(f"Removing previous installation {AppdataPATH}")
