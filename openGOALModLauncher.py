@@ -40,6 +40,12 @@ ModFolderPATH = Path(dirs.user_data_dir) / "OpenGOAL-Mods"
 sg.theme("DarkBlue3")
 
 
+# executables
+
+gk_exe = launcherUtils.get_exe("gk")
+
+
+
 def openLauncherWebsite():
     webbrowser.open("https://jakmods.dev")
 
@@ -246,7 +252,7 @@ def getRefreshedTableData(sort_col_idx):
         mod["access_date"] = "Not Installed"
 
         mod_path = ModFolderPATH/mod_id
-        mod_gk_path = mod_path/"gk.exe"
+        mod_gk_path = mod_path / gk_exe
         # determine local install/access datetime
         if mod_id in installed_mod_subfolders:
             mod[

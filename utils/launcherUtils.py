@@ -28,15 +28,32 @@ from pathlib import Path
 import time
 import ctypes
 
-FILE_DATE_TO_CHECK = "gk.exe"
+
+# This function expects the name of the executable without .exe at the end
+# For windows systems, it appends ".exe" to the executable name and returns this value
+# For linux and mac, it returns it as-is
+# It is meant to be called at the beginning of a script, where the results are stored
+# into a string variable. The string variable can then be used in followup logic
+def get_exe(executable):
+    return executable + ".exe" if platform.system() == "Windows" else executable
+
+
+gk_exe = get_exe("gk")
+decompiler_exe = get_exe("decompiler")
+goalc_exe = get_exe("goalc")
+extractor_exe = get_exe("extractor")
+
+
+FILE_DATE_TO_CHECK = gk_exe
 UPDATE_FILE_EXTENTION = ".zip"
 
+ # Executable we're checking the 'modified' time of
 ExecutableName = str(
     FILE_DATE_TO_CHECK
-)  # Executable we're checking the 'modified' time of
+)  # content_type of the .deb release is also "application\zip", so rely on file ext
 FileExt = str(
     UPDATE_FILE_EXTENTION
-)  # content_type of the .deb release is also "application\zip", so rely on file ext
+)
 FileIdent = ""  # If we ever get to multiple .zip files in a release, include other identifying information from the name
 dirs = AppDirs(roaming=True)
 currentOS = platform.system()
@@ -45,8 +62,6 @@ AppdataPATH = Path(dirs.user_data_dir)
 
 
 pbar = None
-
-
 
 
 
@@ -244,8 +259,7 @@ def ensure_jak_folders_exist():
 
 #check if we have decompiler in the path, if not check if we have a backup, if so use it, if not download a backup then use it
 def getDecompiler(path):
-    decompiler_exe = "decompiler.exe"
-    decompiler_url = "https://github.com/OpenGOAL-Mods/OG-Mod-Base/raw/main/out/build/Release/bin/decompiler.exe"  
+    decompiler_url = "https://github.com/OpenGOAL-Mods/OG-Mod-Base/raw/main/out/build/Release/bin/" + decompiler_exe
 
     # Check if the decompiler exists in the provided path
     if os.path.exists(os.path.join(path, decompiler_exe)):
@@ -264,17 +278,17 @@ def getDecompiler(path):
 def launch_local(MOD_ID, GAME):
     try:
         # Close Gk and goalc if they were open.
-        try_kill_process("gk.exe")
-        try_kill_process("goalc.exe")
+        try_kill_process(gk_exe)
+        try_kill_process(goalc_exe)
 
         time.sleep(1)
         InstallDir = ModFolderPATH/MOD_ID
         
         if GAME == "jak2":
           GKCOMMANDLINElist = [
-            InstallDir/"gk.exe",
+              InstallDir / gk_exe,
             "--proj-path",
-            InstallDir/"data",
+              InstallDir /"data",
             "-v",
             "--game",
             "jak2",
@@ -284,7 +298,7 @@ def launch_local(MOD_ID, GAME):
           ]
         else: # if GAME == "jak1":
           GKCOMMANDLINElist = [
-              os.path.abspath(InstallDir/"gk.exe"),  # Using os.path.abspath to get the absolute path.
+              os.path.abspath(InstallDir / gk_exe),  # Using os.path.abspath to get the absolute path.
               "--proj-path",
               os.path.abspath(InstallDir/"data"),  # Using absolute path for data folder too.
               "-boot",
@@ -302,8 +316,8 @@ def download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, Latest
     print("\nNeed to update")
     print("Starting Update...")
     # Close Gk and goalc if they were open.
-    try_kill_process("gk.exe")
-    try_kill_process("goalc.exe")
+    try_kill_process(gk_exe)
+    try_kill_process(goalc_exe)
 
     # download update from github
     # Create a new directory because it does not exist
@@ -339,11 +353,11 @@ def download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, Latest
     try_remove_dir(InstallDir/"data")
     try_remove_dir(InstallDir/".github")
     try_remove_dir(InstallDir/"SND")
-    try_remove_file(InstallDir/"gk.exe")
-    try_remove_file(InstallDir/"goalc.exe")
-    try_remove_file(InstallDir/"extractor.exe")
+    try_remove_file(InstallDir / gk_exe)
+    try_remove_file(InstallDir / goalc_exe)
+    try_remove_file(InstallDir / extractor_exe)
     #jak2hack
-    try_remove_file(InstallDir/"decompiler.exe")
+    try_remove_file(InstallDir / decompiler_exe)
 
     # extract mod zipped update
     print("Extracting update")
@@ -445,13 +459,13 @@ def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
                 return
 
     # Close Gk and goalc if they were open.
-    try_kill_process("gk.exe")
-    try_kill_process("goalc.exe")
+    try_kill_process(gk_exe)
+    try_kill_process(goalc_exe)
     print("Done update starting extractor This one can take a few moments! \n")
     
     #Extract and compile
     if GAME == "jak1":
-        extractor_command_list = [InstallDir/"extractor.exe", "-f", iso_path, "-v", "-c"]
+        extractor_command_list = [InstallDir / extractor_exe, "-f", iso_path, "-v", "-c"]
         if should_extract:
             extractor_command_list.append("-e")
             extractor_command_list.append("-d")
@@ -465,7 +479,7 @@ def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
             return
         
     elif GAME == "jak2":
-        extractor_command_list = [InstallDir/"extractor.exe", "-f", iso_path, "-v", "-c", "-g", "jak2"]
+        extractor_command_list = [InstallDir / extractor_exe, "-f", iso_path, "-v", "-c", "-g", "jak2"]
         if should_extract:
             extractor_command_list.append("-e")
             extractor_command_list.append("-d")

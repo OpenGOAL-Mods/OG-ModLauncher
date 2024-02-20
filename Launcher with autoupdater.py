@@ -10,9 +10,16 @@ from os.path import exists
 from pathlib import Path
 from appdirs import AppDirs
 import subprocess
+from utils import launcherUtils
 
 dirs = AppDirs(roaming=True)
 AppdataPATH = Path(dirs.user_data_dir)/"OpenGOAL-UnofficialModLauncher"
+
+OpengoalModLauncher_exe = launcherUtils.get_exe("OpengoalModLauncher")
+gk_exe = launcherUtils.get_exe("gk")
+decompiler_exe = launcherUtils.get_exe("decompiler")
+goalc_exe = launcherUtils.get_exe("goalc")
+extractor_exe = launcherUtils.get_exe("extractor")
 
 def show_progress(block_num, block_size, total_size):
     if total_size > 0:
@@ -45,11 +52,11 @@ def check_for_updates():
     else:
         print("WARNING: Failed to query GitHub API, you might be rate-limited. Using default fallback release instead.")
         latest_release = datetime(2023, 7, 23)
-        latest_release_assets_url = "https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases/download/v1.10fixoldpckernel/openGOALModLauncher.exe"
+        latest_release_assets_url = "https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases/download/v1.10fixoldpckernel/"+ OpengoalModLauncher_exe
 
     last_write = datetime(2020, 5, 17)
-    if (AppdataPATH/"OpengoalModLauncher.exe").exists():
-        last_write = datetime.utcfromtimestamp((AppdataPATH/"OpengoalModLauncher.exe").stat().st_mtime)
+    if (AppdataPATH/OpengoalModLauncher_exe).exists():
+        last_write = datetime.utcfromtimestamp((AppdataPATH/OpengoalModLauncher_exe).stat().st_mtime)
 
     need_update = bool((last_write < latest_release))
 
@@ -79,11 +86,11 @@ def download_newest_mod():
     else:
         print("WARNING: Failed to query GitHub API, you might be rate-limited. Using default fallback release instead.")
         latest_release = datetime(2023, 7, 23)
-        latest_release_assets_url = "https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases/download/v1.10fixoldpckernel/openGOALModLauncher.exe"
+        latest_release_assets_url = "https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases/download/v1.10fixoldpckernel/"+ OpengoalModLauncher_exe
 
     last_write = datetime(2020, 5, 17)
-    if (AppdataPATH/"OpengoalModLauncher.exe").exists():
-        last_write = datetime.utcfromtimestamp((AppdataPATH/"OpengoalModLauncher.exe").stat().st_mtime)
+    if (AppdataPATH/OpengoalModLauncher_exe).exists():
+        last_write = datetime.utcfromtimestamp((AppdataPATH/OpengoalModLauncher_exe).stat().st_mtime)
 
     need_update = bool((last_write < latest_release))
 
@@ -95,14 +102,14 @@ def download_newest_mod():
 
         window['update_status'].update("Downloading update from " + latest_release_assets_url)
         file = urllib.request.urlopen(latest_release_assets_url)
-        urllib.request.urlretrieve(latest_release_assets_url, AppdataPATH/"temp"/"OpengoalModLauncher.exe", show_progress)
+        urllib.request.urlretrieve(latest_release_assets_url, AppdataPATH/"temp"/OpengoalModLauncher_exe, show_progress)
         window['update_status'].update("Done downloading")
 
         window['update_status'].update(f"Removing previous installation {AppdataPATH}")
         try_remove_dir(AppdataPATH/"data")
-        try_remove_file(AppdataPATH/"gk.exe")
-        try_remove_file(AppdataPATH/"goalc.exe")
-        try_remove_file(AppdataPATH/"extractor.exe")
+        try_remove_file(AppdataPATH/gk_exe)
+        try_remove_file(AppdataPATH/goalc_exe)
+        try_remove_file(AppdataPATH/extractor_exe)
 
         window['update_status'].update("Extracting update")
         temp_dir = AppdataPATH/"temp"
@@ -137,6 +144,6 @@ while True:
         download_newest_mod()
     elif event == "launch_button":
         window.close()
-        subprocess.call([ AppdataPATH/"openGOALModLauncher.exe"])
+        subprocess.call([AppdataPATH/OpengoalModLauncher_exe])
 
 window.close()
