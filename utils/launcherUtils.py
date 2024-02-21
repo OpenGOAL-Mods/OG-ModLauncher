@@ -53,9 +53,10 @@ FileExt = str(
     UPDATE_FILE_EXTENTION
 )
 FileIdent = ""  # If we ever get to multiple .zip files in a release, include other identifying information from the name
-dirs = AppDirs(roaming=True)
-ModFolderPATH = Path(dirs.user_data_dir) / "OpenGOAL-Mods"
-AppdataPATH = Path(dirs.user_data_dir)
+
+AppdataPATH = Path(AppDirs(roaming=True).user_data_dir)
+ModFolderPATH = AppdataPATH / "OpenGOAL-Mods"
+ISO_PATH = ModFolderPATH / "_iso_data"
 
 pbar = None
 
@@ -201,10 +202,6 @@ def link_files_by_extension(source_dir, destination_dir):
 
 
 def openFolder(path):
-    jak2_path = Path(dirs.user_data_dir) / "OpenGOAL" / "mods" / "data" / "iso_data" / "jak2"
-    if not jak2_path.exists():
-        jak2_path.mkdir(parents=True)
-    print(path)
     if sys.platform == "win32":
         os.startfile(path)
     else:
@@ -264,7 +261,7 @@ def divide_by_zero():
 
 
 def ensure_jak_folders_exist():
-    directory = Path(dirs.user_data_dir) / "OpenGOAL-Mods" / "_iso_data"
+    directory = ISO_PATH
     jak1_path = os.path.join(directory, "jak1")
     jak2_path = os.path.join(directory, "jak2")
 
@@ -443,7 +440,7 @@ def download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, Latest
 # TODO
 def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
     InstallDir = ModFolderPATH / MOD_ID
-    UniversalIsoPath = AppdataPATH / "OpenGOAL-Mods" / "_iso_data"
+    UniversalIsoPath = ISO_PATH
 
     print(f"Looking for some ISO data in {UniversalIsoPath / GAME}")
     found_universal_iso = exists(UniversalIsoPath / GAME / "Z6TAIL.DUP")
@@ -554,7 +551,7 @@ def update_and_launch(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME):
 
     # paths
     InstallDir = ModFolderPATH / MOD_ID
-    UniversalIsoPath = AppdataPATH / "OpenGOAL-Mods" / "_iso_data"
+    UniversalIsoPath = ISO_PATH
     ensure_jak_folders_exist()
 
     # store Latest Release and check our local date too.
