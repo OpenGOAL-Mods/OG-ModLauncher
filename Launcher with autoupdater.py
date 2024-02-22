@@ -144,6 +144,6 @@ while True:
         download_newest_mod()
     elif event == "launch_button":
         window.close()
-        subprocess.call([AppdataPATH/OpengoalModLauncher_exe])
+        subprocess.call([str(AppdataPATH/OpengoalModLauncher_exe)])
 
 window.close()
