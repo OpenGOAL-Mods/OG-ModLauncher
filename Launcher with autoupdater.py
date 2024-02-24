@@ -13,7 +13,7 @@ import subprocess
 from utils import launcherUtils
 
 dirs = AppDirs(roaming=True)
-AppdataPATH = Path(dirs.user_data_dir)/"OpenGOAL-UnofficialModLauncher"
+LauncherInstallPATH = Path(dirs.user_data_dir) / "OpenGOAL-UnofficialModLauncher"
 
 OpengoalModLauncher_exe = launcherUtils.get_exe("OpengoalModLauncher")
 gk_exe = launcherUtils.get_exe("gk")
@@ -55,8 +55,8 @@ def check_for_updates():
         latest_release_assets_url = "https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases/download/latest/"+ OpengoalModLauncher_exe
 
     last_write = datetime(2020, 5, 17)
-    if (AppdataPATH/OpengoalModLauncher_exe).exists():
-        last_write = datetime.utcfromtimestamp((AppdataPATH/OpengoalModLauncher_exe).stat().st_mtime)
+    if (LauncherInstallPATH / OpengoalModLauncher_exe).exists():
+        last_write = datetime.utcfromtimestamp((LauncherInstallPATH / OpengoalModLauncher_exe).stat().st_mtime)
 
     need_update = bool((last_write < latest_release))
 
@@ -89,13 +89,13 @@ def download_newest_mod():
         latest_release_assets_url = "https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases/download/latest/"+ OpengoalModLauncher_exe
 
     last_write = datetime(2020, 5, 17)
-    if (AppdataPATH/OpengoalModLauncher_exe).exists():
-        last_write = datetime.utcfromtimestamp((AppdataPATH/OpengoalModLauncher_exe).stat().st_mtime)
+    if (LauncherInstallPATH / OpengoalModLauncher_exe).exists():
+        last_write = datetime.utcfromtimestamp((LauncherInstallPATH / OpengoalModLauncher_exe).stat().st_mtime)
 
     need_update = bool((last_write < latest_release))
 
     if need_update:
-        temp_dir = AppdataPATH / "temp"
+        temp_dir = LauncherInstallPATH / "temp"
 
         window['update_status'].update("Starting Update...")
         try_remove_dir(temp_dir)
@@ -107,11 +107,11 @@ def download_newest_mod():
         urllib.request.urlretrieve(latest_release_assets_url, temp_dir / OpengoalModLauncher_exe, show_progress)
         window['update_status'].update("Done downloading")
 
-        window['update_status'].update(f"Removing previous installation {AppdataPATH}")
-        try_remove_dir(AppdataPATH/"data")
-        try_remove_file(AppdataPATH/gk_exe)
-        try_remove_file(AppdataPATH/goalc_exe)
-        try_remove_file(AppdataPATH/extractor_exe)
+        window['update_status'].update(f"Removing previous installation {LauncherInstallPATH}")
+        try_remove_dir(LauncherInstallPATH / "data")
+        try_remove_file(LauncherInstallPATH / gk_exe)
+        try_remove_file(LauncherInstallPATH / goalc_exe)
+        try_remove_file(LauncherInstallPATH / extractor_exe)
 
         window['update_status'].update("Extracting update")
 
@@ -119,7 +119,7 @@ def download_newest_mod():
         sub_dir = temp_dir
         all_files = os.listdir(sub_dir)
         for f in all_files:
-            shutil.move(sub_dir/f, AppdataPATH/f)
+            shutil.move(sub_dir / f, LauncherInstallPATH / f)
         try_remove_dir(temp_dir)
         window['update_status'].update("Update complete")
         window['update_button'].update(visible=False)
@@ -146,6 +146,6 @@ while True:
         download_newest_mod()
     elif event == "launch_button":
         window.close()
-        subprocess.call([str(AppdataPATH/OpengoalModLauncher_exe)])
+        subprocess.call([str(LauncherInstallPATH / OpengoalModLauncher_exe)])
 
 window.close()
