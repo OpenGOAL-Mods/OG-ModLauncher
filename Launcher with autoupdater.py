@@ -95,14 +95,16 @@ def download_newest_mod():
     need_update = bool((last_write < latest_release))
 
     if need_update:
+        temp_dir = AppdataPATH / "temp"
+
         window['update_status'].update("Starting Update...")
-        try_remove_dir(AppdataPATH/"temp")
-        if not os.path.exists(AppdataPATH/"temp"):
-            os.makedirs(AppdataPATH/"temp")
+        try_remove_dir(temp_dir)
+        if not temp_dir.exists():
+            temp_dir.mkdir()
 
         window['update_status'].update("Downloading update from " + latest_release_assets_url)
         file = urllib.request.urlopen(latest_release_assets_url)
-        urllib.request.urlretrieve(latest_release_assets_url, AppdataPATH/"temp"/OpengoalModLauncher_exe, show_progress)
+        urllib.request.urlretrieve(latest_release_assets_url, temp_dir / OpengoalModLauncher_exe, show_progress)
         window['update_status'].update("Done downloading")
 
         window['update_status'].update(f"Removing previous installation {AppdataPATH}")
@@ -112,7 +114,7 @@ def download_newest_mod():
         try_remove_file(AppdataPATH/extractor_exe)
 
         window['update_status'].update("Extracting update")
-        temp_dir = AppdataPATH/"temp"
+
         try_remove_file(temp_dir/"updateDATA.zip")
         sub_dir = temp_dir
         all_files = os.listdir(sub_dir)
