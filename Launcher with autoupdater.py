@@ -21,6 +21,7 @@ decompiler_exe = launcherUtils.get_exe("decompiler")
 goalc_exe = launcherUtils.get_exe("goalc")
 extractor_exe = launcherUtils.get_exe("extractor")
 
+
 def show_progress(block_num, block_size, total_size):
     if total_size > 0:
         try:
@@ -28,17 +29,25 @@ def show_progress(block_num, block_size, total_size):
         except Exception as e:
             pass  # Handle the exception if the window or element does not exist
 
+
 def try_remove_file(file):
     if exists(file):
         os.remove(file)
+
 
 def try_remove_dir(dir):
     if exists(dir):
         shutil.rmtree(dir)
 
-def check_for_updates():
-    
 
+# TODO:
+# The logic will need to be adjusted to use different criteria to return the latest executable
+# with regards to the user's platform.
+# Currently, it determines the executable using only the latest release at the launch_url
+# (assuming no network error, otherwise it goes into the else statement)
+# However, at the moment this leads to only the Windows exe being chosen and latest_release_assets_url gets
+# assigned accordingly
+def get_latest_release_info():
     launch_url = "https://api.github.com/repos/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases"
     response = requests.get(url=launch_url, params={'address': "yolo"})
 
@@ -52,18 +61,31 @@ def check_for_updates():
     else:
         print("WARNING: Failed to query GitHub API, you might be rate-limited. Using default fallback release instead.")
         latest_release = datetime(2023, 7, 23)
-        latest_release_assets_url = "https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases/download/latest/"+ OpengoalModLauncher_exe
+        latest_release_assets_url = "https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases/download/latest/" + OpengoalModLauncher_exe
 
+    return latest_release_assets_url, latest_release
+
+
+def get_latest_write_date():
     last_write = datetime(2020, 5, 17)
     if (LauncherInstallPATH / OpengoalModLauncher_exe).exists():
         last_write = datetime.utcfromtimestamp((LauncherInstallPATH / OpengoalModLauncher_exe).stat().st_mtime)
+    return last_write
 
-    need_update = bool((last_write < latest_release))
 
-    window['installed_version'].update(f"Currently installed version created on: {last_write.strftime('%Y-%m-%d %H:%M:%S')}")
+def need_update(last_write, latest_release):
+    return bool((last_write < latest_release))
+
+
+def check_for_updates():
+    latest_release_assets_url, latest_release = get_latest_release_info()
+    last_write = get_latest_write_date()
+
+    window['installed_version'].update(
+        f"Currently installed version created on: {last_write.strftime('%Y-%m-%d %H:%M:%S')}")
     window['newest_version'].update(f"Newest version created on: {latest_release.strftime('%Y-%m-%d %H:%M:%S')}")
 
-    if need_update:
+    if need_update(last_write, latest_release):
         window['update_status'].update("An update is available. Click 'Update' to install.")
         window['update_button'].update(visible=True)
         window['launch_button'].update(visible=False)
@@ -72,29 +94,12 @@ def check_for_updates():
         window['update_button'].update(visible=False)
         window['launch_button'].update(visible=True)
 
+
 def download_newest_mod():
-    launch_url = "https://api.github.com/repos/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases"
-    response = requests.get(url=launch_url, params={'address': "yolo"})
+    latest_release_assets_url, latest_release = get_latest_release_info()
+    last_write = get_latest_write_date()
 
-    if response is not None and response.status_code == 200:
-        r = json.loads(json.dumps(response.json()))
-        latest_release = datetime.strptime(r[0].get("published_at").replace("T", " ").replace("Z", ""),
-                                           '%Y-%m-%d %H:%M:%S')
-        latest_release_assets_url = (json.loads(
-            json.dumps(requests.get(url=r[0].get("assets_url"), params={'address': "yolo"}).json())))[0].get(
-            "browser_download_url")
-    else:
-        print("WARNING: Failed to query GitHub API, you might be rate-limited. Using default fallback release instead.")
-        latest_release = datetime(2023, 7, 23)
-        latest_release_assets_url = "https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases/download/latest/"+ OpengoalModLauncher_exe
-
-    last_write = datetime(2020, 5, 17)
-    if (LauncherInstallPATH / OpengoalModLauncher_exe).exists():
-        last_write = datetime.utcfromtimestamp((LauncherInstallPATH / OpengoalModLauncher_exe).stat().st_mtime)
-
-    need_update = bool((last_write < latest_release))
-
-    if need_update:
+    if need_update(last_write, latest_release):
         temp_dir = LauncherInstallPATH / "temp"
 
         window['update_status'].update("Starting Update...")
@@ -115,7 +120,7 @@ def download_newest_mod():
 
         window['update_status'].update("Extracting update")
 
-        try_remove_file(temp_dir/"updateDATA.zip")
+        try_remove_file(temp_dir / "updateDATA.zip")
         sub_dir = temp_dir
         all_files = os.listdir(sub_dir)
         for f in all_files:
@@ -125,13 +130,15 @@ def download_newest_mod():
         window['update_button'].update(visible=False)
         window['launch_button'].update(visible=True)
 
+
 layout = [
     [sg.Text("OpenGOAL Mod Updater", font=("Helvetica", 16))],
     [sg.Text("Installed Version:", size=(20, 1)), sg.Text("", size=(20, 1), key='installed_version')],
     [sg.Text("Newest Version:", size=(20, 1)), sg.Text("", size=(20, 1), key='newest_version')],
     [sg.ProgressBar(100, orientation='h', size=(20, 20), key='progress_bar')],
     [sg.Text("", size=(40, 1), key='update_status')],
-    [sg.Button("Check for Updates"), sg.Button("Update", visible=False, key='update_button'), sg.Button("Launch", visible=False, key='launch_button'), sg.Button("Exit")]
+    [sg.Button("Check for Updates"), sg.Button("Update", visible=False, key='update_button'),
+     sg.Button("Launch", visible=False, key='launch_button'), sg.Button("Exit")]
 ]
 
 window = sg.Window("OpenGOAL Mod Updater", layout, finalize=True)
