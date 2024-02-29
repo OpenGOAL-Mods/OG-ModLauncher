@@ -293,7 +293,7 @@ def getDecompiler(path):
     return
 
 
-# TODO
+
 def launch_local(MOD_ID, GAME):
     try:
         # Close Gk and goalc if they were open.
@@ -331,7 +331,7 @@ def launch_local(MOD_ID, GAME):
         return str(e)
 
 
-# TODO
+
 def download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, LatestRelAssetsURL):
     # start the actual update method if needUpdate is true
     print("\nNeed to update")
@@ -437,7 +437,7 @@ def download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, Latest
     )
 
 
-# TODO
+
 def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
     InstallDir = ModFolderPATH / MOD_ID
     UniversalIsoPath = ISO_PATH
@@ -533,7 +533,7 @@ def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
     return
 
 
-# TODO
+
 def update_and_launch(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME):
     if URL is None:
         return
