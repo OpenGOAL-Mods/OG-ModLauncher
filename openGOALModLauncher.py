@@ -669,37 +669,32 @@ def handleModTableSelection(row):
             if mod_image_override_url != ""
             else githubUtils.returnModImageURL(mod_url)
         )
-        r = requests.head(mod_image_url).status_code
-        if r == 200:
-            jpg_data = (
-                cloudscraper.create_scraper(
-                    browser={
-                        "browser": "firefox",
-                        "platform": "windows",
-                        "mobile": False,
-                    }
-                )
-                .get(mod_image_url)
-                .content
-            )
 
-            pil_image = Image.open(io.BytesIO(jpg_data))
-            png_bio = io.BytesIO()
-            pil_image.save(png_bio, format="PNG")
-            png_data = png_bio.getvalue()
-            window["-SELECTEDMODIMAGE-"].update(
-                githubUtils.resize_image(png_data, 500.0, 300.0)
+        jpg_data = (
+            cloudscraper.create_scraper(
+                browser={
+                    "browser": "firefox",
+                    "platform": "windows",
+                    "mobile": False,
+                }
             )
-            # prints the int of the status code. Find more at httpstatusrappers.com :)
-        else:
-            window["-SELECTEDMODIMAGE-"].update(
-                githubUtils.resize_image(noimagefile, 500.0, 300.0)
-            )
-    except:
+            .get(mod_image_url)
+            .content
+        )
+
+        pil_image = Image.open(io.BytesIO(jpg_data))
+        png_bio = io.BytesIO()
+        pil_image.save(png_bio, format="PNG")
+        png_data = png_bio.getvalue()
+        window["-SELECTEDMODIMAGE-"].update(
+            githubUtils.resize_image(png_data, 500.0, 300.0)
+        )
+        
+    except Exception as e:
+        print("Failed to download mod image from", mod_image_url, "error", e)
         window["-SELECTEDMODIMAGE-"].update(
             githubUtils.resize_image(noimagefile, 500.0, 300.0)
         )
-
 
 windowstatus = "main"
 
