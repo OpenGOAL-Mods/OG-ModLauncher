@@ -2,6 +2,11 @@ import PySimpleGUI as sg
 from utils import githubUtils
 
 
+# TODO: Set sizes of columns, frames, and other elements
+#  based on the user's screen resolution and screen size. Using hard coded
+#  values can cause elements to not be displayed on large screens with
+#  high resolution
+
 def generate(splashfile, loadingimage, LATEST_TABLE_DATA, table_headings, col_vis, col_width):
     return \
         [
@@ -153,7 +158,10 @@ def __main_panel(LATEST_TABLE_DATA, table_headings, col_vis, col_width):
             [__button("View Folder", "-VIEWFOLDER-"), __button_with_metadata("Website", "-WEBSITE-"),
              __button_with_metadata("Video(s)", "-VIDEOS-")]
         ],
-        size=(200, 300),
+        # Increased y from 300 to 425, since higher display screens do not
+        # have room to render these buttons. This is a temp fix until
+        # a programmatic approach is taken to determine element sizes.
+        size=(200, 425),
         expand_x=True,
         expand_y=True,
     )
