@@ -63,7 +63,7 @@ if getattr(sys, "frozen", False):
     if (
         LauncherDir != Path(dirs.user_data_dir) / "OpenGOAL-UnofficalModLauncher"
         and os.getlogin() != "NinjaPC"
-        and os.environ["COMPUTERNAME"] != "DESKTOP-BBN1CMN"
+        and os.environ.get("COMPUTERNAME",) != "DESKTOP-BBN1CMN"
     ):
         # Creating the tkinter window
         root = tkinter.Tk()
