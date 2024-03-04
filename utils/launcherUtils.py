@@ -159,7 +159,7 @@ def makeDirSymlink(link, target):
     if sys.platform == "win32":
         subprocess.check_call('mklink /J "%s" "%s"' % (link, target), shell=True)
     else:
-        subprocess.check_call('ln -s "%s" "%s"' % (link, target), shell=True)
+        subprocess.check_call('ln -s "%s" "%s"' % (target, link), shell=True)
 
 
 def makeFileSymlink(link, target):
@@ -169,7 +169,7 @@ def makeFileSymlink(link, target):
     if sys.platform == "win32":
         subprocess.check_call('mklink /H "%s" "%s"' % (link, target), shell=True)
     else:
-        subprocess.check_call('ln -s "%s" "%s"' % (link, target), shell=True)
+        subprocess.check_call('ln -s "%s" "%s"' % (target, link), shell=True)
 
 
 def link_files_by_extension(source_dir, destination_dir):
