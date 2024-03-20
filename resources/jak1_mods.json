@@ -85,12 +85,13 @@
     ],
     "tags": [
       "beta",
+      "challenge",
       "speedrunning",
       "rng"
     ],
     "release_date": "2023-02-02",
-    "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-rco",
-    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-rco/blob/main/README.md",
+    "URL": "https://github.com/OpenGOAL-Mods/OG-RCO/releases",
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-RCO",
     "game": "jak1"    
   },
   "speedrun_practice": {
