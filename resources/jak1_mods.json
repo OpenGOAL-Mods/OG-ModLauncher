@@ -77,7 +77,7 @@
   },
   "random_cell_order": {
     "name": "Random Cell Order",
-    "desc": "Jak 1 but you must pick up cells in the (random) specified order",
+    "desc": "Jak 1 but you must pick up cells in the (random) specified order. Check the website for more info on toggle-able settings.",
     "contributors": [
       "barg034",
       "SixRock",
@@ -91,7 +91,7 @@
     ],
     "release_date": "2023-02-02",
     "URL": "https://github.com/OpenGOAL-Mods/OG-RCO/releases",
-    "website_url": "https://github.com/OpenGOAL-Mods/OG-RCO",
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-RCO/blob/main/README.md",
     "game": "jak1"    
   },
   "speedrun_practice": {
