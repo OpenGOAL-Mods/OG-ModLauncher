@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# These three lines set the working path to this script's path.
+# It is equivalent to %~dp0 used in Windows batch files
+# https://stackoverflow.com/questions/207959/equivalent-of-dp0-retrieving-source-file-name-in-sh
+cd `dirname $0`
+mypath=`pwd`
+cd "$mypath"
+
+# --hide-console is Windows only
+pyinstaller --onefile "Launcher with autoupdater.py" --icon resources/appicon.ico
+
+mv "${mypath}/dist/Launcher with autoupdater" "${mypath}"
+
+rm -rf "${mypath}/dist"
+rm -rf "${mypath}/build"
