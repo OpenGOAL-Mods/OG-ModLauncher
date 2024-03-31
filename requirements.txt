@@ -1,4 +1,4 @@
-pyinstaller==6.0
+pyinstaller==4.1
 requests
 Pillow
 progressbar
