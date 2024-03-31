@@ -1,7 +1,5 @@
-pyinstaller==6.5.0
+pyinstaller
 python-dotenv
-ahk
-asyncio
 requests
 Pillow
 progressbar
