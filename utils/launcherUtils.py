@@ -125,7 +125,7 @@ def try_remove_dir(dir):
 
 
 def local_mod_image(MOD_ID):
-    path = ModFolderPATH + MOD_ID + "\\ModImage.png"
+    path = ModFolderPATH + MOD_ID + "/ModImage.png"
     if exists(path):
         return path
     return None
@@ -178,8 +178,8 @@ def link_files_by_extension(source_dir, destination_dir):
             makeFileSymlink(destination_path, file_path)
 
 def openFolder(path):
-    if not exists(dirs.user_data_dir + "\\OpenGOAL\\" + "mods\\data\\iso_data\\jak2"):
-        os.makedirs(dirs.user_data_dir + "\\OpenGOAL\\" + "mods\\data\\iso_data\\jak2")
+    if not exists(dirs.user_data_dir + "/OpenGOAL/" + "mods/data/iso_data/jak2"):
+        os.makedirs(dirs.user_data_dir + "/OpenGOAL/" + "mods/data/iso_data/jak2")
     FILEBROWSER_PATH = os.path.join(os.getenv("WINDIR"), "explorer.exe")
     print(path)
     subprocess.run([FILEBROWSER_PATH, path])
@@ -207,7 +207,7 @@ def ensure_dir(path):
     path.mkdir(parents=True, exist_ok=True)
 
 def open_browser_link():
-    url = "https://google.com"  # Replace with the desired URL
+    url = "https:/google.com"  # Replace with the desired URL
     if sys.platform.startswith('linux'):
         subprocess.Popen(["xdg-open", url])
     elif sys.platform.startswith('win'):
@@ -232,7 +232,7 @@ def divide_by_zero():
     1 / 0
 
 def ensure_jak_folders_exist():
-    directory = dirs.user_data_dir + "\OpenGOAL-Mods\_iso_data"
+    directory = dirs.user_data_dir + "/OpenGOAL-Mods/_iso_data"
     jak1_path = os.path.join(directory, "jak1")
     jak2_path = os.path.join(directory, "jak2")
 
@@ -247,7 +247,7 @@ def ensure_jak_folders_exist():
 #check if we have decompiler in the path, if not check if we have a backup, if so use it, if not download a backup then use it
 def getDecompiler(path):
     decompiler_exe = "decompiler.exe"
-    decompiler_url = "https://github.com/OpenGOAL-Mods/OG-Mod-Base/raw/main/out/build/Release/bin/decompiler.exe"  
+    decompiler_url = "https:/github.com/OpenGOAL-Mods/OG-Mod-Base/raw/main/out/build/Release/bin/decompiler.exe"  
 
     # Check if the decompiler exists in the provided path
     if os.path.exists(os.path.join(path, decompiler_exe)):
@@ -274,9 +274,9 @@ def launch_local(MOD_ID, GAME):
         
         if GAME == "jak2":
           GKCOMMANDLINElist = [
-            InstallDir + "\gk.exe",
+            InstallDir + "/gk.exe",
             "--proj-path",
-            InstallDir + "\\data",
+            InstallDir + "/data",
             "-v",
             "--game",
             "jak2",
@@ -286,9 +286,9 @@ def launch_local(MOD_ID, GAME):
           ]
         else: # if GAME == "jak1":
           GKCOMMANDLINElist = [
-              os.path.abspath(InstallDir + "\gk.exe"),  # Using os.path.abspath to get the absolute path.
+              os.path.abspath(InstallDir + "/gk.exe"),  # Using os.path.abspath to get the absolute path.
               "--proj-path",
-              os.path.abspath(InstallDir + "\\data"),  # Using absolute path for data folder too.
+              os.path.abspath(InstallDir + "/data"),  # Using absolute path for data folder too.
               "-boot",
               "-fakeiso",
               "-v",
@@ -373,32 +373,32 @@ def download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, Latest
 
     #replace the settings and discord RPC texts automatically before we build the game.
     replaceText(
-      InstallDir + r"\data\goal_src\jak1\pc\pckernel.gc",
+      InstallDir + "/data/goal_src/jak1/pc/pckernel.gc",
       "Playing Jak and Daxter: The Precursor Legacy",
       "Playing " + MOD_NAME,
     )
     replaceText(
-      InstallDir + r"\data\goal_src\jak1\pc\pckernel.gc",
+      InstallDir + "/data/goal_src/jak1/pc/pckernel.gc",
       "/pc-settings.gc",
-      r"/" + MOD_ID + "-settings.gc",
+      "/" + MOD_ID + "-settings.gc",
     )
     replaceText(
-      InstallDir + r"\data\goal_src\jak1\pc\pckernel-common.gc",
+      InstallDir + "/data/goal_src/jak1/pc/pckernel-common.gc",
       "/pc-settings.gc",
-      r"/" + MOD_ID + "-settings.gc",
+      "/" + MOD_ID + "-settings.gc",
     )
     replaceText(
-      InstallDir + r"\data\goal_src\jak1\pc\pckernel-common.gc",
+      InstallDir + "/data/goal_src/jak1/pc/pckernel-common.gc",
       "/pc-settings.gc",
-      r"/" + MOD_ID + "-settings.gc",
+      "/" + MOD_ID + "-settings.gc",
     )
     replaceText(
-      InstallDir + r"\data\decompiler\config\jak1_ntsc_black_label.jsonc",
+      InstallDir + "/data/decompiler/config/jak1_ntsc_black_label.jsonc",
       "\"process_tpages\": true,",
       "\"process_tpages\": false,",
     )
     replaceText(
-      InstallDir + r"\data\decompiler\config\jak1_pal.jsonc",
+      InstallDir + "/data/decompiler/config/jak1_pal.jsonc",
       "\"process_tpages\": true,",
 
       "\"process_tpages\": false,",
@@ -406,28 +406,28 @@ def download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, Latest
 
 def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
     InstallDir = ModFolderPATH + MOD_ID
-    UniversalIsoPath = AppdataPATH + "\OpenGOAL-Mods\_iso_data"
+    UniversalIsoPath = AppdataPATH + "/OpenGOAL-Mods/_iso_data"
 
-    print("Looking for some ISO data in " + UniversalIsoPath + "//" + GAME + "//")
-    found_universal_iso = exists(UniversalIsoPath +"//" + GAME + "//" + "Z6TAIL.DUP")
+    print("Looking for some ISO data in " + UniversalIsoPath + "/" + GAME + "/")
+    found_universal_iso = exists(UniversalIsoPath +"/" + GAME + "/" + "Z6TAIL.DUP")
 
     #if ISO_DATA has content, store this path to pass to the extractor
     if found_universal_iso:
         print("We found ISO data from a previous mod installation! Lets use it!")
-        print("Found in " + UniversalIsoPath +"//" + GAME + "//" + "Z6TAIL.DUP")
-        iso_path = UniversalIsoPath + "\\" + GAME
+        print("Found in " + UniversalIsoPath +"/" + GAME + "/" + "Z6TAIL.DUP")
+        iso_path = UniversalIsoPath + "/" + GAME
         
-        if not is_junction(InstallDir + "\\data\\iso_data"):
+        if not is_junction(InstallDir + "/data/iso_data"):
           # we have iso extracted to universal folder already, just symlink it. otherwise we'll copy it there and symlink after extractor closes
-          try_remove_dir(InstallDir + "\\data\\iso_data/")
-          makeDirSymlink(InstallDir + "\\data\\iso_data\\", UniversalIsoPath)
+          try_remove_dir(InstallDir + "/data/iso_data/")
+          makeDirSymlink(InstallDir + "/data/iso_data/", UniversalIsoPath)
     else:
         print("We did not find " + GAME + " ISO data from a previous mod, lets ask for some!") 
         
         # cleanup and remove a corrupted iso
-        if os.path.exists(UniversalIsoPath + "//" + GAME) and os.path.isdir(UniversalIsoPath) and not (exists((UniversalIsoPath + "//" + GAME + "//" + "Z6TAIL.DUP"))):
+        if os.path.exists(UniversalIsoPath + "/" + GAME) and os.path.isdir(UniversalIsoPath) and not (exists((UniversalIsoPath + "/" + GAME + "/" + "Z6TAIL.DUP"))):
             print("Removing corrupted iso destination...")
-            shutil.rmtree(UniversalIsoPath + "//" + GAME)
+            shutil.rmtree(UniversalIsoPath + "/" + GAME)
             ensure_jak_folders_exist()
             
         # prompt for their ISO and store its path
@@ -454,7 +454,7 @@ def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
     
     #Extract and compile
     if GAME == "jak1":
-        extractor_command_list = [InstallDir + "\extractor.exe", "-f", iso_path, "-v", "-c"]
+        extractor_command_list = [InstallDir + "/extractor.exe", "-f", iso_path, "-v", "-c"]
         if should_extract:
             extractor_command_list.append("-e")
             extractor_command_list.append("-d")
@@ -468,7 +468,7 @@ def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
             return
         
     elif GAME == "jak2":
-        extractor_command_list = [InstallDir + "\extractor.exe", "-f", iso_path, "-v", "-c", "-g", "jak2"]
+        extractor_command_list = [InstallDir + "/extractor.exe", "-f", iso_path, "-v", "-c", "-g", "jak2"]
         if should_extract:
             extractor_command_list.append("-e")
             extractor_command_list.append("-d")
@@ -482,17 +482,17 @@ def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
             return
 
     # symlink isodata for custom levels art group (goalc doesnt take -f flag)
-    # if exists(UniversalIsoPath + r"" + "//" + GAME + "//" + "Z6TAIL.DUP") and GAME == "jak1":
+    # if exists(UniversalIsoPath + r"" + "/" + GAME + "/" + "Z6TAIL.DUP") and GAME == "jak1":
     #     ensure_jak_folders_exist();
-    #     makeDirSymlink(InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "//" + GAME)
+    #     makeDirSymlink(InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "/" + GAME)
 
     # move the extrated contents to the universal launchers directory for next time.
     if not found_universal_iso:
         ensure_jak_folders_exist()
-        moveDirContents(InstallDir + "\\data\\iso_data/" + GAME, UniversalIsoPath + "//" + GAME)
+        moveDirContents(InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "/" + GAME)
         # replace iso_data with symlink
-        try_remove_dir(InstallDir + "\\data\\iso_data/")
-        makeDirSymlink(InstallDir + "\\data\\iso_data", UniversalIsoPath)
+        try_remove_dir(InstallDir + "/data/iso_data/")
+        makeDirSymlink(InstallDir + "/data/iso_data", UniversalIsoPath)
     
     launch_local(MOD_ID, GAME)
     return
@@ -514,7 +514,7 @@ def update_and_launch(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME):
 
     # paths
     InstallDir = ModFolderPATH + MOD_ID
-    UniversalIsoPath = AppdataPATH + "\OpenGOAL-Mods\_iso_data"
+    UniversalIsoPath = AppdataPATH + "/OpenGOAL-Mods/_iso_data"
     ensure_jak_folders_exist()
 
     # store Latest Release and check our local date too.
@@ -555,14 +555,14 @@ def update_and_launch(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME):
 
     # update checks
     Outdated = bool(LastWrite < LatestRel)
-    NotExtracted = bool(not (exists(UniversalIsoPath + "//" + GAME + "//" + "Z6TAIL.DUP")))
-    NotCompiled = bool(not (exists(InstallDir + r"\data\out" + "//" + GAME + "//" + "fr3\GAME.fr3")))
+    NotExtracted = bool(not (exists(UniversalIsoPath + "/" + GAME + "/" + "Z6TAIL.DUP")))
+    NotCompiled = bool(not (exists(InstallDir + "/data/out" + "/" + GAME + "/" + "fr3/GAME.fr3")))
     needUpdate = bool(Outdated or NotExtracted or NotCompiled)
 
     print("Currently installed version created on: " + LastWrite.strftime('%Y-%m-%d %H:%M:%S'))
     print("Newest version created on: " + LatestRel.strftime('%Y-%m-%d %H:%M:%S'))
     if(NotExtracted):
-        print("Error! Iso data does not appear to be extracted to " + UniversalIsoPath +"//" + GAME + "//" + "Z6TAIL.DUP")
+        print("Error! Iso data does not appear to be extracted to " + UniversalIsoPath +"/" + GAME + "/" + "Z6TAIL.DUP")
         print("Will ask user to provide ISO")
     if(NotCompiled):
         print("Error! The game is not compiled")
@@ -573,17 +573,17 @@ def update_and_launch(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME):
         print("Is newest posted update older than what we have installed? " + str((LastWrite < LatestRel)))
 
     # attempt to migrate any old settings files from using MOD_NAME to MOD_ID
-    if exists(AppdataPATH + "\OpenGOAL" + "//" + GAME + "//" + "settings\\" + MOD_NAME + "-settings.gc"):
+    if exists(AppdataPATH + "/OpenGOAL" + "/" + GAME + "/" + "settings/" + MOD_NAME + "-settings.gc"):
         # just to be safe delete the migrated settings file if it already exists (shouldn't happen but prevents rename from failing below)
-        if exists(AppdataPATH + "\OpenGOAL" + "//" + GAME + "//" + "settings\\" + MOD_ID + "-settings.gc"):
+        if exists(AppdataPATH + "/OpenGOAL" + "/" + GAME + "/" + "settings/" + MOD_ID + "-settings.gc"):
             os.remove(
-                AppdataPATH + "\OpenGOAL" + "//" + GAME + "//" + "settings\\" + MOD_ID + "-settings.gc"
+                AppdataPATH + "/OpenGOAL" + "/" + GAME + "/" + "settings/" + MOD_ID + "-settings.gc"
             )
 
         # rename settings file
         os.rename(
-            AppdataPATH + "\OpenGOAL" + "//" + GAME + "//" + "settings\\" + MOD_NAME + "-settings.gc",
-            AppdataPATH + "\OpenGOAL" + "//" + GAME + "//" + "settings\\" + MOD_ID + "-settings.gc",
+            AppdataPATH + "/OpenGOAL" + "/" + GAME + "/" + "settings/" + MOD_NAME + "-settings.gc",
+            AppdataPATH + "/OpenGOAL" + "/" + GAME + "/" + "settings/" + MOD_ID + "-settings.gc",
         )
 
         # force update to ensure we recompile with adjusted settings filename in pckernel.gc

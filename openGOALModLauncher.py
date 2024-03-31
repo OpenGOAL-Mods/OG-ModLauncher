@@ -308,6 +308,7 @@ def getRefreshedTableData(sort_col_idx):
                                 mod["desc"],
                                 mod["tags"],
                                 mod["contributors"],
+                                mod["release_date"],
                                 mod["install_date"],
                                 mod["access_date"],
                                 # mod["latest_available_update_date"],
@@ -495,13 +496,8 @@ layout = [
                                             )
                                         ],
                                         [sg.Text("Tags:", key="-SELECTEDMODTAGS-")],
-                                        [
-                                            sg.Text(
-                                                "Contributors:",
-                                                key="-SELECTEDMODCONTRIBUTORS-",
-                                            )
-                                        ],
-                                        [sg.Text("")],
+                                        [sg.Text("Contributors:", key="-SELECTEDMODCONTRIBUTORS-")],
+                                        [sg.Text("Release Date:", key="-SELECTEDMODRELEASEDATE-")],
                                         [
                                             sg.Btn(
                                                 button_text="Launch",
@@ -630,14 +626,15 @@ def handleModTableSelection(row):
     mod_desc = mod[2]
     mod_tags = mod[3]
     mod_contributors = mod[4]
-    mod_install_date = mod[5]
-    mod_access_date = mod[6]
-    mod_url = mod[7]
-    mod_website_url = mod[8]
-    mod_videos_url = mod[9]
-    mod_photos_url = mod[10]
-    mod_image_override_url = mod[11]
-    mod_game = mod[12]
+    mod_release_date = mod[5]
+    mod_install_date = mod[6]
+    mod_access_date = mod[7]
+    mod_url = mod[8]
+    mod_website_url = mod[9]
+    mod_videos_url = mod[10]
+    mod_photos_url = mod[11]
+    mod_image_override_url = mod[12]
+    mod_game = mod[13]
 
     # update text and metadata
     window["-LAUNCH-"].update(
@@ -651,6 +648,7 @@ def handleModTableSelection(row):
     window["-SELECTEDMODDESC-"].update(mod_desc)
     window["-SELECTEDMODTAGS-"].update(f"Tags: {mod_tags}")
     window["-SELECTEDMODCONTRIBUTORS-"].update(f"Contributors: {mod_contributors}")
+    window["-SELECTEDMODRELEASEDATE-"].update(f"Released: {mod_release_date}")
     window["-VIEWFOLDER-"].update(disabled=(mod_access_date == "Not Installed"))
     window["-REEXTRACT-"].update(disabled=(mod_access_date == "Not Installed"))
     window["-RECOMPILE-"].update(disabled=(mod_access_date == "Not Installed"))
@@ -726,7 +724,12 @@ LOADING_IMAGE_URLS = [
     "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-5.png",
     "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-6.png",
     "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-7.png",
-    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-8.png"
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-8.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-9.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-10.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-11.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-12.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-13.png"
 ]
 
 def loading_screen_with_thread(thread):

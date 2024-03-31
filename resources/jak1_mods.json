@@ -595,7 +595,7 @@
     "image_override_url": "https://jakmods.dev/bugged/bugged_logo.png",
     "website_url": "https://jakmods.dev/bugged/buglist.html",
     "game": "jak1"
-  },  
+  },
   "fartin-time": {
     "name": "The FART Legacy",
     "desc": "Misty sure is alot mistier than I remember...",
@@ -812,5 +812,18 @@
     "URL": "https://github.com/dallmeyer/OG-Mod-Base/releases",
     "image_override_url": "https://i.imgur.com/kOpzNP2.png",
     "game": "jak2"
+  },
+  "patched": {
+    "name": "Jak and Daxter: PATCHED",
+    "desc": "Jak and Daxter: The Precursor Legacy v1.1 ;)",
+    "contributors": ["bintendo42", "barg034"],
+    "tags": [
+      "speedrunning",
+      "challenge"
+    ],
+    "release_date": "2024-04-01",
+    "URL": "https://github.com/OpenGOAL-Mods/OG-Patched/releases",
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-Patched/blob/main/README.md",
+    "game": "jak1"
   }
 }
