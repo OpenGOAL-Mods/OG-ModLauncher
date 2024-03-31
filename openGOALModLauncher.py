@@ -8,7 +8,7 @@ Created on Thu Aug 25 18:33:45 2022
 import threading
 
 from PIL import Image
-from utils import launcherUtils, githubUtils
+from utils import launcherUtils, githubUtils, layoutUtils
 import PySimpleGUI as sg
 import cloudscraper
 import io
@@ -31,7 +31,19 @@ from datetime import datetime
 from pathlib import Path
 import random
 
+
+dirs = AppDirs(roaming=True)
+
+# C:\Users\USERNAME\AppData\Roaming\OpenGOAL-Mods\
+ModFolderPATH = Path(dirs.user_data_dir) / "OpenGOAL-Mods"
+
 sg.theme("DarkBlue3")
+
+
+# executables
+
+gk_exe = launcherUtils.get_exe("gk")
+
 
 
 def openLauncherWebsite():
@@ -45,13 +57,13 @@ def exitWithError():
 # Folder where script is placed, It looks in this for the Exectuable
 if getattr(sys, "frozen", False):
     # If we are a pyinstaller exe get the path of this file, not python
-    LauncherDir = os.path.dirname(os.path.realpath(sys.executable))
+    LauncherDir = Path(sys.executable).resolve().parent
 
     # Detect if a user has downloaded a release directly, if so point them to the autoupdater
     if (
-        LauncherDir != os.getenv("APPDATA") + "\\OpenGOAL-UnofficalModLauncher"
+        LauncherDir != Path(dirs.user_data_dir) / "OpenGOAL-UnofficalModLauncher"
         and os.getlogin() != "NinjaPC"
-        and os.environ["COMPUTERNAME"] != "DESKTOP-BBN1CMN"
+        and os.environ.get("COMPUTERNAME",) != "DESKTOP-BBN1CMN"
     ):
         # Creating the tkinter window
         root = tkinter.Tk()
@@ -80,14 +92,9 @@ elif __file__:
     # if we are running the .py directly use this path
     LauncherDir = os.path.dirname(__file__)
 
-installpath = str(LauncherDir + "\\resources\\")
+installpath = Path(LauncherDir) / "resources"
 
 # intialize default variables so they are never null
-
-dirs = AppDirs(roaming=True)
-
-# C:\Users\USERNAME\AppData\Roaming\OpenGOAL-Mods\
-ModFolderPATH = os.path.join(dirs.user_data_dir, "OpenGOAL-Mods", "")
 
 # grab images from web
 
@@ -131,8 +138,8 @@ iconfile = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-
 loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-0.png")
 
 # make the modfolderpath if first install
-if not os.path.exists(ModFolderPATH):
-    os.makedirs(ModFolderPATH)
+if not ModFolderPATH.exists():
+    ModFolderPATH.mkdir()
 
 table_headings = [
     "id",
@@ -210,8 +217,9 @@ LATEST_TABLE_SORT = [6, False]  # wakeup sorted by last launch date
 
 def getRefreshedTableData(sort_col_idx):
     # Load data from the local file if it exists
-    local_file_path = "resources/jak1_mods.json"
-    if os.path.exists(local_file_path):
+    local_file_path = Path("resources") / "jak1_mods.json"
+    if local_file_path.exists():
+        # TODO: don't leak fd
         local_mods = json.loads(open(local_file_path, "r").read())
 
     # Load data from the remote URL
@@ -221,7 +229,7 @@ def getRefreshedTableData(sort_col_idx):
     # Initialize an empty dictionary to store the combined data
     mod_dict = {}
 
-    if os.path.exists(local_file_path):
+    if local_file_path.exists():
         # Merge the remote and local data while removing duplicates
         mod_dict = {**remote_mods, **local_mods}
     else:
@@ -243,30 +251,25 @@ def getRefreshedTableData(sort_col_idx):
         mod["install_date"] = "Not Installed"
         mod["access_date"] = "Not Installed"
 
+        mod_path = ModFolderPATH/mod_id
+        mod_gk_path = mod_path / gk_exe
         # determine local install/access datetime
         if mod_id in installed_mod_subfolders:
             mod[
                 "install_date"
             ] = f"{datetime.fromtimestamp(installed_mod_subfolders[mod_id]):%Y-%m-%d %H:%M}"
-
-            if exists(f"{ModFolderPATH}/{mod_id}/gk.exe"):
-                gk_stat = os.stat(f"{ModFolderPATH}/{mod_id}/gk.exe")
-                mod[
-                    "access_date"
-                ] = f"{datetime.fromtimestamp(gk_stat.st_atime):%Y-%m-%d %H:%M}"
         elif mod_name in installed_mod_subfolders:
             # previous installation using mod_name (will migrate after this step)
             mod[
                 "install_date"
             ] = f"{datetime.fromtimestamp(installed_mod_subfolders[mod_name]):%Y-%m-%d %H:%M}"
             # migrate folder to use mod_id instead of mod_name
-            shutil.move(ModFolderPATH + "/" + mod_name, ModFolderPATH + "/" + mod_id)
+            (ModFolderPATH/mod_name).rename(mod_path)
 
-            if exists(f"{ModFolderPATH}/{mod_id}/gk.exe"):
-                gk_stat = os.stat(f"{ModFolderPATH}/{mod_id}/gk.exe")
-                mod[
-                    "access_date"
-                ] = f"{datetime.fromtimestamp(gk_stat.st_atime):%Y-%m-%d %H:%M}"
+        if mod_gk_path.exists():
+            mod[
+                "access_date"
+            ] = f"{datetime.fromtimestamp(mod_gk_path.stat().st_atime):%Y-%m-%d %H:%M}"
 
         mod["contributors"] = ", ".join(mod["contributors"])
         mod["tags"].sort()
@@ -362,258 +365,7 @@ def getRefreshedTableData(sort_col_idx):
 LATEST_TABLE_DATA = []
 
 # ----- Full layout -----
-layout = [
-    [
-        sg.Frame(
-            title="",
-            key="-SPLASHFRAME-",
-            border_width=0,  # Set border_width to 0
-            visible=True,
-            element_justification="center",
-            vertical_alignment="center",
-            layout=[
-                [
-                    sg.Image(
-                        key="-SPLASHIMAGE-",
-                        source=githubUtils.resize_image(splashfile, 970, 607),
-                        pad=(0, 0),  # Set padding to 0
-                        expand_x=True,
-                        expand_y=True,
-                    )
-                ]
-            ],
-        )
-    ],
-    [
-        sg.Frame(
-            title="",
-            key="-LOADINGFRAME-",
-            border_width=0,  # Set border_width to 0
-            visible=False,
-            element_justification="center",
-            vertical_alignment="center",
-            layout=[
-                [
-                    sg.Image(
-                        key="-LOADINGIMAGE-",
-                        source=githubUtils.resize_image(loadingimage, 970, 607),
-                        pad=(0, 0),  # Set padding to 0
-                        expand_x=True,
-                        expand_y=True,
-                    )
-                ]
-            ],
-        )
-    ],
-    [
-        sg.Frame(
-            title="",
-            key="-MAINFRAME-",
-            border_width=0,
-            visible=False,
-            layout=[
-                [
-                    sg.Column(  # nav sidebar
-                        [
-                            [sg.Text("JAK 1", font=("Helvetica", 16, "bold"))],
-                            [
-                                sg.Radio(
-                                    "Mods",
-                                    "filter",
-                                    font=("Helvetica", 12),
-                                    enable_events=True,
-                                    key="jak1/mods",
-                                    default=True,
-                                )
-                            ],
-                            [
-                                sg.Radio(
-                                    "Texture Packs",
-                                    "filter",
-                                    enable_events=True,
-                                    font=("Helvetica", 12),
-                                    key="jak1/tex",
-                                )
-                            ],
-                            [sg.Text("")],
-                            [sg.Text("JAK 2", font=("Helvetica", 16, "bold"))],
-                            [
-                                sg.Radio(
-                                    "Mods",
-                                    "filter",
-                                    font=("Helvetica", 12),
-                                    enable_events=True,
-                                    key="jak2/mods",
-                                )
-                            ],
-                            [
-                                sg.Radio(
-                                    "Texture Packs",
-                                    "filter",
-                                    font=("Helvetica", 12),
-                                    enable_events=True,
-                                    key="jak2/tex",
-                                )
-                            ],
-                            [sg.VPush()],
-                            [
-                                sg.Btn(
-                                    button_text="View iso_data Folder",
-                                    key="-VIEWISOFOLDER-",
-                                    expand_x=True,
-                                )
-                            ],
-                            [
-                                sg.Btn(
-                                    button_text="jakmods.dev",
-                                    key="-JAKMODSWEB-",
-                                    expand_x=True,
-                                )
-                            ],
-                        ],
-                        expand_y=True,
-                    ),
-                    sg.VerticalSeparator(),
-                    sg.Column(
-                        [
-                            [
-                                sg.Column(
-                                    [
-                                        [
-                                            sg.Text(
-                                                "",
-                                                key="-SELECTEDMODNAME-",
-                                                font=("Helvetica", 13),
-                                                metadata={"id": "", "url": ""},
-                                            )
-                                        ],
-                                        [
-                                            sg.Text(
-                                                "",
-                                                key="-SELECTEDMODDESC-",
-                                                size=(45, 7),
-                                            )
-                                        ],
-                                        [sg.Text("Tags:", key="-SELECTEDMODTAGS-")],
-                                        [
-                                            sg.Text(
-                                                "Contributors:",
-                                                key="-SELECTEDMODCONTRIBUTORS-",
-                                            )
-                                        ],
-                                        [sg.Text("")],
-                                        [
-                                            sg.Btn(
-                                                button_text="Launch",
-                                                key="-LAUNCH-",
-                                                expand_x=True,
-                                            ),
-                                            sg.Btn(
-                                                button_text="Re-extract",
-                                                key="-REEXTRACT-",
-                                                expand_x=True,
-                                            ),
-                                            sg.Btn(
-                                                button_text="Recompile",
-                                                key="-RECOMPILE-",
-                                                expand_x=True,
-                                            ),
-                                            sg.Btn(
-                                                button_text="Uninstall",
-                                                key="-UNINSTALL-",
-                                                expand_x=True,
-                                            ),
-                                        ],
-                                        [
-                                            sg.Btn(
-                                                button_text="View Folder",
-                                                key="-VIEWFOLDER-",
-                                                expand_x=True,
-                                            ),
-                                            sg.Btn(
-                                                button_text="Website",
-                                                key="-WEBSITE-",
-                                                expand_x=True,
-                                                metadata={"url": ""},
-                                            ),
-                                            sg.Btn(
-                                                button_text="Video(s)",
-                                                key="-VIDEOS-",
-                                                expand_x=True,
-                                                metadata={"url": ""},
-                                            ),
-                                            # sg.Btn(
-                                            #     button_text="Photo(s)",
-                                            #     key="-PHOTOS-",
-                                            #     expand_x=True,
-                                            #     metadata={"url": ""},
-                                            # ),
-                                        ],
-                                    ],
-                                    size=(200, 300),
-                                    expand_x=True,
-                                    expand_y=True,
-                                ),
-                                sg.Frame(
-                                    title="",
-                                    element_justification="center",
-                                    vertical_alignment="center",
-                                    border_width=0,
-                                    layout=[
-                                        [
-                                            sg.Image(
-                                                key="-SELECTEDMODIMAGE-", expand_y=True
-                                            )
-                                        ]
-                                    ],
-                                    size=(450, 300),
-                                ),
-                            ],
-                            [sg.HorizontalSeparator()],
-                            [
-                                sg.Text("Search"),
-                                sg.Input(
-                                    expand_x=True, enable_events=True, key="-FILTER-"
-                                ),
-                                sg.Checkbox(
-                                    text="Show Installed",
-                                    default=True,
-                                    enable_events=True,
-                                    key="-SHOWINSTALLED-",
-                                ),
-                                sg.Checkbox(
-                                    text="Show Uninstalled",
-                                    default=True,
-                                    enable_events=True,
-                                    key="-SHOWUNINSTALLED-",
-                                ),
-                            ],
-                            [
-                                sg.Table(
-                                    values=LATEST_TABLE_DATA,
-                                    headings=table_headings,
-                                    visible_column_map=col_vis,
-                                    col_widths=col_width,
-                                    auto_size_columns=False,
-                                    num_rows=15,
-                                    text_color="black",
-                                    background_color="lightblue",
-                                    alternating_row_color="white",
-                                    justification="left",
-                                    selected_row_colors="black on yellow",
-                                    key="-MODTABLE-",
-                                    expand_x=True,
-                                    expand_y=True,
-                                    enable_click_events=True,
-                                )
-                            ],
-                        ]
-                    ),
-                ]
-            ],
-        )
-    ],
-]
+layout = layoutUtils.generate(splashfile, loadingimage, LATEST_TABLE_DATA, table_headings, col_vis, col_width)
 
 window = sg.Window(
     "OpenGOAL Mod Launcher", layout, icon=iconfile, border_depth=0, finalize=True
@@ -841,7 +593,7 @@ while True:
         subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
 
         if tmpModSelected in subfolders:
-            dir = dirs.user_data_dir + "\\OpenGOAL-Mods\\" + tmpModSelected
+            dir = ModFolderPATH/tmpModSelected
             launcherUtils.openFolder(dir)
         else:
             sg.Popup("Selected mod is not installed", keep_on_top=True, icon=iconfile)
@@ -853,10 +605,9 @@ while True:
         [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
         subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
         if tmpModSelected in subfolders:
-            dir = dirs.user_data_dir + "\\OpenGOAL-Mods\\" + tmpModSelected
+            dir = ModFolderPATH/tmpModSelected
             ans = sg.popup_ok_cancel(
-                "Confirm: re-extracting "
-                + dir,
+                f"Confirm: re-extracting {dir}",
                 icon=iconfile,
             )
             if ans == "OK":
@@ -873,10 +624,9 @@ while True:
         [linkType, tmpModURL] = githubUtils.identifyLinkType(tmpModURL)
         subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
         if tmpModSelected in subfolders:
-            dir = dirs.user_data_dir + "\\OpenGOAL-Mods\\" + tmpModSelected
+            dir = ModFolderPATH/tmpModSelected
             ans = sg.popup_ok_cancel(
-                "Confirm: recompiling "
-                + dir,
+                f"Confirm: recompiling {dir}",
                 icon=iconfile,
             )
             if ans == "OK":
@@ -890,8 +640,8 @@ while True:
         subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
 
         if tmpModSelected in subfolders:
-            dir = dirs.user_data_dir + "\\OpenGOAL-Mods\\" + tmpModSelected
-            ans = sg.popup_ok_cancel("Confirm: uninstalling " + dir, icon=iconfile)
+            dir = ModFolderPATH/tmpModSelected
+            ans = sg.popup_ok_cancel(f"Confirm: uninstalling {dir}", icon=iconfile)
             if ans == "OK":
                 launcherUtils.try_remove_dir(dir)
                 reset()
@@ -935,7 +685,7 @@ while True:
         LATEST_TABLE_DATA = getRefreshedTableData(None)
         window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
     elif event == "-VIEWISOFOLDER-":
-        dir = dirs.user_data_dir + "\\OpenGOAL-Mods\\_iso_data"
+        dir = ModFolderPATH/"_iso_data"
         launcherUtils.ensure_jak_folders_exist()
         launcherUtils.openFolder(dir)
     elif event == "-JAKMODSWEB-":
