@@ -1,7 +1,8 @@
 pyinstaller<5.0
+imp
 requests
 Pillow
 progressbar
 cloudscraper
 appdirs
-PySimpleGUI
+PySimpleGUI=4.60.5
