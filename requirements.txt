@@ -1,4 +1,4 @@
-pyinstaller<5.0
+pyinstaller
 requests
 Pillow
 progressbar
