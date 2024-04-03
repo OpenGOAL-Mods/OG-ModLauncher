@@ -19,26 +19,6 @@
     "videos_url": "https://www.youtube.com/watch?v=B5mEhVt0v68",
     "game": "jak1"
   },
-  "randomizer_test": {
-    "name": "Checkpoint Randomizer (old)",
-    "desc": "Warp to a random checkpoint on various triggers (cells, flies, orbs, eco, death).",
-    "contributors": [
-      "ZedB0T",
-      "MikeGamePro",
-      "barg034"
-    ],
-    "tags": [
-      "hidden",
-      "gameplay-mod",
-      "rng",
-      "challenge"
-    ],
-    "release_date": "2022-08-28",
-    "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack/tree/main",
-    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-randomizer-mod-pack",
-    "videos_url": "https://www.youtube.com/watch?v=B5mEhVt0v68",
-    "game": "jak1"
-  },
   "random_actor_scale": {
     "name": "Fricked up",
     "desc": "PAUSERS",
@@ -647,19 +627,6 @@
     "website_url": "https://github.com/OpenGOAL-Mods/OG-Daxter2/blob/main/README.md",
     "game": "jak2"
   },
-  "ogtest": {
-    "name": "OpenGOAL test",
-    "desc": "Testingstuff",
-    "contributors": ["OpenGOAL"],
-    "tags": [
-      "hidden"
-    ],
-    "release_date": "2023-11-04",
-    "URL": "https://github.com/zedb0t/jak-project/releases",
-    "image_override_url": "https://opengoal.dev/img/logo.png",
-    "website_url": "https://github.com/OpenGOAL-Mods/OG-Daxter2/blob/main/README.md",
-    "game": "jak2"
-  },
   "heromode-plus": {
     "name": "HeroMode+ | A Jak II Overhaul",
     "desc": "Overhauls Jak II's difficulty, but with a twist! Adds weapon mods, custom modifiers, hero mode changes, and various other things to find! Are you up for the challenge?",
@@ -824,6 +791,18 @@
     "release_date": "2024-04-01",
     "URL": "https://github.com/OpenGOAL-Mods/OG-Patched/releases",
     "website_url": "https://github.com/OpenGOAL-Mods/OG-Patched/blob/main/README.md",
+    "game": "jak1"
+  },
+  "chat_plays": {
+    "name": "Twitch chat plays Jak 1",
+    "desc": "Nerfed Jak 1 to make Twitch chat plays possible-ish. You will still need the separate java client to route commands from chat to openGOAL REPL",
+    "contributors": ["barg034"],
+    "tags": [
+      "hidden"
+    ],
+    "release_date": "2024-04-02",
+    "URL": "https://github.com/OpenGOAL-Mods/OG-Chat-Plays/releases",
+    "website_url": "https://github.com/Zedb0T/Opengoal-Twitch-CrowdControl/blob/main/README.md",
     "game": "jak1"
   }
 }
