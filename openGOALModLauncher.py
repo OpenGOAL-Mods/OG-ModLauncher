@@ -729,7 +729,8 @@ LOADING_IMAGE_URLS = [
     "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-10.png",
     "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-11.png",
     "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-12.png",
-    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-13.png"
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-13.png",
+    "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/modlauncher-loading-14.png"
 ]
 
 def loading_screen_with_thread(thread):
