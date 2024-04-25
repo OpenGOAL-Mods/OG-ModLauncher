@@ -4,14 +4,14 @@
  
 # Opengoal-ModLauncher
 
-OpenGOAL unofficial mod launcher OPEN BETA
-https://youtu.be/JYVNwv4_0R4
+https://jakmods.dev
 
-DM @Zed#9719 or @barg034#8029 if you want help hosting your mods in a way the launcher can see them.
+https://www.youtube.com/watch?v=0eRYnLbVVHs
+
+DM @Zed#9719 or @barg034#8029 on Discord if you want help hosting your mods in a way the launcher can see them.
 
 **NOT SUPPORTED BY OPENGOAL DEVS ANY ISSUES ASK @Zed#9719 OR EVEN BETTER @barg034#8029 **
 **All code is ran at your own risk**
 You can audit it, build your own, and view the json here:
-<https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev>
+<https://github.com/OpenGOAL-Mods/OG-ModLauncher>
 
-https://jakmods.dev
