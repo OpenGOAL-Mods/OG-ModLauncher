@@ -788,5 +788,19 @@
     "URL": "https://github.com/OpenGOAL-Mods/OG-Chat-Plays/releases",
     "website_url": "https://github.com/Zedb0T/Opengoal-Twitch-CrowdControl/blob/main/README.md",
     "game": "jak1"
+  },
+  "roguelike_jak2": {
+    "name": "Roguelike Jak 2",
+    "desc": "The Jak Time Loop is broken! To restore it, Jak must fight through random missions that grow more unstable the further you venture. As the enemies get stronger, so can you! With Vin's help, Jak must blast his way back into the metalhead nest, and restore his destiny.",
+    "contributors": ["Kraken"],
+    "tags": [
+      "rng",
+      "gameplay-mod",
+      "challenge"
+    ],
+    "release_date": "2024-05-03",
+    "URL": "https://github.com/RealOfficialKraken/RoguelikeJak2/releases",
+    "website_url": "https://github.com/RealOfficialKraken/RoguelikeJak2/blob/main/README.md",
+    "game": "jak2"
   }
 }
