@@ -247,84 +247,7 @@ def ensure_jak_folders_exist():
 
     if not os.path.exists(jak3_path):
         os.makedirs(jak3_path)
-        print(f"Created 'jak2' folder at {jak3_path}")
-
-#check if we have decompiler in the path, if not check if we have a backup, if so use it, if not download a backup then use it
-def getDecompiler(path):
-    decompiler_exe = "decompiler.exe"
-    decompiler_url = "https://github.com/OpenGOAL-Mods/OG-Mod-Base/raw/main/out/build/Release/bin/decompiler.exe"
-
-
-    # Check if the decompiler exists in the provided path
-    if os.path.exists(os.path.join(path, decompiler_exe)):
-        print(f"Found {decompiler_exe} in the directory.")
-        return
-    else:
-        # Check if the backup decompiler exists
-        print(f"Couldn't find {decompiler_exe} in the directory or backup. Downloading it...")
-        urllib.request.urlretrieve(decompiler_url, os.path.join(path, decompiler_exe))
-        print(f"{decompiler_exe} downloaded successfully as backup.")
-    while not os.path.exists(os.path.join(path, decompiler_exe)):
-        time.sleep(1)  # Wait for the download to complete
-
-    return
-# jak3 jak 3 3 jak
-def getGK(path):
-    decompiler_exe = "gk.exe"
-    decompiler_url = "https://github.com/OpenGOAL-Mods/OG-Mod-Base/raw/main/out/build/Release/bin/gk.exe"
-
-
-    # Check if the decompiler exists in the provided path
-    if os.path.exists(os.path.join(path, decompiler_exe)):
-        print(f"Found {decompiler_exe} in the directory.")
-        return
-    else:
-        # Check if the backup decompiler exists
-        print(f"Couldn't find {decompiler_exe} in the directory or backup. Downloading it...")
-        urllib.request.urlretrieve(decompiler_url, os.path.join(path, decompiler_exe))
-        print(f"{decompiler_exe} downloaded successfully as backup.")
-    while not os.path.exists(os.path.join(path, decompiler_exe)):
-        time.sleep(1)  # Wait for the download to complete
-
-    return
-
-def getGoalc(path):
-    decompiler_exe = "goalc.exe"
-    decompiler_url = "https://github.com/OpenGOAL-Mods/OG-Mod-Base/raw/main/out/build/Release/bin/goalc.exe"
-
-
-    # Check if the decompiler exists in the provided path
-    if os.path.exists(os.path.join(path, decompiler_exe)):
-        print(f"Found {decompiler_exe} in the directory.")
-        return
-    else:
-        # Check if the backup decompiler exists
-        print(f"Couldn't find {decompiler_exe} in the directory or backup. Downloading it...")
-        urllib.request.urlretrieve(decompiler_url, os.path.join(path, decompiler_exe))
-        print(f"{decompiler_exe} downloaded successfully as backup.")
-    while not os.path.exists(os.path.join(path, decompiler_exe)):
-        time.sleep(1)  # Wait for the download to complete
-
-    return
-
-def getopenAI(path):
-    decompiler_exe = "openal32.dll"
-    decompiler_url = "https://github.com/OpenGOAL-Mods/OG-Mod-Base/raw/main/out/build/Release/bin/openal32.dll"
-
-
-    # Check if the decompiler exists in the provided path
-    if os.path.exists(os.path.join(path, decompiler_exe)):
-        print(f"Found {decompiler_exe} in the directory.")
-        return
-    else:
-        # Check if the backup decompiler exists
-        print(f"Couldn't find {decompiler_exe} in the directory or backup. Downloading it...")
-        urllib.request.urlretrieve(decompiler_url, os.path.join(path, decompiler_exe))
-        print(f"{decompiler_exe} downloaded successfully as backup.")
-    while not os.path.exists(os.path.join(path, decompiler_exe)):
-        time.sleep(1)  # Wait for the download to complete
-
-    return
+        print(f"Created 'jak3' folder at {jak3_path}")
 
 def launch_local(MOD_ID, GAME):
     try:
@@ -335,32 +258,7 @@ def launch_local(MOD_ID, GAME):
         time.sleep(1)
         InstallDir = ModFolderPATH + MOD_ID
 
-        if GAME == "jak2":
-          GKCOMMANDLINElist = [
-            InstallDir + "/gk.exe",
-            "--proj-path",
-            InstallDir + "/data",
-            "-v",
-            "--game",
-            "jak2",
-            "--",
-            "-boot",
-            "-fakeiso"
-          ]
-          # jak3 jak 3 3 jak
-        if GAME == "jak3":
-          GKCOMMANDLINElist = [
-            InstallDir + "/out/build/release/bin/gk.exe",
-            "--proj-path",
-            InstallDir,
-            "-v",
-            "--game",
-            "jak3",
-            "--",
-            "-boot",
-            "-fakeiso"
-          ]
-        else: # if GAME == "jak1":
+        if GAME == "jak1":
           GKCOMMANDLINElist = [
               os.path.abspath(InstallDir + "/gk.exe"),  # Using os.path.abspath to get the absolute path.
               "--proj-path",
@@ -369,13 +267,38 @@ def launch_local(MOD_ID, GAME):
               "-fakeiso",
               "-v",
           ]
+        elif GAME == "jak2":
+          GKCOMMANDLINElist = [
+            InstallDir + "/gk.exe",
+            "--proj-path",
+            InstallDir + "/data",
+            "-v",
+            "--game",
+            GAME,
+            "--",
+            "-boot",
+            "-fakeiso"
+          ]
+        else: # GAME == "jak3"
+          GKCOMMANDLINElist = [
+            InstallDir + "/gk.exe",
+            "--proj-path",
+            InstallDir + "/data",
+            "-v",
+            "--game",
+            GAME,
+            "--",
+            "-boot",
+            "-fakeiso",
+            "-debug" # TODO retail mode once ready
+          ]
 
         print("running: ", GKCOMMANDLINElist)
         subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir))
     except Exception as e:  # Catch all exceptions and print the error message.
         return str(e)
 
-def download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, LatestRelAssetsURL, GAME):
+def download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, LatestRelAssetsURL):
     #start the actual update method if needUpdate is true
     print("\nNeed to update")
     print("Starting Update...")
@@ -398,9 +321,6 @@ def download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, Latest
             print("Final destination:")
             print(response.status_code, response.url)
             LatestRelAssetsURL = response.url
-            # jak3 jak 3 3 jak
-            if LatestRelAssetsURL == "https://codeload.github.com/open-goal/jak-project/zip/main":
-                LatestRelAssetsURL = "https://codeload.github.com/open-goal/jak-project/zip/master"
 
     else:
         print("Request was not redirected")
@@ -444,21 +364,11 @@ def download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, Latest
       # for branches, the downloaded zip puts all files one directory down
       SubDir = SubDir + "/" + os.listdir(SubDir)[0]
 
-# jak3 jak 3 3 jak
-    if GAME != "jak3":
-        print("Moving files from " + SubDir + " up to " + InstallDir)
-        allfiles = os.listdir(SubDir)
-        for f in allfiles:
-            shutil.move(SubDir + "/" + f, InstallDir + "/" + f)
-        try_remove_dir(TempDir)
-
-    #this doesnt work for jak3 for some reason??
-    if GAME == "jak3":
-        print("Moving files from " + SubDir + " up to " + InstallDir)
-        allfiles = os.listdir(SubDir)
-        for f in allfiles:
-            shutil.move(SubDir + "/" + f, InstallDir + "/" + f)
-        try_remove_dir(TempDir)
+    print("Moving files from " + SubDir + " up to " + InstallDir)
+    allfiles = os.listdir(SubDir)
+    for f in allfiles:
+        shutil.move(SubDir + "/" + f, InstallDir + "/" + f)
+    try_remove_dir(TempDir)
 
     #replace the settings and discord RPC texts automatically before we build the game.
     replaceText(
@@ -499,22 +409,18 @@ def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
 
     print("Looking for some ISO data in " + UniversalIsoPath + "/" + GAME + "/")
     # jak3 jak 3 3 jak
-    found_universal_iso = exists(UniversalIsoPath +"/" + GAME + "/" + "Z6TAIL.DUP") or exists(UniversalIsoPath +"/" + GAME + "/" + "ZZTAIL.DAT")
+    found_universal_iso = exists(UniversalIsoPath + "/" + GAME + "/" + "Z6TAIL.DUP") or exists(UniversalIsoPath + "/" + GAME + "/" + "ZZTAIL.DAT")
 
     #if ISO_DATA has content, store this path to pass to the extractor
     if found_universal_iso:
         print("We found ISO data from a previous mod installation! Lets use it!")
         print("Found in " + UniversalIsoPath +"/" + GAME + "/" + "Z6TAIL.DUP")
         iso_path = UniversalIsoPath + "/" + GAME
-# jak3 jak 3 3 jak
-        if not is_junction(InstallDir + "/data/iso_data") and GAME != "jak3":
+
+        if not is_junction(InstallDir + "/data/iso_data"):
           # we have iso extracted to universal folder already, just symlink it. otherwise we'll copy it there and symlink after extractor closes
           try_remove_dir(InstallDir + "/data/iso_data/")
           makeDirSymlink(InstallDir + "/data/iso_data/", UniversalIsoPath)
-        if not is_junction(InstallDir + "/data/iso_data") and GAME == "jak3":
-          # we have iso extracted to universal folder already, just symlink it. otherwise we'll copy it there and symlink after extractor closes
-          try_remove_dir(InstallDir + "/iso_data/")
-          makeDirSymlink(InstallDir + "/iso_data/", UniversalIsoPath)
     else:
         print("We did not find " + GAME + " ISO data from a previous mod, lets ask for some!")
 
@@ -562,8 +468,8 @@ def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
             print("Extractor error!")
             return
 
-    elif GAME == "jak2":
-        extractor_command_list = [InstallDir + "/extractor.exe", "-f", iso_path, "-v", "-c", "-g", "jak2"]
+    else: # GAME == "jak2" or GAME == "jak3"
+        extractor_command_list = [InstallDir + "/extractor.exe", "-f", iso_path, "-v", "-c", "-g", GAME]
         if should_extract:
             extractor_command_list.append("-e")
             extractor_command_list.append("-d")
@@ -576,65 +482,12 @@ def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
             print("Extractor error!")
             return
 
-# jak3 jak 3 3 jak
-    elif GAME == "jak3":
-            DecompilerPATH = InstallDir + "\decompiler.exe"
-            getDecompiler(InstallDir)
-            if not os.path.exists(InstallDir + "/out/build/Release/bin"):
-                os.makedirs(InstallDir + "/out/build/Release/bin")
-                print(f"Created InstallDir + /out/build/Release/bin")
-            getGK(InstallDir + "/out/build/Release/bin")
-            getGoalc(InstallDir + "/out/build/Release/bin")
-            getopenAI(InstallDir + "/out/build/Release/bin")
-            decompiler_command_list = [DecompilerPATH,
-                                       "./decompiler/config/jak3/jak3_config.jsonc",
-                                       UniversalIsoPath,
-                                       "./decompiler_out",
-                                       "--version",
-                                       "ntsc_v1",
-                                       "--config-override",
-                                       '{"decompile_code": false,"levels_extract\": true}'
-                        ]
-            #print(decompiler_command_list)
-            decompiler_result = subprocess.Popen(decompiler_command_list, shell=True, cwd=os.path.abspath(InstallDir))
-            print("opened decompiler")
-            decompiler_result.wait()
-            #wait for decompiler before starting goalc
-            #Decompiler
-
-
-            if decompiler_result.returncode == 0:
-                print("done with decompiler!")
-            else:
-                print("decompiler error!")
-            GoalCPATH = InstallDir + "/out/build/Release/bin/goalc.exe"
-            goalc_command_list = [GoalCPATH,
-                            "--proj-path",
-                            InstallDir,
-                            "--game",
-                            "jak3",
-                            "-c",
-                            "(mi) (e)"
-            ]
-
-            #print(goalc_command_list)
-
-            #open GoalC to build jak2, for jak 1 extractor can handle this.
-            print("Opening the Compiler subprocess - Sleeping for 5 seconds so it has time to initalize.")
-            goalc_result = subprocess.Popen(goalc_command_list, shell=True, cwd=os.path.abspath(InstallDir))
-            goalc_result.wait()
-            #jak2hack this is only needed since extractor isnt aware of jak2
-            if goalc_result.returncode ==0:
-                print("done goalc!")
-            else:
-                print("goalc error!")
-
     # symlink isodata for custom levels art group (goalc doesnt take -f flag)
     # if exists(UniversalIsoPath + r"" + "/" + GAME + "/" + "Z6TAIL.DUP") and GAME == "jak1":
     #     ensure_jak_folders_exist();
     #     makeDirSymlink(InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "/" + GAME)
 
-    # move the extrated contents to the universal launchers directory for next time.
+    # move the extracted contents to the universal launchers directory for next time.
     if not found_universal_iso:
         ensure_jak_folders_exist()
         moveDirContents(InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "/" + GAME)
@@ -654,9 +507,6 @@ def update_and_launch(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME):
     launchUrl = URL
     if LINK_TYPE == githubUtils.LinkTypes.BRANCH:
       launchUrl = githubUtils.branchToApiURL(URL)
-      # jak3 jak 3 3 jak
-      if launchUrl == "https://api.github.com/repos/open-goal/jak-project/branches/main":
-          launchUrl = "https://api.github.com/repos/open-goal/jak-project/branches/master"
     LatestRelAssetsURL = ""
 
     print("\nlaunching from " + launchUrl)
@@ -742,7 +592,7 @@ def update_and_launch(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME):
         needUpdate = True
 
     if needUpdate:
-        download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, LatestRelAssetsURL, GAME)
+        download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, LatestRelAssetsURL)
         rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, True)
     else:
       # dont need to update, close any open instances of the game and just launch it

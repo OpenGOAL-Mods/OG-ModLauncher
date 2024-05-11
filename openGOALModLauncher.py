@@ -294,7 +294,7 @@ def getRefreshedTableData(sort_col_idx):
 
         if matches_filter or secret_check:  #todo replace == jak3 with some kind of pw or image check or key or hash This is safe for now since the online list doesnt have jak3
             # jak3 jak 3 3 jak
-            if mod["game"] == FILTER_GAME or mod["game"] == "jak3":  # filter jak1 vs jak2
+            if mod["game"] == FILTER_GAME or mod["game"] == "jak3":  # filter jak1 vs jak2 (or always include jak 3)
                 # filter mods vs texture packs
                 if (FILTER_CAT == "tex") == (mod["tags"] == "texture-mod"):
                     if (
