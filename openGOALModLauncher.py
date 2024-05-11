@@ -210,7 +210,7 @@ LATEST_TABLE_SORT = [6, False]  # wakeup sorted by last launch date
 
 def getRefreshedTableData(sort_col_idx):
     # Load data from the local file if it exists
-    local_file_path = "resources/jak1_mods.json"
+    local_file_path = "resources/jak1_mods2.json"
     if os.path.exists(local_file_path):
         local_mods = json.loads(open(local_file_path, "r").read())
 
@@ -286,14 +286,15 @@ def getRefreshedTableData(sort_col_idx):
             or FILTER_STR in mod["contributors"].lower()
             or FILTER_STR in mod["tags"].lower()
         ) and "hidden" not in mod["tags"].lower()
-        
+
         secret_check = (
             "hidden" in mod["tags"].lower()
             and FILTER_STR == "lbood"
         )
 
-        if matches_filter or secret_check:
-            if mod["game"] == FILTER_GAME:  # filter jak1 vs jak2
+        if matches_filter or secret_check:  #todo replace == jak3 with some kind of pw or image check or key or hash This is safe for now since the online list doesnt have jak3
+            # jak3 jak 3 3 jak
+            if mod["game"] == FILTER_GAME or mod["game"] == "jak3":  # filter jak1 vs jak2 (or always include jak 3)
                 # filter mods vs texture packs
                 if (FILTER_CAT == "tex") == (mod["tags"] == "texture-mod"):
                     if (
@@ -687,7 +688,7 @@ def handleModTableSelection(row):
         window["-SELECTEDMODIMAGE-"].update(
             githubUtils.resize_image(png_data, 500.0, 300.0)
         )
-        
+
     except Exception as e:
         print("Failed to download mod image from", mod_image_url, "error", e)
         window["-SELECTEDMODIMAGE-"].update(

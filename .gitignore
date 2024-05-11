@@ -29,3 +29,4 @@ resources/utils/__pycache__/*
 *.pyo
 resources.rar
 Launcher with autoupdater.spec
+resources/jak1_mods2.json
