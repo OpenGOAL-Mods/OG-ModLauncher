@@ -426,7 +426,7 @@ def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
 
         # cleanup and remove a corrupted iso
         # jak3 jak 3 3 jak
-        if os.path.exists(UniversalIsoPath + "/" + GAME) and os.path.isdir(UniversalIsoPath) and not (exists((UniversalIsoPath + "/" + GAME + "/" + "Z6TAIL.DUP"))) or (exists((UniversalIsoPath + "/" + GAME + "/" + "ZZTAIL.DAT"))) :
+        if GAME != "jak3" and os.path.exists(UniversalIsoPath + "/" + GAME) and os.path.isdir(UniversalIsoPath) and not (exists((UniversalIsoPath + "/" + GAME + "/" + "Z6TAIL.DUP"))) or (exists((UniversalIsoPath + "/" + GAME + "/" + "ZZTAIL.DAT"))) :
             print("Removing corrupted iso destination...")
             shutil.rmtree(UniversalIsoPath + "/" + GAME)
             ensure_jak_folders_exist()
