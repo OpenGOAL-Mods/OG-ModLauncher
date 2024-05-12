@@ -557,7 +557,11 @@ def update_and_launch(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME):
     # update checks
     Outdated = bool(LastWrite < LatestRel)
     # jak3 jak 3 3 jak
-    NotExtracted = (bool(not (exists(UniversalIsoPath + "/" + GAME + "/" + "Z6TAIL.DUP")))or bool(not (exists(UniversalIsoPath + "/" + GAME + "/" + "ZZTAIL.DAT"))) )
+    if GAME == "jak3":
+        NotExtracted = (bool(not (exists(UniversalIsoPath + "/" + GAME + "/" + "ZZTAIL.DAT"))))
+    else:
+        NotExtracted = (bool(not (exists(UniversalIsoPath + "/" + GAME + "/" + "Z6TAIL.DUP"))))
+
     NotCompiled = bool(not (exists(InstallDir + "/data/out" + "/" + GAME + "/" + "fr3/GAME.fr3")))
     needUpdate = bool(Outdated or NotExtracted or NotCompiled)
 
