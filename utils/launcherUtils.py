@@ -293,10 +293,14 @@ def launch_local(MOD_ID, GAME):
             "-debug" # TODO retail mode once ready
           ]
 
-        print("running: ", GKCOMMANDLINElist)
-        subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir))
+        print("Running: ", GKCOMMANDLINElist)
+
+        # with check=True, nonzero return code will throw CalledProcessError and be caught below
+        subprocess.run(GKCOMMANDLINElist, shell=True, cwd=os.path.abspath(InstallDir), check=True)
+    except subprocess.CalledProcessError as err:
+        print(f"Subprocess error: {err}")
     except Exception as e:  # Catch all exceptions and print the error message.
-        return str(e)
+        print("Encountered exception: ", e)
 
 def download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, LatestRelAssetsURL):
     #start the actual update method if needUpdate is true
@@ -404,6 +408,7 @@ def download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, Latest
     )
 
 def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
+  try:
     InstallDir = ModFolderPATH + MOD_ID
     UniversalIsoPath = AppdataPATH + "/OpenGOAL-Mods/_iso_data"
 
@@ -451,7 +456,7 @@ def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
     # Close Gk and goalc if they were open.
     try_kill_process("gk.exe")
     try_kill_process("goalc.exe")
-    print("Done update starting extractor This one can take a few moments! \n")
+    print("Done updating, starting extractor. This can take a few minutes! \n")
 
     #Extract and compile
     if GAME == "jak1":
@@ -460,13 +465,9 @@ def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
             extractor_command_list.append("-e")
             extractor_command_list.append("-d")
         print(extractor_command_list)
-        extractor_result = subprocess.run(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir) )
 
-        if extractor_result.returncode == 0:
-            print("done extracting!")
-        else:
-            print("Extractor error!")
-            return
+        # with check=True, nonzero return code will throw CalledProcessError and be caught below
+        subprocess.run(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir), check=True)
 
     else: # GAME == "jak2" or GAME == "jak3"
         extractor_command_list = [InstallDir + "/extractor.exe", "-f", iso_path, "-v", "-c", "-g", GAME]
@@ -474,13 +475,9 @@ def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
             extractor_command_list.append("-e")
             extractor_command_list.append("-d")
         print(extractor_command_list)
-        extractor_result = subprocess.run(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir))
 
-        if extractor_result.returncode == 0:
-            print("done extracting!")
-        else:
-            print("Extractor error!")
-            return
+        # with check=True, nonzero return code will throw CalledProcessError and be caught below
+        subprocess.run(extractor_command_list, shell=True, cwd=os.path.abspath(InstallDir), check=True)
 
     # symlink isodata for custom levels art group (goalc doesnt take -f flag)
     # if exists(UniversalIsoPath + r"" + "/" + GAME + "/" + "Z6TAIL.DUP") and GAME == "jak1":
@@ -495,8 +492,13 @@ def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
         try_remove_dir(InstallDir + "/data/iso_data/")
         makeDirSymlink(InstallDir + "/data/iso_data", UniversalIsoPath)
 
+    print("Done extracting! Launching game!")
+
     launch_local(MOD_ID, GAME)
-    return
+  except subprocess.CalledProcessError as err:
+    print(f"Subprocess error: {err}")
+  except Exception as e:
+    print("Caught exception: ", e)
 
 def update_and_launch(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME):
     if URL is None:
