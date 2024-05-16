@@ -802,5 +802,18 @@
     "URL": "https://github.com/RealOfficialKraken/RoguelikeJak2/releases",
     "website_url": "https://github.com/RealOfficialKraken/RoguelikeJak2/blob/main/README.md",
     "game": "jak2"
+  },
+  "jak2_august": {
+    "name": "Jak II - August Build",
+    "desc": "Mimics the Jak II August 2003 Review build which allows for consite skip",
+    "contributors": ["barg034"],
+    "tags": [
+      "gameplay-mod",
+      "speedrunning"
+    ],
+    "release_date": "2024-05-16",
+    "URL": "https://github.com/OpenGOAL-Mods/OG-Jak2-AugustBuild/releases",
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-Jak2-AugustBuild/blob/main/README.md",
+    "game": "jak2"
   }
 }
