@@ -422,10 +422,10 @@ def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
         print("Found in " + UniversalIsoPath +"/" + GAME + "/" + "Z6TAIL.DUP")
         iso_path = UniversalIsoPath + "/" + GAME
 
-        if not is_junction(InstallDir + "/data/iso_data"):
-          # we have iso extracted to universal folder already, just symlink it. otherwise we'll copy it there and symlink after extractor closes
-          try_remove_dir(InstallDir + "/data/iso_data/")
-          makeDirSymlink(InstallDir + "/data/iso_data/", UniversalIsoPath)
+        # if not is_junction(InstallDir + "/data/iso_data"):
+        #   # we have iso extracted to universal folder already, just symlink it. otherwise we'll copy it there and symlink after extractor closes
+        #   try_remove_dir(InstallDir + "/data/iso_data/")
+        #   makeDirSymlink(InstallDir + "/data/iso_data/", UniversalIsoPath)
     else:
         print("We did not find " + GAME + " ISO data from a previous mod, lets ask for some!")
 
@@ -488,9 +488,9 @@ def rebuild(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME, should_extract):
     if not found_universal_iso:
         ensure_jak_folders_exist()
         moveDirContents(InstallDir + "/data/iso_data/" + GAME, UniversalIsoPath + "/" + GAME)
-        # replace iso_data with symlink
-        try_remove_dir(InstallDir + "/data/iso_data/")
-        makeDirSymlink(InstallDir + "/data/iso_data", UniversalIsoPath)
+        # # replace iso_data with symlink
+        # try_remove_dir(InstallDir + "/data/iso_data/")
+        # makeDirSymlink(InstallDir + "/data/iso_data", UniversalIsoPath)
 
     print("Done extracting! Launching game!")
 
