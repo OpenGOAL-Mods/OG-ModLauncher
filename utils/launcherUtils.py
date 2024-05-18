@@ -253,7 +253,7 @@ def ensure_jak_folders_exist():
 #check if we have decompiler in the path, if not check if we have a backup, if so use it, if not download a backup then use it
 def getHfragVert(path):
     decompiler_exe = "hfrag.vert"
-    decompiler_url = "https://raw.githubusercontent.com/OpenGOAL-Mods/OG-Mod-Base/main/hfrag/"+decompiler_exe
+    decompiler_url = "https://raw.githubusercontent.com/open-goal/jak-project/master/game/graphics/opengl_renderer/"+decompiler_exe
 
     # Check if the decompiler exists in the provided path
     if os.path.exists(os.path.join(path, decompiler_exe)):
@@ -268,7 +268,7 @@ def getHfragVert(path):
         time.sleep(1)  # Wait for the download to complete
 
     decompiler_exe = "hfrag_montage.frag"
-    decompiler_url = "https://raw.githubusercontent.com/OpenGOAL-Mods/OG-Mod-Base/main/hfrag/"+decompiler_exe
+    decompiler_url = "https://raw.githubusercontent.com/open-goal/jak-project/master/game/graphics/opengl_renderer/"+decompiler_exe
 
 
     # Check if the decompiler exists in the provided path
@@ -284,7 +284,7 @@ def getHfragVert(path):
         time.sleep(1)  # Wait for the download to complete
 
     decompiler_exe = "hfrag_montage.vert"
-    decompiler_url = "https://raw.githubusercontent.com/OpenGOAL-Mods/OG-Mod-Base/main/hfrag/"+decompiler_exe
+    decompiler_url = "https://raw.githubusercontent.com/open-goal/jak-project/master/game/graphics/opengl_renderer/"+decompiler_exe
 
 
     # Check if the decompiler exists in the provided path
@@ -300,7 +300,7 @@ def getHfragVert(path):
         time.sleep(1)  # Wait for the download to complete
 
     decompiler_exe = "hfrag.frag"
-    decompiler_url = "https://raw.githubusercontent.com/OpenGOAL-Mods/OG-Mod-Base/main/hfrag/"+decompiler_exe
+    decompiler_url = "https://raw.githubusercontent.com/open-goal/jak-project/master/game/graphics/opengl_renderer/"+decompiler_exe
 
     # Check if the decompiler exists in the provided path
     if os.path.exists(os.path.join(path, decompiler_exe)):
