@@ -180,7 +180,7 @@
     ],
     "release_date": "2022-09-10",
     "URL": "https://github.com/OpenGOAL-Mods/OG-FlutFlut-Legacy/releases",
-    "image_override_url": "https://i.imgur.com/ruIRgk5.png",
+    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/flutflutlegacy.png",
     "website_url": "https://github.com/Zedb0T/TheFlutFlutLegacy",
     "videos_url": "https://www.youtube.com/watch?v=_z8GhVWFYfI",
     "game": "jak1"
@@ -406,7 +406,7 @@
     "release_date": "2023-01-08",
     "URL": "https://github.com/Kuitar5/the-forgotten-lands/releases",
     "website_url": "https://github.com/Kuitar5/the-forgotten-lands/blob/main/README.md#the-forgotten-lands",
-    "image_override_url": "https://i.imgur.com/tKIqG14.png",
+    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/tfl.webp",
     "videos_url": "https://youtube.com/playlist?list=PLUvfXyvZk2SC0A8TtqYV8ap97aVGu9rRP",
     "game": "jak1"
   },
@@ -530,7 +530,7 @@
     ],
     "release_date": "2023-08-10",
     "URL": "https://github.com/dallmeyer/jak-up/releases",
-    "image_override_url": "https://i.imgur.com/rhdoalB.jpeg",
+    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/jakup.jpeg",
     "website_url": "https://github.com/dallmeyer/jak-up/blob/main/README.md",
     "game": "jak1"
   },
@@ -543,7 +543,7 @@
     ],
     "release_date": "2023-08-27",
     "URL": "https://github.com/Jak-Mods/candy-pop-keira/releases",
-    "image_override_url": "https://i.imgur.com/83xZThN.png",
+    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/candykeira.png",
     "website_url": "https://github.com/Jak-Mods/candy-pop-keira",
     "game": "jak1"
   },
@@ -634,7 +634,7 @@
     ],
     "release_date": "2023-11-07",
     "URL": "https://github.com/RealOfficialKraken/OG-HeroMode-Plus/releases",
-    "image_override_url": "https://i.imgur.com/UDlY6ep.png",
+    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/hmplus.png",
     "website_url": "https://raw.githubusercontent.com/RealOfficialKraken/OG-HeroMode-Plus/main/README.md",
     "game": "jak2"
   },
@@ -654,7 +654,7 @@
     "URL": "https://github.com/OpenGOAL-Mods/OG-Fricked/releases",
     "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-mod-base",
     "game": "jak2",
-    "image_override_url": "https://i.imgur.com/nELVUMs.png"
+    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/frickedup2.png"
   },
   "funki-showcase": {
     "name": "FUNKI DELIRE Jak 1 Custom Levels",
@@ -669,7 +669,7 @@
     "URL": "https://github.com/OpenGOAL-Mods/OG-Funki-Showcase/releases",
     "website_url": "https://github.com/OpenGOAL-Mods/OG-Funki-Showcase",
     "videos_url": "https://www.youtube.com/watch?v=8DmsSZMH9Do",
-    "image_override_url": "https://i.imgur.com/wzyqmMB.png",
+    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/funkiparkour.png",
     "game": "jak1"
   },
   "funki-showcase-2": {
@@ -685,7 +685,7 @@
     "URL": "https://github.com/OpenGOAL-Mods/OG-Funki-Showcase/releases",
     "website_url": "https://github.com/OpenGOAL-Mods/OG-Funki-Showcase",
     "videos_url": "https://www.youtube.com/watch?v=8DmsSZMH9Do",
-    "image_override_url": "https://i.imgur.com/HYxK9yq.png",
+    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/funkiparkour2.png",
     "game": "jak2"
   },
   "ruh-hot-rod": {
@@ -702,7 +702,7 @@
     "URL": "https://github.com/rileyfort/jak-2-hot-rod/releases",
     "website_url": "https://github.com/rileyfort/jak-2-hot-rod",
     "videos_url": "https://twitter.com/RuhPhorte/status/1722762492223611292",
-    "image_override_url": "https://i.imgur.com/mKSxIVu.png",
+    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/hotrod.png",
     "game": "jak2"
   },
   "dark-jak-renegade": {
@@ -717,7 +717,7 @@
     "release_date": "2023-11-11",
     "URL": "https://github.com/OpenGOAL-Mods/OG-Dark-Jak/releases",
     "website_url": "https://github.com/OpenGOAL-Mods/OG-Dark-Jak",
-    "image_override_url": "https://i.imgur.com/FWHdwbk.png",
+    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/darkjak.webp",
     "game": "jak2"
   },
   "Jak1HNS": {
@@ -735,7 +735,7 @@
     "release_date": "2023-11-11",
     "URL": "https://github.com/OpenGOAL-Unofficial-Mods/jak-project/releases",
     "website_url": "https://jakmods.dev/HNS",
-    "image_override_url": "https://i.imgur.com/A6YoQDG.png",
+    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/hns.png",
     "game": "jak1"
   },
   "babak-variants": {
@@ -747,7 +747,7 @@
     ],
     "release_date": "2023-11-23",
     "URL": "https://github.com/AG1k-s-Mods/Babak-Lurker-Variants/releases",
-    "image_override_url": "https://i.imgur.com/gfMrzmr.jpeg",
+    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/lurkervariants.webp",
     "website_url": "https://github.com/AG1k-s-Mods/Babak-Lurker-Variants",
     "game": "jak1"
   },
@@ -815,5 +815,19 @@
     "URL": "https://github.com/OpenGOAL-Mods/OG-Jak2-AugustBuild/releases",
     "website_url": "https://github.com/OpenGOAL-Mods/OG-Jak2-AugustBuild/blob/main/README.md",
     "game": "jak2"
+  },
+  "archipelagoal": {
+    "name": "ArchipelaGOAL",
+    "desc": "Jak 1 x Archipelago Randomizer!",
+    "contributors": ["markus"],
+    "tags": [
+      "randomizer",
+      "challenge"
+    ],
+    "release_date": "2024-05-22",
+    "URL": "https://github.com/ArchipelaGOAL/ArchipelaGOAL/releases",
+    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/archipelagoal-logo.png",
+    "website_url": "https://github.com/ArchipelaGOAL/ArchipelaGOAL/blob/main/README.md",
+    "game": "jak1"
   }
 }
