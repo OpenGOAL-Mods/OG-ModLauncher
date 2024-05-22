@@ -25,7 +25,7 @@
       "ZedB0T"
     ],
     "tags": [
-      "beta",
+      "work-in-progress",
       "gameplay-mod",
       "challenge",
       "rng"
@@ -46,7 +46,7 @@
       "gameplay-mod",
       "rng",
       "multiplayer",
-      "beta"
+      "work-in-progress"
     ],
     "release_date": "2022-09-05",
     "URL": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-multiplayer-rando-mod-pack/tree/main",
@@ -63,7 +63,6 @@
       "Dexz"
     ],
     "tags": [
-      "beta",
       "challenge",
       "speedrunning",
       "rng"
@@ -320,7 +319,7 @@
       "gameplay-mod",
       "rng",
       "challenge",
-      "beta"
+      "work-in-progress"
     ],
     "release_date": "2022-11-04",
     "URL": "https://github.com/Zedb0T/Zed-Mods/tree/Random-Actor-dev",
@@ -337,7 +336,7 @@
       "gameplay-mod",
       "rng",
       "challenge",
-      "beta"
+      "work-in-progress"
     ],
     "release_date": "2022-12-05",
     "URL": "https://github.com/Zedb0T/Zed-Mods/tree/Random-enemies",
@@ -353,7 +352,7 @@
     "tags": [
       "gameplay-mod",
       "challenge",
-      "beta"
+      "work-in-progress"
     ],
     "release_date": "2022-11-08",
     "URL": "https://github.com/Zedb0T/Zed-Mods/tree/mirrormodeeverycell-",
@@ -368,7 +367,7 @@
     ],
     "tags": [
       "gameplay-mod",
-      "beta"
+      "work-in-progress"
     ],
     "release_date": "2022-11-04",
     "URL": "https://github.com/OpenGOAL-Unofficial-Mods/New-Eco-types/tree/w-pink",
@@ -401,7 +400,7 @@
       "custom-level",
       "gameplay-mod",
       "texture-mod",
-      "beta"
+      "work-in-progress"
     ],
     "release_date": "2023-01-08",
     "URL": "https://github.com/Kuitar5/the-forgotten-lands/releases",
@@ -418,7 +417,7 @@
     ],
     "tags": [
       "gameplay-mod",
-      "beta"
+      "work-in-progress"
     ],
     "release_date": "2023-01-22",
     "URL": "https://github.com/OpenGOAL-Unofficial-Mods/blindfold-assist",
@@ -434,7 +433,7 @@
     "tags": [
       "custom-level",
       "texture-mod",
-      "beta"
+      "work-in-progress"
     ],
     "release_date": "2023-04-05",
     "URL": "https://github.com/Zedb0T/shrekadventures/releases",
@@ -645,7 +644,7 @@
       "ZedB0T"
     ],
     "tags": [
-      "beta",
+      "work-in-progress",
       "gameplay-mod",
       "challenge",
       "rng"
@@ -728,7 +727,7 @@
       "ZedB0T"
     ],
     "tags": [
-      "beta",
+      "work-in-progress",
       "gameplay-mod",
       "multiplayer"
     ],
@@ -818,11 +817,12 @@
   },
   "archipelagoal": {
     "name": "ArchipelaGOAL",
-    "desc": "Jak 1 x Archipelago Randomizer!",
+    "desc": "ALPHA RELEASE - Jak 1 x Archipelago Randomizer!",
     "contributors": ["markus"],
     "tags": [
-      "randomizer",
-      "challenge"
+      "rng",
+      "challenge",
+      "work-in-progress"
     ],
     "release_date": "2024-05-22",
     "URL": "https://github.com/ArchipelaGOAL/ArchipelaGOAL/releases",
