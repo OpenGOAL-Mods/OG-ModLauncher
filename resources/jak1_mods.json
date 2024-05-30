@@ -70,6 +70,7 @@
     "release_date": "2023-02-02",
     "URL": "https://github.com/OpenGOAL-Mods/OG-RCO/releases",
     "website_url": "https://github.com/OpenGOAL-Mods/OG-RCO/blob/main/README.md",
+    "videos_url": "https://www.youtube.com/watch?v=u8MgkLtHT4I",
     "game": "jak1"    
   },
   "speedrun_practice": {
@@ -470,6 +471,7 @@
     "URL": "https://github.com/Hat-Kid/jak-project/releases",
     "image_override_url": "https://cdn.discordapp.com/attachments/1124072608548266105/1127708472394391653/orange-demon-thumb.png",
     "website_url": "https://gist.github.com/Hat-Kid/ede85d11ecf98f89f1e857160cdf82c7",
+    "videos_url": "https://www.youtube.com/watch?v=U00TDBfAJg8",
     "game": "jak1"
   },
   "wood_crate_break_alot": {
@@ -519,7 +521,7 @@
   },
   "up": {
     "name": "Jak Up",
-    "desc": "Hub 1+2 so far. WARNING: the custom levels take up ~700MB, and will take a couple minutes to install.",
+    "desc": "Only Up in Jak 1. Hub 1+2 so far. WARNING: the custom levels take up ~700MB, and will take a couple minutes to install.",
     "contributors": ["barg034"],
     "tags": [
       "gameplay-mod",
@@ -531,6 +533,7 @@
     "URL": "https://github.com/dallmeyer/jak-up/releases",
     "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/jakup.jpeg",
     "website_url": "https://github.com/dallmeyer/jak-up/blob/main/README.md",
+    "videos_url": "https://www.youtube.com/watch?v=Qbdmj91kwLs&list=PLcFimep6cyLdIosSEF6P-qPXZ4W20npX8&index=1",
     "game": "jak1"
   },
   "candy_pop_keira": {
@@ -571,6 +574,7 @@
     "URL": "https://github.com/OpenGOAL-Mods/OG-Bugged/releases",
     "image_override_url": "https://jakmods.dev/bugged/bugged_logo.png",
     "website_url": "https://jakmods.dev/bugged/buglist.html",
+    "videos_url": "https://www.youtube.com/watch?v=BY9U9cM9vfU&list=PLcFimep6cyLdn4_xGoqK98qfLUz8_RlM2",
     "game": "jak1"
   },
   "fartin-time": {
@@ -635,6 +639,7 @@
     "URL": "https://github.com/RealOfficialKraken/OG-HeroMode-Plus/releases",
     "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/hmplus.png",
     "website_url": "https://raw.githubusercontent.com/RealOfficialKraken/OG-HeroMode-Plus/main/README.md",
+    "videos_url": "https://www.youtube.com/watch?v=H1FJxqlFIQE",
     "game": "jak2"
   },
   "random_actor_scale_2": {
@@ -716,11 +721,12 @@
     "release_date": "2023-11-11",
     "URL": "https://github.com/OpenGOAL-Mods/OG-Dark-Jak/releases",
     "website_url": "https://github.com/OpenGOAL-Mods/OG-Dark-Jak",
+    "videos_url": "https://www.youtube.com/watch?v=G_0-xCb0Aa0",
     "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/darkjak.webp",
     "game": "jak2"
   },
   "Jak1HNS": {
-    "name": "Online hide in seek for Jak and Daxter!",
+    "name": "Online hide 'n seek for Jak and Daxter!",
     "desc": "Click website button for setup instructions.",
     "contributors": [
       "barg034",
@@ -728,6 +734,7 @@
     ],
     "tags": [
       "work-in-progress",
+      "hidden",
       "gameplay-mod",
       "multiplayer"
     ],
@@ -774,6 +781,7 @@
     "release_date": "2024-04-01",
     "URL": "https://github.com/OpenGOAL-Mods/OG-Patched/releases",
     "website_url": "https://github.com/OpenGOAL-Mods/OG-Patched/blob/main/README.md",
+    "videos_url": "https://www.youtube.com/watch?v=WDCaqP6iSo0",
     "game": "jak1"
   },
   "chat_plays": {
@@ -800,12 +808,13 @@
     "release_date": "2024-05-03",
     "URL": "https://github.com/RealOfficialKraken/RoguelikeJak2/releases",
     "website_url": "https://github.com/RealOfficialKraken/RoguelikeJak2/blob/main/README.md",
+    "videos_url": "https://www.youtube.com/watch?v=m4N7EqSpQqk",
     "game": "jak2"
   },
   "jak2_august": {
     "name": "Jak II - August Build",
     "desc": "Mimics the Jak II August 2003 Review build which allows for consite skip",
-    "contributors": ["barg034"],
+    "contributors": ["barg034", "ZedB0t"],
     "tags": [
       "gameplay-mod",
       "speedrunning"
@@ -813,6 +822,7 @@
     "release_date": "2024-05-16",
     "URL": "https://github.com/OpenGOAL-Mods/OG-Jak2-AugustBuild/releases",
     "website_url": "https://github.com/OpenGOAL-Mods/OG-Jak2-AugustBuild/blob/main/README.md",
+    "videos_url": "https://www.youtube.com/watch?v=6Vb-VA5NOxs",
     "game": "jak2"
   },
   "archipelagoal": {
