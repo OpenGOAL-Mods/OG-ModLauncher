@@ -846,10 +846,9 @@
     "desc": "Custom level River to Water (Afon i ddwr) of a winding mountain path with powercells, scoutflies and orbs guarded by lurkers! Visit via the warpgate once you complete the game or just use debug mode to visit early!",
     "contributors": ["Cuttlefish"],
     "tags": [
-      "custom-level",
-      "hidden"
+      "custom-level"
     ],
-    "release_date": "2024-06-02",
+    "release_date": "2024-06-04",
     "URL": "https://github.com/Cuttlefishthesage/OG-Mod-Base/releases",
     "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/cuttlefish-river-to-water.png",
     "website_url": "https://github.com/Cuttlefishthesage/OG-Mod-Base/tree/v0.0.1-afoniddwr.3",
