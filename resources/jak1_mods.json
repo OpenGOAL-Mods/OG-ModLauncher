@@ -440,6 +440,7 @@
     "URL": "https://github.com/Zedb0T/shrekadventures/releases",
     "website_url": "https://github.com/Zedb0T/shrekadventures",
     "videos_url": "https://twitter.com/JakSpeedruns/status/1645693475277668354",
+    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/ogrenow.png",
     "game": "jak1"
   },
   "invisible_Legacy": {
@@ -838,6 +839,20 @@
     "URL": "https://github.com/ArchipelaGOAL/ArchipelaGOAL/releases",
     "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/archipelagoal-logo.png",
     "website_url": "https://github.com/ArchipelaGOAL/Archipelago/blob/main/worlds/jakanddaxter/docs/setup_en.md",
+    "game": "jak1"
+  },
+  "river_to_water": {
+    "name": "River to Water",
+    "desc": "Custom level River to Water (Afon i ddwr) of a winding mountain path with powercells, scoutflies and orbs guarded by lurkers! Visit via the warpgate once you complete the game or just use debug mode to visit early!",
+    "contributors": ["Cuttlefish"],
+    "tags": [
+      "custom-level",
+      "hidden"
+    ],
+    "release_date": "2024-06-02",
+    "URL": "https://github.com/Cuttlefishthesage/OG-Mod-Base/releases",
+    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/cuttlefish-river-to-water.png",
+    "website_url": "https://github.com/Cuttlefishthesage/OG-Mod-Base/tree/v0.0.1-afoniddwr.3",
     "game": "jak1"
   }
 }

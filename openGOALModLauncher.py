@@ -5,8 +5,8 @@ Created on Thu Aug 25 18:33:45 2022
 @author: Zed
 """
 # we will clean these up later but for now leave even unused imports
+from enum import IntEnum
 import threading
-
 from PIL import Image
 from utils import launcherUtils, githubUtils
 import PySimpleGUI as sg
@@ -16,7 +16,7 @@ import json
 import os.path
 import requests
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 import sys
 import webbrowser
 import os
@@ -24,11 +24,6 @@ from os.path import exists
 import shutil
 import tkinter
 from appdirs import AppDirs
-from appdirs import AppDirs
-import platform
-import stat
-from datetime import datetime
-from pathlib import Path
 import random
 
 sg.theme("DarkBlue3")
@@ -134,14 +129,32 @@ loadingimage = getPNGFromURL("https://raw.githubusercontent.com/OpenGOAL-Unoffic
 if not os.path.exists(ModFolderPATH):
     os.makedirs(ModFolderPATH)
 
+class ColumnEnum(IntEnum):
+    SPECIAL = -1
+    ID = 0
+    NAME = 1
+    DESC = 2
+    TAGS = 3
+    CONTRIBUTORS = 4
+    RELEASE_DATE = 5
+    INSTALL_DATE = 6
+    LAUNCH_DATE = 7
+    INSTALL_URL = 8
+    WEBSITE_URL = 9
+    VIDEOS_URL = 10
+    PHOTOS_URL = 11
+    THUMBNAIL_URL = 12
+    GAME = 13
+
 table_headings = [
     "id",
     "Name",
     "Description",
     "Tags",
     "Contributors",
+    "Release Date",
     "Install Date",
-    "Last Launched",
+    "Last Launch",
     # "Latest Update Date",
     "URL",
     "website_url",
@@ -155,8 +168,9 @@ sorted_table_headings = [
     "Description",
     "Tags",
     "Contributors",
+    "Release Date"
     "Install Date",
-    "Last Launched",
+    "Last Launch",
     # "Latest Update Date",
     "URL",
     "website_url",
@@ -165,47 +179,50 @@ sorted_table_headings = [
 ]
 
 col_vis = [
-    False,
-    True,
-    False,
-    True,
-    True,
-    False,
-    True,
-    # True,
-    False,
-    False,
-    False,
-    False,
+    False,  # id
+    True,   # name
+    False,  # desc
+    True,   # tags
+    True,   # contributors
+    True,   # release date
+    False,  # install date
+    True,   # last launched
+    # True, # last updated
+    False,  # install url
+    False,  # website
+    False,  # videos
+    False,  # photos
 ]
 
 vis_col_map = [
-    1,  # name
-    3,  # tags
-    4,  # contributors
-    6,  # launch date
+    ColumnEnum.NAME,  # name
+    ColumnEnum.TAGS,  # tags
+    ColumnEnum.CONTRIBUTORS,  # contributors
+    ColumnEnum.RELEASE_DATE,  # release date
+    ColumnEnum.LAUNCH_DATE,  # last launched
 ]
 
 col_width = [
     0,  # id
-    30,  # name
+    25,  # name
     0,  # desc
-    25,  # tags
-    25,  # contributors
+    20,  # tags
+    20,  # contributors
+    16,   # release date
     0,  # install date
-    15,  # launch date
+    13,  # launch date
     0,  # url
     0,  # website
     0,  # videos
     0,  # photos
-]
+]    
 
 FILTER_STR = ""
 FILTER_GAME = "jak1"
 FILTER_CAT = "mods"
 INCLUDE_INSTALLED = True
 INCLUDE_UNINSTALLED = True
-LATEST_TABLE_SORT = [6, False]  # wakeup sorted by last launch date
+LATEST_TABLE_SORT = [ColumnEnum.SPECIAL, False]  # wakeup special case -1 that does coalsece(last launch, release date)
 
 
 def getRefreshedTableData(sort_col_idx):
@@ -302,6 +319,11 @@ def getRefreshedTableData(sort_col_idx):
                     ) or (
                         INCLUDE_UNINSTALLED and mod["access_date"] == "Not Installed"
                     ):
+                        release_date_str = str(mod["release_date"])
+                        release_date = datetime.strptime(mod["release_date"], '%Y-%m-%d')
+                        if datetime.now() - release_date < timedelta(days = 10):
+                            release_date_str = release_date_str + " ✨NEW✨"
+                        
                         mod_table_data.append(
                             [
                                 mod_id,
@@ -309,7 +331,7 @@ def getRefreshedTableData(sort_col_idx):
                                 mod["desc"],
                                 mod["tags"],
                                 mod["contributors"],
-                                mod["release_date"],
+                                release_date_str,
                                 mod["install_date"],
                                 mod["access_date"],
                                 # mod["latest_available_update_date"],
@@ -341,11 +363,19 @@ def getRefreshedTableData(sort_col_idx):
 
     global sorted_table_headings, table_headings
     sorted_table_headings = table_headings.copy()
-    sorted_table_headings[remapped_col_idx] += " ↑" if LATEST_TABLE_SORT[1] else " ↓"
+    if LATEST_TABLE_SORT[0] != ColumnEnum.SPECIAL:
+      # add asc/desc arrows if not in our wakeup sort special case
+      sorted_table_headings[remapped_col_idx] += " ↑" if LATEST_TABLE_SORT[1] else " ↓"
 
-    if (
-        remapped_col_idx == 5 or remapped_col_idx == 6
-    ):  # special sort for install/access date
+    if remapped_col_idx == ColumnEnum.SPECIAL: 
+        # special sort for wakeup, do coalesce(access date,release date)
+        mod_table_data.sort(
+            key=lambda x: x[ColumnEnum.RELEASE_DATE]
+            if x[ColumnEnum.LAUNCH_DATE] == "Not Installed"
+            else x[ColumnEnum.LAUNCH_DATE].lower()
+        )
+    elif remapped_col_idx == ColumnEnum.LAUNCH_DATE or remapped_col_idx == ColumnEnum.INSTALL_DATE:
+        # special sort for date cols that might not have data
         mod_table_data.sort(
             key=lambda x: "0"
             if x[remapped_col_idx] == "Not Installed"
@@ -622,20 +652,20 @@ def handleModTableSelection(row):
     mod = LATEST_TABLE_DATA[row]
     # print(mod)
 
-    mod_id = mod[0]
-    mod_name = mod[1]
-    mod_desc = mod[2]
-    mod_tags = mod[3]
-    mod_contributors = mod[4]
-    mod_release_date = mod[5]
-    mod_install_date = mod[6]
-    mod_access_date = mod[7]
-    mod_url = mod[8]
-    mod_website_url = mod[9]
-    mod_videos_url = mod[10]
-    mod_photos_url = mod[11]
-    mod_image_override_url = mod[12]
-    mod_game = mod[13]
+    mod_id = mod[ColumnEnum.ID]
+    mod_name = mod[ColumnEnum.NAME]
+    mod_desc = mod[ColumnEnum.DESC]
+    mod_tags = mod[ColumnEnum.TAGS]
+    mod_contributors = mod[ColumnEnum.CONTRIBUTORS]
+    mod_release_date = mod[ColumnEnum.RELEASE_DATE]
+    mod_install_date = mod[ColumnEnum.INSTALL_DATE]
+    mod_access_date = mod[ColumnEnum.LAUNCH_DATE]
+    mod_url = mod[ColumnEnum.INSTALL_URL]
+    mod_website_url = mod[ColumnEnum.WEBSITE_URL]
+    mod_videos_url = mod[ColumnEnum.VIDEOS_URL]
+    mod_photos_url = mod[ColumnEnum.PHOTOS_URL]
+    mod_image_override_url = mod[ColumnEnum.THUMBNAIL_URL]
+    mod_game = mod[ColumnEnum.GAME]
 
     # update text and metadata
     window["-LAUNCH-"].update(
@@ -649,7 +679,7 @@ def handleModTableSelection(row):
     window["-SELECTEDMODDESC-"].update(mod_desc)
     window["-SELECTEDMODTAGS-"].update(f"Tags: {mod_tags}")
     window["-SELECTEDMODCONTRIBUTORS-"].update(f"Contributors: {mod_contributors}")
-    window["-SELECTEDMODRELEASEDATE-"].update(f"Released: {mod_release_date}")
+    window["-SELECTEDMODRELEASEDATE-"].update(f"Release Date: {mod_release_date}")
     window["-VIEWFOLDER-"].update(disabled=(mod_access_date == "Not Installed"))
     window["-REEXTRACT-"].update(disabled=(mod_access_date == "Not Installed"))
     window["-RECOMPILE-"].update(disabled=(mod_access_date == "Not Installed"))
