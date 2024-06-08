@@ -212,7 +212,7 @@ col_width = [
     0,  # website
     0,  # videos
     0,  # photos
-]    
+]
 
 FILTER_STR = ""
 FILTER_GAME = "jak1"
@@ -324,7 +324,7 @@ def getRefreshedTableData(sort_col_idx):
                         release_date = datetime.strptime(mod["release_date"], '%Y-%m-%d')
                         if datetime.now() - release_date < timedelta(days = 10):
                             release_date_str = release_date_str + " ✨NEW✨"
-                        
+
                         mod_table_data.append(
                             [
                                 mod_id,
@@ -368,7 +368,7 @@ def getRefreshedTableData(sort_col_idx):
       # add asc/desc arrows if not in our wakeup sort special case
       sorted_table_headings[remapped_col_idx] += " ↑" if LATEST_TABLE_SORT[1] else " ↓"
 
-    if remapped_col_idx == ColumnEnum.SPECIAL: 
+    if remapped_col_idx == ColumnEnum.SPECIAL:
         # special sort for wakeup, do coalesce(access date,release date)
         mod_table_data.sort(
             key=lambda x: x[ColumnEnum.RELEASE_DATE]
@@ -869,9 +869,19 @@ while True:
         tmpModURL = window["-SELECTEDMODNAME-"].metadata["url"]
         tmpGame = window["-SELECTEDMODNAME-"].metadata["game"]
 
-        launch_thread = threading.Thread(target=launch_mod, args=(tmpModURL,))
 
-        loading_screen_with_thread(launch_thread)
+        selected_mod_tags = window["-SELECTEDMODTAGS-"].get()
+        if "external" in selected_mod_tags:
+            ans = sg.popup_ok_cancel(tmpModName + " is an external mod that can be found at " + tmpModURL + " would you like to go there now?", icon=iconfile, image=iconfile)
+            if ans == "OK":
+                webbrowser.open(tmpModURL)
+                reset()
+        else:
+            launch_thread = threading.Thread(target=launch_mod, args=(tmpModURL,))
+
+            loading_screen_with_thread(launch_thread)
+
+
     elif event == "-VIEWFOLDER-":
         tmpModSelected = window["-SELECTEDMODNAME-"].metadata["id"]
         subfolders = [f.name for f in os.scandir(ModFolderPATH) if f.is_dir()]
