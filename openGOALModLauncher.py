@@ -75,8 +75,6 @@ elif __file__:
     # if we are running the .py directly use this path
     LauncherDir = os.path.dirname(__file__)
 
-installpath = str(LauncherDir + "\\resources\\")
-
 # intialize default variables so they are never null
 
 dirs = AppDirs(roaming=True)
@@ -87,7 +85,6 @@ ModFolderPATH = os.path.join(dirs.user_data_dir, "OpenGOAL-Mods", "")
 # grab images from web
 
 # url to splash screen image
-
 
 def getPNGFromURL(URL):
     result = None  # Initialize the result variable
@@ -227,9 +224,13 @@ LATEST_TABLE_SORT = [ColumnEnum.SPECIAL, False]  # wakeup special case -1 that d
 
 def getRefreshedTableData(sort_col_idx):
     # Load data from the local file if it exists
-    local_file_path = "resources/jak1_mods2.json"
-    if os.path.exists(local_file_path):
-        local_mods = json.loads(open(local_file_path, "r").read())
+    local_mods = None
+    local_file_path_1 = "resources/jak1_mods2.json"
+    local_file_path_2 = "jak1_mods2.json"
+    if os.path.exists(f"{LauncherDir}/{local_file_path_1}"):
+        local_mods = json.loads(open(f"{LauncherDir}/{local_file_path_1}", "r").read())
+    elif os.path.exists(f"{LauncherDir}/{local_file_path_2}"):
+        local_mods = json.loads(open(f"{LauncherDir}/{local_file_path_2}", "r").read())
 
     # Load data from the remote URL
     remote_url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/jak1_mods.json"
@@ -238,7 +239,7 @@ def getRefreshedTableData(sort_col_idx):
     # Initialize an empty dictionary to store the combined data
     mod_dict = {}
 
-    if os.path.exists(local_file_path):
+    if local_mods is not None:
         # Merge the remote and local data while removing duplicates
         mod_dict = {**remote_mods, **local_mods}
     else:
