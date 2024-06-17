@@ -717,13 +717,13 @@ def handleModTableSelection(row):
         pil_image.save(png_bio, format="PNG")
         png_data = png_bio.getvalue()
         window["-SELECTEDMODIMAGE-"].update(
-            githubUtils.resize_image(png_data, 500.0, 300.0)
+            githubUtils.resize_image(png_data, 450.0, 300.0)
         )
 
     except Exception as e:
         print("Failed to download mod image from", mod_image_url, "error", e)
         window["-SELECTEDMODIMAGE-"].update(
-            githubUtils.resize_image(noimagefile, 500.0, 300.0)
+            githubUtils.resize_image(noimagefile, 450.0, 300.0)
         )
 
 windowstatus = "main"
