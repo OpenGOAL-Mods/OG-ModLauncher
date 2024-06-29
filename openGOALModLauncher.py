@@ -254,9 +254,13 @@ def getRefreshedTableData(sort_col_idx):
         f.name: f.stat().st_mtime for f in os.scandir(ModFolderPATH) if f.is_dir()
     }
 
+    seenJak3 = False
     for mod_id in mod_dict:
         mod = mod_dict[mod_id]
         mod_name = mod["name"]
+
+        if mod["game"] == "jak3":
+            seenJak3 = True
 
         mod["install_date"] = "Not Installed"
         mod["access_date"] = "Not Installed"
@@ -310,9 +314,8 @@ def getRefreshedTableData(sort_col_idx):
             and FILTER_STR == "lbood"
         )
 
-        if matches_filter or secret_check:  #todo replace == jak3 with some kind of pw or image check or key or hash This is safe for now since the online list doesnt have jak3
-            # jak3 jak 3 3 jak
-            if mod["game"] == FILTER_GAME or mod["game"] == "jak3":  # filter jak1 vs jak2 (or always include jak 3)
+        if matches_filter or secret_check:
+            if mod["game"] == FILTER_GAME:
                 # filter mods vs texture packs
                 if (FILTER_CAT == "tex") == (mod["tags"] == "texture-mod"):
                     if (
@@ -348,6 +351,7 @@ def getRefreshedTableData(sort_col_idx):
                                 (mod["game"] if "game" in mod else "jak1"),
                             ]
                         )
+
     if sort_col_idx is None:
         # not from a heading click, retain sorting
         remapped_col_idx = LATEST_TABLE_SORT[0]
@@ -387,6 +391,10 @@ def getRefreshedTableData(sort_col_idx):
 
     if not LATEST_TABLE_SORT[1]:
         mod_table_data.reverse()
+
+    # enable/disable jak3 section based on list of mods
+    window["jak3/mods"].update(disabled=not seenJak3)
+    window["jak3/tex"].update(disabled=not seenJak3)
 
     # print(mod_table_data)
     return mod_table_data
@@ -486,6 +494,26 @@ layout = [
                                     font=("Helvetica", 12),
                                     enable_events=True,
                                     key="jak2/tex",
+                                )
+                            ],
+                            [sg.Text("")],
+                            [sg.Text("JAK 3", font=("Helvetica", 16, "bold"))],
+                            [
+                                sg.Radio(
+                                    "Mods",
+                                    "filter",
+                                    font=("Helvetica", 12),
+                                    enable_events=True,
+                                    key="jak3/mods",
+                                )
+                            ],
+                            [
+                                sg.Radio(
+                                    "Texture Packs",
+                                    "filter",
+                                    font=("Helvetica", 12),
+                                    enable_events=True,
+                                    key="jak3/tex",
                                 )
                             ],
                             [sg.VPush()],
@@ -977,6 +1005,16 @@ while True:
         window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
     elif event == "jak2/tex":
         FILTER_GAME = "jak2"
+        FILTER_CAT = "tex"
+        LATEST_TABLE_DATA = getRefreshedTableData(None)
+        window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
+    elif event == "jak3/mods":
+        FILTER_GAME = "jak3"
+        FILTER_CAT = "mods"
+        LATEST_TABLE_DATA = getRefreshedTableData(None)
+        window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
+    elif event == "jak3/tex":
+        FILTER_GAME = "jak3"
         FILTER_CAT = "tex"
         LATEST_TABLE_DATA = getRefreshedTableData(None)
         window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
