@@ -866,5 +866,21 @@
     "website_url": "https://teamruns.web.app/",
     "image_override_url":"https://teamruns.web.app/assets/teamruns-title-logo.png",
     "game": "jak1"
+  },
+  "orb_hunt_2": {
+    "name": "Orb Hunt II",
+    "desc": "Jak II Collectathon - 3125 Precursor Orbs",
+    "contributors": [
+      "barg034"
+    ],
+    "tags": [
+      "gameplay-mod",
+      "challenge"
+    ],
+    "release_date": "2024-07-01",
+    "URL": "https://github.com/dallmeyer/OG-OrbHunt/releases",
+    "website_url": "https://github.com/dallmeyer/OG-OrbHunt/blob/main/README_JAK2.md",
+    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/OG-OrbHunt/main/ModImage2.png",
+    "game": "jak2"
   }
 }
