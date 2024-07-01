@@ -807,24 +807,8 @@
       "challenge"
     ],
     "release_date": "2024-05-03",
-    "URL": "https://github.com/RealOfficialKraken/RoguelikeJak2/releases",
-    "website_url": "https://github.com/RealOfficialKraken/RoguelikeJak2/blob/main/README.md",
-    "videos_url": "https://www.youtube.com/watch?v=m4N7EqSpQqk",
-    "game": "jak2"
-  },
-  "roguelike_jak2_test": {
-    "name": "Roguelike Jak 2 TEST",
-    "desc": "The Jak Time Loop is broken! To restore it, Jak must fight through random missions that grow more unstable the further you venture. As the enemies get stronger, so can you! With Vin's help, Jak must blast his way back into the metalhead nest, and restore his destiny.",
-    "contributors": ["Kraken"],
-    "tags": [
-      "rng",
-      "gameplay-mod",
-      "challenge",
-      "hidden"
-    ],
-    "release_date": "2024-05-03",
     "URL": "https://github.com/RealOfficialKraken/roguelikejakii/releases",
-    "website_url": "https://github.com/RealOfficialKraken/RoguelikeJak2/blob/main/README.md",
+    "website_url": "https://github.com/RealOfficialKraken/roguelikejakii/blob/main/README.md",
     "videos_url": "https://www.youtube.com/watch?v=m4N7EqSpQqk",
     "game": "jak2"
   },
