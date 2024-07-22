@@ -437,10 +437,10 @@
       "work-in-progress"
     ],
     "release_date": "2023-04-05",
-    "URL": "https://github.com/Zedb0T/shrekadventures/releases",
+    "URL": "https://github.com/OpenGOAL-Mods/OG-Shrek-Adventures/releases",
     "website_url": "https://github.com/Zedb0T/shrekadventures",
     "videos_url": "https://twitter.com/JakSpeedruns/status/1645693475277668354",
-    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/ogrenow.png",
+    "image_override_url": "https://github.com/OpenGOAL-Mods/OG-Shrek-Adventures/blob/main/shrek.png?raw=true",
     "game": "jak1"
   },
   "invisible_Legacy": {
