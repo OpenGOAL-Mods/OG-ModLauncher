@@ -896,5 +896,18 @@
     "website_url": "https://github.com/Cuttlefishthesage/Og-ModBase-Rockpool",
     "videos_url": "https://www.youtube.com/watch?v=hrH-foTn0IQ",
     "game": "jak1"
+  },
+  "spec_ops": {
+    "name": "Spec Ops Jak",
+    "desc": "Immediately after being rescued by Daxter, Jak is fitted with an all black Spec Ops outfit and a new weapon. The Blaster Mod has been replaced with a fully automatic suppressed XM Nova assault rifle that fires depleted light eco rounds. These light eco rounds will easily take down anything in your way.",
+    "contributors": ["Ruh"],
+    "tags": [
+      "texture-mod"
+    ],
+    "release_date": "2024-07-23",
+    "URL": "https://github.com/ruhphorte/spec-ops-jak/releases",
+    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/spec-ops.JPG",
+    "website_url": "https://github.com/ruhphorte/spec-ops-jak",
+    "game": "jak2"
   }
 }
