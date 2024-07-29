@@ -17,6 +17,7 @@ import os.path
 import requests
 import time
 from datetime import datetime, timedelta
+import urllib.request
 import sys
 import webbrowser
 import os
@@ -105,9 +106,12 @@ def getPNGFromURL(URL):
         result = png_bio.getvalue()  # Store the fetched image in the result variable
 
     # Pass the URL as an argument
-    thread = threading.Thread(target=fetch_image, args=(URL,))
-    thread.start()
-    thread.join()  # Wait for the thread to finish
+    try:
+      thread = threading.Thread(target=fetch_image, args=(URL,))
+      thread.start()
+      thread.join()  # Wait for the thread to finish
+    except:
+      print("failed to get image " + URL)
 
     return result  # Return the fetched image data
 
@@ -223,7 +227,21 @@ LATEST_TABLE_SORT = [ColumnEnum.SPECIAL, False]  # wakeup special case -1 that d
 
 
 def getRefreshedTableData(sort_col_idx):
-    # Load data from the local file if it exists
+    main_file_path = f"{LauncherDir}/resources/jak1_mods.json"
+
+    # try to re-download json file from the remote URL
+    try:
+      remote_url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/jak1_mods.json"
+      urllib.request.urlretrieve(
+          remote_url, main_file_path, False
+      )
+      print("downloaded mod list successfully")
+    except:
+      print("failed to download mod list, will try to continue with local list")
+
+    remote_mods = json.loads(open(main_file_path, "r").read())
+
+    # Load data from the extra local file if it exists
     local_mods = None
     local_file_path_1 = "resources/jak1_mods2.json"
     local_file_path_2 = "jak1_mods2.json"
@@ -231,10 +249,6 @@ def getRefreshedTableData(sort_col_idx):
         local_mods = json.loads(open(f"{LauncherDir}/{local_file_path_1}", "r").read())
     elif os.path.exists(f"{LauncherDir}/{local_file_path_2}"):
         local_mods = json.loads(open(f"{LauncherDir}/{local_file_path_2}", "r").read())
-
-    # Load data from the remote URL
-    remote_url = "https://raw.githubusercontent.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/main/resources/jak1_mods.json"
-    remote_mods = requests.get(remote_url).json()
 
     # Initialize an empty dictionary to store the combined data
     mod_dict = {}
@@ -441,7 +455,8 @@ layout = [
                         pad=(0, 0),  # Set padding to 0
                         expand_x=True,
                         expand_y=True,
-                    )
+                    ),
+                    sg.Text("~~~ LOADING ~~~", key="-LOADINGBACKUP-", visible=False)
                 ]
             ],
         )
@@ -749,7 +764,7 @@ def handleModTableSelection(row):
         )
 
     except Exception as e:
-        print("Failed to download mod image from", mod_image_url, "error", e)
+        print("Failed to download mod image for ", mod_name, "error", e)
         window["-SELECTEDMODIMAGE-"].update(
             githubUtils.resize_image(noimagefile, 450.0, 300.0)
         )
@@ -798,7 +813,13 @@ def loading_screen_with_thread(thread):
 
     # hide all the buttons and display a window showing that it is installing
     loadingimage = getPNGFromURL(LOADING_IMAGE_URLS[random.randint(0, len(LOADING_IMAGE_URLS)-1)])
-    window["-LOADINGIMAGE-"].update(source=githubUtils.resize_image(loadingimage, 970, 607))
+    if loadingimage is not None:
+      window["-LOADINGIMAGE-"].update(source=githubUtils.resize_image(loadingimage, 970, 607), visible=True)
+      window["-LOADINGBACKUP-"].update(visible=False)
+    else:
+      window["-LOADINGIMAGE-"].update(visible=False)
+      window["-LOADINGBACKUP-"].update(visible=True)
+      
     window["-LOADINGFRAME-"].update(visible=True)
     window["-LOADINGFRAME-"].unhide_row()
     window["-MAINFRAME-"].update(visible=False)

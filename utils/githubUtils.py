@@ -155,6 +155,9 @@ def getLatestAvailableUpdateDatetime(URL):
 
 
 def resize_image(image_path, width, height):  # image_path: "C:User/Image/img.jpg"
+    if image_path is None:
+        return None
+
     if isinstance(image_path, str):
         img = PIL.Image.open(image_path)
     else:
