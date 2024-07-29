@@ -227,7 +227,7 @@ LATEST_TABLE_SORT = [ColumnEnum.SPECIAL, False]  # wakeup special case -1 that d
 
 
 def getRefreshedTableData(sort_col_idx):
-    main_file_path = f"{LauncherDir}/resources/jak1_mods.json"
+    main_file_path = f"{LauncherDir}/jak1_mods.json"
 
     # try to re-download json file from the remote URL
     try:

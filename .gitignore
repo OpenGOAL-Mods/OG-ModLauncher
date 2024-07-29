@@ -30,4 +30,5 @@ resources/utils/__pycache__/*
 resources.rar
 Launcher with autoupdater.spec
 resources/jak1_mods2.json
+jak1_mods.json
 jak1_mods2.json
