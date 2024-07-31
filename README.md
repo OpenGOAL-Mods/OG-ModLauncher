@@ -1,6 +1,4 @@
-[Download latest](https://jakmods.dev/download)  
-
-[![Github All Releases](https://img.shields.io/github/downloads/OpenGOAL-Mods/OG-ModLauncher/latest/total.svg?&label=Downloads)]()
+[Download latest](https://jakmods.dev/download)
  
 # Opengoal-ModLauncher
 
