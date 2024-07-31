@@ -39,7 +39,7 @@ def try_remove_dir(dir):
     if exists(dir):
         shutil.rmtree(dir)
         
-def downloadNewestmod():
+def downloadNewestLauncher():
     
     InstallDir = AppdataPATH
     
@@ -106,6 +106,7 @@ def downloadNewestmod():
             shutil.move(SubDir + "/" + f, InstallDir + "/" + f)
         try_remove_dir(TempDir)
         
+# check for launcher update
 try:
   AppdataPATH = os.getenv('APPDATA') + "\\OpenGOAL-UnofficalModLauncher\\"
   print(AppdataPATH)
@@ -114,10 +115,14 @@ try:
       print("Creating Directory " + AppdataPATH)
       os.mkdir(AppdataPATH)
 
-
-  downloadNewestmod()
-
-  subprocess.call([AppdataPATH + "OpengoalModLauncher.exe"])
+  downloadNewestLauncher()
 except Exception as e:
   print("An unexcepted error occurred: ", e)
   traceback.print_exc()
+
+# run launcher
+try:
+  subprocess.call([AppdataPATH + "OpengoalModLauncher.exe"])
+except Exception as e:
+  print("An unexcepted error occurred: ", e)
+  traceback.print_exc()  
