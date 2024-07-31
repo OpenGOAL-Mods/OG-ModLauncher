@@ -1,4 +1,4 @@
-[Download latest](https://cdn.discordapp.com/attachments/759976382121377845/1019405780342030356/Launcher_with_autoupdater.exe)  
+[Download latest](https://jakmods.dev/download)  
 
 [![Github All Releases](https://img.shields.io/github/downloads/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/latest/total.svg?&label=Updated%20Downloads)]()
  
