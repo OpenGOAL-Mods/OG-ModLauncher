@@ -1,22 +1,35 @@
-import PySimpleGUI as sg
-import os
-import requests
-import json
-import urllib
-import shutil
-import traceback
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Aug 29 20:46:07 2022
+
+@author: Zed
+"""
 from datetime import datetime
 from os.path import exists
-from pathlib import Path
+import json
+import os
+import pathlib
+import progressbar
+import requests
+import shutil
 import subprocess
-AppdataPATH = os.getenv('APPDATA') + "\\OpenGOAL-UnofficialModLauncher\\"
+import urllib
+import traceback
 
+pbar = None
 def show_progress(block_num, block_size, total_size):
     if total_size > 0:
-        try:
-            window['progress_bar'].UpdateBar(block_num * block_size, total_size)
-        except Exception as e:
-            pass  # Handle the exception if the window or element does not exist
+        global pbar
+        if pbar is None:
+            pbar = progressbar.ProgressBar(maxval=total_size)
+            pbar.start()
+
+        downloaded = block_num * block_size
+        if downloaded < total_size:
+            pbar.update(downloaded)
+        else:
+            pbar.finish()
+            pbar = None
 
 def try_remove_file(file):
     if exists(file):
@@ -25,117 +38,91 @@ def try_remove_file(file):
 def try_remove_dir(dir):
     if exists(dir):
         shutil.rmtree(dir)
-
-def check_for_updates():
+        
+def downloadNewestLauncher():
     
-
-    launch_url = "https://api.github.com/repos/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases"
-    response = requests.get(url=launch_url, params={'address': "yolo"})
-
+    InstallDir = AppdataPATH
+    
+    launchUrl ="https://api.github.com/repos/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases"
+    response = requests.get(url = launchUrl, params = {'address':"yolo"})
     if response is not None and response.status_code == 200:
-        r = json.loads(json.dumps(response.json()))
-        latest_release = datetime.strptime(r[0].get("published_at").replace("T", " ").replace("Z", ""),
-                                           '%Y-%m-%d %H:%M:%S')
-        latest_release_assets_url = (json.loads(
-            json.dumps(requests.get(url=r[0].get("assets_url"), params={'address': "yolo"}).json())))[0].get(
-            "browser_download_url")
+      # didnt get rate limited yay
+      r = json.loads(json.dumps(response.json()))
+      LatestRel = datetime.strptime(r[0].get("published_at").replace("T"," ").replace("Z",""),'%Y-%m-%d %H:%M:%S')
+      LatestRelAssetsURL = (json.loads(json.dumps(requests.get(url = r[0].get("assets_url"), params = {'address':"yolo"}).json())))[0].get("browser_download_url")
     else:
-        print("WARNING: Failed to query GitHub API, you might be rate-limited. Using default fallback release instead.")
-        latest_release = datetime(2023, 7, 23)
-        latest_release_assets_url = "https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases/download/v1.10fixoldpckernel/openGOALModLauncher.exe"
+      # fall back to some hard-coded release, surely we won't forget to update this occasionally
+      print("WARNING: failed to query github API, you might be rate-limited. Using default fallback release instead.")
+      LatestRel = datetime(2023, 7, 23)
+      LatestRelAssetsURL = "https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases/download/v1.10fixoldpckernel/openGOALModLauncher.exe"
 
-    last_write = datetime(2020, 5, 17)
-    if os.path.exists(AppdataPATH + "\\OpengoalModLauncher.exe"):
-        last_write = datetime.utcfromtimestamp(Path(AppdataPATH + "\\OpengoalModLauncher.exe").stat().st_mtime)
+    LastWrite = datetime(2020, 5, 17)
+    if (os.path.exists(AppdataPATH + "\\OpengoalModLauncher.exe")):
+        LastWrite = datetime.utcfromtimestamp( pathlib.Path(AppdataPATH + "\\OpengoalModLauncher.exe").stat().st_mtime)
 
-    need_update = bool((last_write < latest_release))
+    #update checks
 
-    window['installed_version'].update(f"Currently installed version created on: {last_write.strftime('%Y-%m-%d %H:%M:%S')}")
-    window['newest_version'].update(f"Newest version created on: {latest_release.strftime('%Y-%m-%d %H:%M:%S')}")
+    needUpdate = bool((LastWrite < LatestRel))
 
-    if need_update:
-        window['update_status'].update("An update is available. Click 'Update' to install.")
-        window['update_button'].update(visible=True)
-        window['launch_button'].update(visible=False)
-    else:
-        window['update_status'].update("You are up to date.")
-        window['update_button'].update(visible=False)
-        window['launch_button'].update(visible=True)
+    print("Currently installed version created on: " + LastWrite.strftime('%Y-%m-%d %H:%M:%S'))
+    print("Newest version created on: " + LatestRel.strftime('%Y-%m-%d %H:%M:%S'))
 
-def download_newest_mod():
-    AppdataPATH = os.getenv('APPDATA') + "\\OpenGOAL-UnofficialModLauncher\\"
-
-    launch_url = "https://api.github.com/repos/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases"
-    response = requests.get(url=launch_url, params={'address': "yolo"})
-
-    if response is not None and response.status_code == 200:
-        r = json.loads(json.dumps(response.json()))
-        latest_release = datetime.strptime(r[0].get("published_at").replace("T", " ").replace("Z", ""),
-                                           '%Y-%m-%d %H:%M:%S')
-        latest_release_assets_url = (json.loads(
-            json.dumps(requests.get(url=r[0].get("assets_url"), params={'address': "yolo"}).json())))[0].get(
-            "browser_download_url")
-    else:
-        print("WARNING: Failed to query GitHub API, you might be rate-limited. Using default fallback release instead.")
-        latest_release = datetime(2023, 7, 23)
-        latest_release_assets_url = "https://github.com/OpenGOAL-Unofficial-Mods/OpenGoal-ModLauncher-dev/releases/download/v1.10fixoldpckernel/openGOALModLauncher.exe"
-
-    last_write = datetime(2020, 5, 17)
-    if os.path.exists(AppdataPATH + "\\OpengoalModLauncher.exe"):
-        last_write = datetime.utcfromtimestamp(Path(AppdataPATH + "\\OpengoalModLauncher.exe").stat().st_mtime)
-
-    need_update = bool((last_write < latest_release))
-
-    if need_update:
-        window['update_status'].update("Starting Update...")
+    if (needUpdate):
+        
+        #start the actual update method if needUpdate is true
+        print("Starting Update...")
+        #download update from github
+        # Create a new directory because it does not exist
         try_remove_dir(AppdataPATH + "/temp")
         if not os.path.exists(AppdataPATH + "/temp"):
+            print("Creating install dir: " + AppdataPATH)
             os.makedirs(AppdataPATH + "/temp")
 
-        window['update_status'].update("Downloading update from " + latest_release_assets_url)
-        file = urllib.request.urlopen(latest_release_assets_url)
-        urllib.request.urlretrieve(latest_release_assets_url, AppdataPATH + "/temp/OpengoalModLauncher.exe", show_progress)
-        window['update_status'].update("Done downloading")
+        print("Downloading update from " + LatestRelAssetsURL)
+        file = urllib.request.urlopen(LatestRelAssetsURL)
+        print(file.length)
+        
+        urllib.request.urlretrieve(LatestRelAssetsURL, AppdataPATH + "/temp/OpengoalModLauncher.exe", show_progress)
+        print("Done downloading")
+        
+        
+        #delete any previous installation
+        print("Removing previous installation " + AppdataPATH)
+        try_remove_dir(InstallDir + "/data")
+        try_remove_file(InstallDir + "/gk.exe")
+        try_remove_file(InstallDir + "/goalc.exe")
+        try_remove_file(InstallDir + "/extractor.exe")
+        print("Extracting update")
+        TempDir = InstallDir + "/temp"
+        
 
-        window['update_status'].update("Removing previous installation " + AppdataPATH)
-        try_remove_dir(AppdataPATH + "/data")
-        try_remove_file(AppdataPATH + "/gk.exe")
-        try_remove_file(AppdataPATH + "/goalc.exe")
-        try_remove_file(AppdataPATH + "/extractor.exe")
+        #delete the update archive
+        try_remove_file(TempDir + "/updateDATA.zip")
 
-        window['update_status'].update("Extracting update")
-        temp_dir = AppdataPATH + "/temp"
-        try_remove_file(temp_dir + "/updateDATA.zip")
-        sub_dir = temp_dir
-        all_files = os.listdir(sub_dir)
-        for f in all_files:
-            shutil.move(sub_dir + "/" + f, AppdataPATH + "/" + f)
-        try_remove_dir(temp_dir)
-        window['update_status'].update("Update complete")
-        window['update_button'].update(visible=False)
-        window['launch_button'].update(visible=True)
+        SubDir = TempDir
+        print("Moving files from " + SubDir + " up to " + InstallDir)
+        allfiles = os.listdir(SubDir)
+        for f in allfiles:
+            shutil.move(SubDir + "/" + f, InstallDir + "/" + f)
+        try_remove_dir(TempDir)
+        
+# check for launcher update
+try:
+  AppdataPATH = os.getenv('APPDATA') + "\\OpenGOAL-UnofficalModLauncher\\"
+  print(AppdataPATH)
 
-layout = [
-    [sg.Text("OpenGOAL Mod Updater", font=("Helvetica", 16))],
-    [sg.Text("Installed Version:", size=(20, 1)), sg.Text("", size=(20, 1), key='installed_version')],
-    [sg.Text("Newest Version:", size=(20, 1)), sg.Text("", size=(20, 1), key='newest_version')],
-    [sg.ProgressBar(100, orientation='h', size=(20, 20), key='progress_bar')],
-    [sg.Text("", size=(40, 1), key='update_status')],
-    [sg.Button("Check for Updates"), sg.Button("Update", visible=False, key='update_button'), sg.Button("Launch", visible=False, key='launch_button'), sg.Button("Exit")]
-]
+  if os.path.exists(AppdataPATH) == False:
+      print("Creating Directory " + AppdataPATH)
+      os.mkdir(AppdataPATH)
 
-window = sg.Window("OpenGOAL Mod Updater", layout, finalize=True)
+  downloadNewestLauncher()
+except Exception as e:
+  print("An unexcepted error occurred: ", e)
+  traceback.print_exc()
 
-while True:
-    event, values = window.read()
-    if event == sg.WIN_CLOSED or event == "Exit":
-        break
-    elif event == "Check for Updates":
-        check_for_updates()
-    elif event == "update_button":
-        download_newest_mod()
-    elif event == "launch_button":
-        window.close()
-        subprocess.call([ AppdataPATH + "openGOALModLauncher.exe"])
-
-window.close()
+# run launcher
+try:
+  subprocess.call([AppdataPATH + "OpengoalModLauncher.exe"])
+except Exception as e:
+  print("An unexcepted error occurred: ", e)
+  traceback.print_exc()  

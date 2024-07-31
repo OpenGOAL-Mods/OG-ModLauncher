@@ -539,91 +539,95 @@ def update_and_launch(URL, MOD_ID, MOD_NAME, LINK_TYPE, GAME):
       launchUrl = githubUtils.branchToApiURL(URL)
     LatestRelAssetsURL = ""
 
-    print("\nlaunching from " + launchUrl)
-    PARAMS = {"address": "yolo"}
-    r = json.loads(json.dumps(requests.get(url=launchUrl, params=PARAMS).json()))
+    needUpdate = False
+    try:
+      print("\ntrying to launch from " + launchUrl)
+      PARAMS = {"address": "yolo"}
+      r = json.loads(json.dumps(requests.get(url=launchUrl, params=PARAMS).json()))
 
-    # paths
-    InstallDir = ModFolderPATH + MOD_ID
-    UniversalIsoPath = AppdataPATH + "/OpenGOAL-Mods/_iso_data"
-    ensure_jak_folders_exist()
+      # paths
+      InstallDir = ModFolderPATH + MOD_ID
+      UniversalIsoPath = AppdataPATH + "/OpenGOAL-Mods/_iso_data"
+      ensure_jak_folders_exist()
 
-    # store Latest Release and check our local date too.
-    if LINK_TYPE == githubUtils.LinkTypes.BRANCH:
-      LatestRel = datetime.strptime(
-          r.get("commit")
-          .get("commit")
-          .get("author")
-          .get("date")
-          .replace("T", " ")
-          .replace("Z", ""),
-          "%Y-%m-%d %H:%M:%S",
-      )
-      LatestRelAssetsURL = githubUtils.branchToArchiveURL(URL)
-    elif LINK_TYPE == githubUtils.LinkTypes.RELEASE:
-      LatestRel = datetime.strptime(
-          r[0].get("published_at").replace("T", " ").replace("Z", ""),
-          "%Y-%m-%d %H:%M:%S",
-      )
-      assets = json.loads(json.dumps(requests.get(url=r[0].get("assets_url"), params=PARAMS).json()))
-      for asset in assets:
-        # TODO: fork here based on sys.platform
-        if "linux" in asset.get("name") or "macos" in asset.get("name") or "json" in asset.get("name"):
-          print("Release asset " + asset.get("name") + " is not for windows - SKIPPING!")
-        else:
-          print("USING: Release asset " + asset.get("name") + "! Downloading from " + asset.get("browser_download_url"))
-          LatestRelAssetsURL = asset.get("browser_download_url")
-          break
-
-      # response = requests.get(url=LatestRelAssetsURL, params=PARAMS)
-      # content_type = response.headers["content-type"]
-
-    LastWrite = datetime(2020, 5, 17)
-    if exists(InstallDir):
-        LastWrite = datetime.utcfromtimestamp(
-            pathlib.Path(InstallDir).stat().st_mtime
+      # store Latest Release and check our local date too.
+      if LINK_TYPE == githubUtils.LinkTypes.BRANCH:
+        LatestRel = datetime.strptime(
+            r.get("commit")
+            .get("commit")
+            .get("author")
+            .get("date")
+            .replace("T", " ")
+            .replace("Z", ""),
+            "%Y-%m-%d %H:%M:%S",
         )
-
-    # update checks
-    Outdated = bool(LastWrite < LatestRel)
-    # jak3 jak 3 3 jak
-    if GAME == "jak3":
-        NotExtracted = (bool(not (exists(UniversalIsoPath + "/" + GAME + "/" + "ZZTAIL.DAT"))))
-    else:
-        NotExtracted = (bool(not (exists(UniversalIsoPath + "/" + GAME + "/" + "Z6TAIL.DUP"))))
-
-    NotCompiled = bool(not (exists(InstallDir + "/data/out" + "/" + GAME + "/" + "fr3/GAME.fr3")))
-    needUpdate = bool(Outdated or NotExtracted or NotCompiled)
-
-    print("Currently installed version created on: " + LastWrite.strftime('%Y-%m-%d %H:%M:%S'))
-    print("Newest version created on: " + LatestRel.strftime('%Y-%m-%d %H:%M:%S'))
-    if(NotExtracted):
-        print("Error! Iso data does not appear to be extracted to " + UniversalIsoPath +"/" + GAME + "/" + "Z6TAIL.DUP")
-        print("Will ask user to provide ISO")
-    if(NotCompiled):
-        print("Error! The game is not compiled")
-    if((LastWrite < LatestRel)):
-        print("Looks like we need to download a new update!")
-        print(LastWrite)
-        print(LatestRel)
-        print("Is newest posted update older than what we have installed? " + str((LastWrite < LatestRel)))
-
-    # attempt to migrate any old settings files from using MOD_NAME to MOD_ID
-    if exists(AppdataPATH + "/OpenGOAL" + "/" + GAME + "/" + "settings/" + MOD_NAME + "-settings.gc"):
-        # just to be safe delete the migrated settings file if it already exists (shouldn't happen but prevents rename from failing below)
-        if exists(AppdataPATH + "/OpenGOAL" + "/" + GAME + "/" + "settings/" + MOD_ID + "-settings.gc"):
-            os.remove(
-                AppdataPATH + "/OpenGOAL" + "/" + GAME + "/" + "settings/" + MOD_ID + "-settings.gc"
-            )
-
-        # rename settings file
-        os.rename(
-            AppdataPATH + "/OpenGOAL" + "/" + GAME + "/" + "settings/" + MOD_NAME + "-settings.gc",
-            AppdataPATH + "/OpenGOAL" + "/" + GAME + "/" + "settings/" + MOD_ID + "-settings.gc",
+        LatestRelAssetsURL = githubUtils.branchToArchiveURL(URL)
+      elif LINK_TYPE == githubUtils.LinkTypes.RELEASE:
+        LatestRel = datetime.strptime(
+            r[0].get("published_at").replace("T", " ").replace("Z", ""),
+            "%Y-%m-%d %H:%M:%S",
         )
+        assets = json.loads(json.dumps(requests.get(url=r[0].get("assets_url"), params=PARAMS).json()))
+        for asset in assets:
+          # TODO: fork here based on sys.platform
+          if "linux" in asset.get("name") or "macos" in asset.get("name") or "json" in asset.get("name"):
+            print("Release asset " + asset.get("name") + " is not for windows - SKIPPING!")
+          else:
+            print("USING: Release asset " + asset.get("name") + "! Downloading from " + asset.get("browser_download_url"))
+            LatestRelAssetsURL = asset.get("browser_download_url")
+            break
 
-        # force update to ensure we recompile with adjusted settings filename in pckernel.gc
-        needUpdate = True
+        # response = requests.get(url=LatestRelAssetsURL, params=PARAMS)
+        # content_type = response.headers["content-type"]
+
+      LastWrite = datetime(2020, 5, 17)
+      if exists(InstallDir):
+          LastWrite = datetime.utcfromtimestamp(
+              pathlib.Path(InstallDir).stat().st_mtime
+          )
+
+      # update checks
+      Outdated = bool(LastWrite < LatestRel)
+      # jak3 jak 3 3 jak
+      if GAME == "jak3":
+          NotExtracted = (bool(not (exists(UniversalIsoPath + "/" + GAME + "/" + "ZZTAIL.DAT"))))
+      else:
+          NotExtracted = (bool(not (exists(UniversalIsoPath + "/" + GAME + "/" + "Z6TAIL.DUP"))))
+
+      NotCompiled = bool(not (exists(InstallDir + "/data/out" + "/" + GAME + "/" + "fr3/GAME.fr3")))
+      needUpdate = bool(Outdated or NotExtracted or NotCompiled)
+
+      print("Currently installed version created on: " + LastWrite.strftime('%Y-%m-%d %H:%M:%S'))
+      print("Newest version created on: " + LatestRel.strftime('%Y-%m-%d %H:%M:%S'))
+      if(NotExtracted):
+          print("Error! Iso data does not appear to be extracted to " + UniversalIsoPath +"/" + GAME + "/" + "Z6TAIL.DUP")
+          print("Will ask user to provide ISO")
+      if(NotCompiled):
+          print("Error! The game is not compiled")
+      if((LastWrite < LatestRel)):
+          print("Looks like we need to download a new update!")
+          print(LastWrite)
+          print(LatestRel)
+          print("Is newest posted update older than what we have installed? " + str((LastWrite < LatestRel)))
+
+      # attempt to migrate any old settings files from using MOD_NAME to MOD_ID
+      if exists(AppdataPATH + "/OpenGOAL" + "/" + GAME + "/" + "settings/" + MOD_NAME + "-settings.gc"):
+          # just to be safe delete the migrated settings file if it already exists (shouldn't happen but prevents rename from failing below)
+          if exists(AppdataPATH + "/OpenGOAL" + "/" + GAME + "/" + "settings/" + MOD_ID + "-settings.gc"):
+              os.remove(
+                  AppdataPATH + "/OpenGOAL" + "/" + GAME + "/" + "settings/" + MOD_ID + "-settings.gc"
+              )
+
+          # rename settings file
+          os.rename(
+              AppdataPATH + "/OpenGOAL" + "/" + GAME + "/" + "settings/" + MOD_NAME + "-settings.gc",
+              AppdataPATH + "/OpenGOAL" + "/" + GAME + "/" + "settings/" + MOD_ID + "-settings.gc",
+          )
+
+          # force update to ensure we recompile with adjusted settings filename in pckernel.gc
+          needUpdate = True
+    except Exception as e:
+        print("failed to check for/download update", e)
 
     if needUpdate:
         download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, LatestRelAssetsURL)
