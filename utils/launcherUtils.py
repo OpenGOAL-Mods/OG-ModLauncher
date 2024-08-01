@@ -411,17 +411,17 @@ def download_and_unpack_mod(URL, MOD_ID, MOD_NAME, LINK_TYPE, InstallDir, Latest
     replaceText(
       InstallDir + "/data/goal_src/jak1/pc/pckernel.gc",
       "/pc-settings.gc",
-      "/" + MOD_ID + "-settings.gc",
+      "/" + MOD_ID + "-pc-settings.gc",
     )
     replaceText(
       InstallDir + "/data/goal_src/jak1/pc/pckernel-common.gc",
       "/pc-settings.gc",
-      "/" + MOD_ID + "-settings.gc",
+      "/" + MOD_ID + "-pc-settings.gc",
     )
     replaceText(
       InstallDir + "/data/goal_src/jak1/pc/pckernel-common.gc",
       "/pc-settings.gc",
-      "/" + MOD_ID + "-settings.gc",
+      "/" + MOD_ID + "-pc-settings.gc",
     )
     replaceText(
       InstallDir + "/data/decompiler/config/jak1_ntsc_black_label.jsonc",
