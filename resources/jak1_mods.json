@@ -909,5 +909,18 @@
     "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/spec-ops.JPG",
     "website_url": "https://github.com/ruhphorte/spec-ops-jak",
     "game": "jak2"
+  },
+  "rayman": {
+    "name": "Rayman - The Precursor Legacy",
+    "desc": "Almost Rayman 4",
+    "contributors": ["Clankape"],
+    "tags": [
+      "asset-pack"
+    ],
+    "release_date": "2024-08-03",
+    "URL": "https://github.com/dallmeyer/OG-rayman/releases",
+    "image_override_url": "https://i.ytimg.com/vi/iVhPEnZxric/hqdefault.jpg",
+    "website_url": "https://github.com/dallmeyer/OG-rayman",
+    "game": "jak1"
   }
 }

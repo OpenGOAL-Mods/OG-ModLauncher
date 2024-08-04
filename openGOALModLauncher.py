@@ -330,8 +330,8 @@ def getRefreshedTableData(sort_col_idx):
 
         if matches_filter or secret_check:
             if mod["game"] == FILTER_GAME:
-                # filter mods vs texture packs
-                if (FILTER_CAT == "tex") == (mod["tags"] == "texture-mod"):
+                # filter mods vs asset packs
+                if (FILTER_CAT == "asset") == (mod["tags"] == "texture-mod" or mod["tags"] == "asset-pack"):
                     if (
                         INCLUDE_INSTALLED and mod["access_date"] != "Not Installed"
                     ) or (
@@ -408,7 +408,7 @@ def getRefreshedTableData(sort_col_idx):
 
     # enable/disable jak3 section based on list of mods
     window["jak3/mods"].update(disabled=not seenJak3)
-    window["jak3/tex"].update(disabled=not seenJak3)
+    window["jak3/asset"].update(disabled=not seenJak3)
 
     # print(mod_table_data)
     return mod_table_data
@@ -484,11 +484,11 @@ layout = [
                             ],
                             [
                                 sg.Radio(
-                                    "Texture Packs",
+                                    "Asset Packs",
                                     "filter",
                                     enable_events=True,
                                     font=("Helvetica", 12),
-                                    key="jak1/tex",
+                                    key="jak1/asset",
                                 )
                             ],
                             [sg.Text("")],
@@ -504,11 +504,11 @@ layout = [
                             ],
                             [
                                 sg.Radio(
-                                    "Texture Packs",
+                                    "Asset Packs",
                                     "filter",
                                     font=("Helvetica", 12),
                                     enable_events=True,
-                                    key="jak2/tex",
+                                    key="jak2/asset",
                                 )
                             ],
                             [sg.Text("")],
@@ -524,11 +524,11 @@ layout = [
                             ],
                             [
                                 sg.Radio(
-                                    "Texture Packs",
+                                    "Asset Packs",
                                     "filter",
                                     font=("Helvetica", 12),
                                     enable_events=True,
-                                    key="jak3/tex",
+                                    key="jak3/asset",
                                 )
                             ],
                             [sg.VPush()],
@@ -1014,9 +1014,9 @@ while True:
         FILTER_CAT = "mods"
         LATEST_TABLE_DATA = getRefreshedTableData(None)
         window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
-    elif event == "jak1/tex":
+    elif event == "jak1/asset":
         FILTER_GAME = "jak1"
-        FILTER_CAT = "tex"
+        FILTER_CAT = "asset"
         LATEST_TABLE_DATA = getRefreshedTableData(None)
         window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
     elif event == "jak2/mods":
@@ -1024,9 +1024,9 @@ while True:
         FILTER_CAT = "mods"
         LATEST_TABLE_DATA = getRefreshedTableData(None)
         window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
-    elif event == "jak2/tex":
+    elif event == "jak2/asset":
         FILTER_GAME = "jak2"
-        FILTER_CAT = "tex"
+        FILTER_CAT = "asset"
         LATEST_TABLE_DATA = getRefreshedTableData(None)
         window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
     elif event == "jak3/mods":
@@ -1034,9 +1034,9 @@ while True:
         FILTER_CAT = "mods"
         LATEST_TABLE_DATA = getRefreshedTableData(None)
         window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
-    elif event == "jak3/tex":
+    elif event == "jak3/asset":
         FILTER_GAME = "jak3"
-        FILTER_CAT = "tex"
+        FILTER_CAT = "asset"
         LATEST_TABLE_DATA = getRefreshedTableData(None)
         window["-MODTABLE-"].update(values=LATEST_TABLE_DATA)
     elif event == "-VIEWISOFOLDER-":
