@@ -78,7 +78,8 @@
     "desc": "Pseudo-save states: L2+Down (or Ctrl+C on keyboard) to save / L2+Up (or Ctrl+V on keyboard) to load. Extra checkpoints in speedrun menu (while holding L1+R1+X, press Select or Start)",
     "contributors": [
       "ZedB0T",
-      "barg034"
+      "barg034",
+      "yopie"
     ],
     "tags": [
       "speedrunning",
@@ -95,7 +96,8 @@
     "desc": "Pseudo-save states: R3+Down to save / R3+Up to load.",
     "contributors": [
       "barg034",
-      "ZedB0T"
+      "ZedB0T",
+      "yopie"
     ],
     "tags": [
       "speedrunning",
