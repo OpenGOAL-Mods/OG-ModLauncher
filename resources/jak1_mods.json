@@ -32,7 +32,7 @@
     ],
     "release_date": "2023-01-19",
     "URL": "https://github.com/OpenGOAL-Mods/OG-Fricked/releases",
-    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-mod-base",
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-Fricked",
     "game": "jak1"
   },
   "local_multi": {
@@ -659,7 +659,7 @@
     ],
     "release_date": "2023-11-09",
     "URL": "https://github.com/OpenGOAL-Mods/OG-Fricked/releases",
-    "website_url": "https://github.com/OpenGOAL-Unofficial-Mods/opengoal-mod-base",
+    "website_url": "https://github.com/OpenGOAL-Mods/OG-Fricked",
     "game": "jak2",
     "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/frickedup2.png"
   },
