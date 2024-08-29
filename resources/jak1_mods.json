@@ -925,5 +925,19 @@
     "image_override_url": "https://i.ytimg.com/vi/iVhPEnZxric/hqdefault.jpg",
     "website_url": "https://github.com/dallmeyer/OG-rayman",
     "game": "jak1"
+  },
+  "dbz": {
+    "name": "Dragon Jak Z Mods",
+    "desc": "Dragon Jak Z Mods",
+    "contributors": ["FUNKI DELIRE (LEON GAGIN)"],
+    "tags": [
+      "asset-pack",
+      "gameplay-mod"
+    ],
+    "release_date": "2024-08-29",
+    "URL": "https://github.com/FUNKI-DELIRE-LEON-GAGIN/Dragon-Jak-Z-Mods/releases",
+    "image_override_url": "https://raw.githubusercontent.com/FUNKI-DELIRE-LEON-GAGIN/Dragon-Jak-Z-Mods/main/JAK%202%20MODS%20Dragon%20Jak%20Z%20!%20TRAILER%20AND%20TUTO%20!%20%23jakanddaxter%20%23jak2%20%23dragonball%20%23opengoal%20%23mods.png",
+    "website_url": "https://github.com/FUNKI-DELIRE-LEON-GAGIN/Dragon-Jak-Z-Mods",
+    "game": "jak2"
   }
 }
