@@ -939,5 +939,19 @@
     "image_override_url": "https://raw.githubusercontent.com/FUNKI-DELIRE-LEON-GAGIN/Dragon-Jak-Z-Mods/main/JAK%202%20MODS%20Dragon%20Jak%20Z%20!%20TRAILER%20AND%20TUTO%20!%20%23jakanddaxter%20%23jak2%20%23dragonball%20%23opengoal%20%23mods.png",
     "website_url": "https://github.com/FUNKI-DELIRE-LEON-GAGIN/Dragon-Jak-Z-Mods",
     "game": "jak2"
+  },
+  "dbz_1": {
+    "name": "Dragon Jak Ball",
+    "desc": "Dragon Jak Ball",
+    "contributors": ["FUNKI DELIRE (LEON GAGIN)"],
+    "tags": [
+      "asset-pack",
+      "gameplay-mod"
+    ],
+    "release_date": "2024-09-16",
+    "URL": "https://github.com/FUNKI-DELIRE-LEON-GAGIN/Dragon-Jak-Ball/releases",
+    "image_override_url": "https://pbs.twimg.com/media/GXPDEYNWYAEJJBK.jpg",
+    "website_url": "https://github.com/FUNKI-DELIRE-LEON-GAGIN/Dragon-Jak-Ball",
+    "game": "jak1"
   }
 }
