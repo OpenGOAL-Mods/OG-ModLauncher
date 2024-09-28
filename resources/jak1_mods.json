@@ -664,38 +664,6 @@
     "game": "jak2",
     "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/frickedup2.png"
   },
-  "funki-showcase": {
-    "name": "FUNKI DELIRE Jak 1 Custom Levels",
-    "desc": "There are several maps. Parkour, Minecraft, Keira land, etc... Plenty of fun in the magnificent world of Jak and Daxter!",
-    "contributors": [
-      "FUNKI DELIRE (LEON GAGIN)"
-    ],
-    "tags": [
-      "custom-level"
-    ],
-    "release_date": "2023-11-08",
-    "URL": "https://github.com/OpenGOAL-Mods/OG-Funki-Showcase/releases",
-    "website_url": "https://github.com/OpenGOAL-Mods/OG-Funki-Showcase",
-    "videos_url": "https://www.youtube.com/watch?v=8DmsSZMH9Do",
-    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/funkiparkour.png",
-    "game": "jak1"
-  },
-  "funki-showcase-2": {
-    "name": "FUNKI DELIRE Jak 2 Custom Levels",
-    "desc": "There are several maps. Parkour, Minecraft, etc... Plenty of fun in the magnificent world of Jak and Daxter! Recommended to change Time of Day to Palette 7 from the debug menu to see the maps clearly.",
-    "contributors": [
-      "FUNKI DELIRE (LEON GAGIN)"
-    ],
-    "tags": [
-      "custom-level"
-    ],
-    "release_date": "2023-11-08",
-    "URL": "https://github.com/OpenGOAL-Mods/OG-Funki-Showcase/releases",
-    "website_url": "https://github.com/OpenGOAL-Mods/OG-Funki-Showcase",
-    "videos_url": "https://www.youtube.com/watch?v=8DmsSZMH9Do",
-    "image_override_url": "https://raw.githubusercontent.com/dallmeyer/modimages/main/funkiparkour2.png",
-    "game": "jak2"
-  },
   "ruh-hot-rod": {
     "name": "Jak II Hot Rod",
     "desc": "Changes one of the overworld zoomers to always spawn as a hot rod variant. Max speed has been increased from 40 to 200.",
@@ -924,34 +892,6 @@
     "URL": "https://github.com/dallmeyer/OG-rayman/releases",
     "image_override_url": "https://i.ytimg.com/vi/iVhPEnZxric/hqdefault.jpg",
     "website_url": "https://github.com/dallmeyer/OG-rayman",
-    "game": "jak1"
-  },
-  "dbz": {
-    "name": "Dragon Jak Z Mods",
-    "desc": "Dragon Jak Z Mods",
-    "contributors": ["FUNKI DELIRE (LEON GAGIN)"],
-    "tags": [
-      "asset-pack",
-      "gameplay-mod"
-    ],
-    "release_date": "2024-08-29",
-    "URL": "https://github.com/FUNKI-DELIRE-LEON-GAGIN/Dragon-Jak-Z-Mods/releases",
-    "image_override_url": "https://raw.githubusercontent.com/FUNKI-DELIRE-LEON-GAGIN/Dragon-Jak-Z-Mods/main/JAK%202%20MODS%20Dragon%20Jak%20Z%20!%20TRAILER%20AND%20TUTO%20!%20%23jakanddaxter%20%23jak2%20%23dragonball%20%23opengoal%20%23mods.png",
-    "website_url": "https://github.com/FUNKI-DELIRE-LEON-GAGIN/Dragon-Jak-Z-Mods",
-    "game": "jak2"
-  },
-  "dbz_1": {
-    "name": "Dragon Jak Ball",
-    "desc": "Dragon Jak Ball",
-    "contributors": ["FUNKI DELIRE (LEON GAGIN)"],
-    "tags": [
-      "asset-pack",
-      "gameplay-mod"
-    ],
-    "release_date": "2024-09-16",
-    "URL": "https://github.com/FUNKI-DELIRE-LEON-GAGIN/Dragon-Jak-Ball/releases",
-    "image_override_url": "https://raw.githubusercontent.com/FUNKI-DELIRE-LEON-GAGIN/Dragon-Jak-Ball/main/DRAGON%20JAK%20BALL.jpg",
-    "website_url": "https://github.com/FUNKI-DELIRE-LEON-GAGIN/Dragon-Jak-Ball",
     "game": "jak1"
   }
 }
