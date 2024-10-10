@@ -8,7 +8,7 @@ Created on Thu Aug 25 18:33:45 2022
 from enum import IntEnum
 import threading
 from PIL import Image
-from utils import launcherUtils, githubUtils
+from ML_utils import launcherUtils, githubUtils
 import PySimpleGUI as sg
 import cloudscraper
 import io
@@ -83,8 +83,6 @@ dirs = AppDirs(roaming=True)
 # C:\Users\USERNAME\AppData\Roaming\OpenGOAL-Mods\
 ModFolderPATH = os.path.join(dirs.user_data_dir, "OpenGOAL-Mods", "")
 
-# grab images from web
-
 # url to splash screen image
 
 def getPNGFromURL(URL):
@@ -114,6 +112,73 @@ def getPNGFromURL(URL):
       print("failed to get image " + URL)
 
     return result  # Return the fetched image data
+
+def deprecated_launcher():
+    # Function to proceed with the deprecated launcher
+    root.destroy()  # Close the popup window
+    print("User has chosen to continue with the deprecated launcher.")
+
+def close_program():
+    # Function to close the program
+    root.destroy()
+    print("Program closed.")
+    sys.exit()
+
+def visit_website():
+    # Function to open jakmods.dev
+    webbrowser.open("https://jakmods.dev")
+    print("User has chosen to visit the website.")
+import tkinter as tk
+import webbrowser
+from io import BytesIO
+from PIL import Image, ImageTk
+# Create the main window
+root = tk.Tk()
+root.title("Program Discontinued")
+root.geometry("500x400")  # Set the window size
+
+# Add a placeholder for an image
+
+response = requests.get("https://raw.githubusercontent.com/OpenGOAL-Mods/OG-ModLauncher/refs/heads/main/resources/the_end.png")
+if response.status_code == 200:
+    img_data = response.content
+    img = Image.open(BytesIO(img_data))
+    img = ImageTk.PhotoImage(img)
+    image_placeholder = tk.Label(root, text="[Image Placeholder]",image= img, width=200, height=100, bg="lightgray")
+    image_placeholder.grid(row=0, column=0, columnspan=3, pady=10, padx=10)
+else:
+    image_placeholder = tk.Label(root, text="[Image Placeholder]", width=40, height=10, bg="lightgray")
+    image_placeholder.grid(row=0, column=0, columnspan=3, pady=10, padx=10)
+
+
+# Add the message text
+message = tk.Label(root, text="This program has been discontinued.\n\nThank you for using it!\n\nPlease visit jakmods.dev for instructions on how to get the new mod launcher.", wraplength=350, justify="center")
+message.grid(row=1, column=0, columnspan=3, pady=10, padx=10)
+
+# Add OK, Continue, and Visit Website buttons
+ok_button = tk.Button(root, text="OK", command=close_program, width=10)
+ok_button.grid(row=2, column=0, pady=20)
+
+continue_button = tk.Button(root, text="Continue with Discontinued Launcher", command=deprecated_launcher, width=30)
+continue_button.grid(row=2, column=1, pady=20)
+
+visit_button = tk.Button(root, text="Visit jakmods.dev", command=visit_website, width=20)
+visit_button.grid(row=2, column=2, pady=20)
+
+# Adjust the row/column weight to allow resizing
+root.grid_rowconfigure(0, weight=1)
+root.grid_rowconfigure(1, weight=1)
+root.grid_rowconfigure(2, weight=1)
+root.grid_columnconfigure(0, weight=1)
+root.grid_columnconfigure(1, weight=1)
+root.grid_columnconfigure(2, weight=1)
+
+# Run the window
+root.mainloop()
+
+# grab images from web
+
+
 
 
 # url to icon for the window
@@ -819,7 +884,7 @@ def loading_screen_with_thread(thread):
     else:
       window["-LOADINGIMAGE-"].update(visible=False)
       window["-LOADINGBACKUP-"].update(visible=True)
-      
+
     window["-LOADINGFRAME-"].update(visible=True)
     window["-LOADINGFRAME-"].unhide_row()
     window["-MAINFRAME-"].update(visible=False)

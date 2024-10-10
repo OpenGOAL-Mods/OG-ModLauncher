@@ -7,7 +7,7 @@ Created on Fri Aug 12 06:51:37 2022
 from datetime import datetime
 from os.path import exists
 from tkinter import filedialog
-from utils import githubUtils
+from ML_utils import githubUtils
 import json
 import os
 import pathlib
@@ -261,7 +261,7 @@ def getHfragVert(path):
 
     for shader in hfrag_shaders:
         hfrag_url = hfrag_base_url + shader
-        
+
         # Check if the decompiler exists in the provided path
         if os.path.exists(os.path.join(path, shader)):
             print(f"Found {shader} in the directory.")
@@ -270,10 +270,10 @@ def getHfragVert(path):
             # Check if the backup decompiler exists
             print(f"Couldn't find {shader} in the directory or backup. Downloading it...")
             urllib.request.urlretrieve(hfrag_url, os.path.join(path, shader))
-            
+
             while not os.path.exists(os.path.join(path, shader)):
                 time.sleep(1)  # Wait for the download to complete
-                
+
             print(f"{shader} downloaded successfully as backup.")
 
 def launch_local(MOD_ID, GAME):
